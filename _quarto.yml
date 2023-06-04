@@ -1,0 +1,42 @@
+project:
+  type: website
+
+website:
+  title: "deepschool.ai"
+  favicon: "images/favicon_logo.png"
+  twitter-card: true
+  open-graph: true
+  google-analytics: "UA-37284264-2"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: blog.qmd
+      - href: ML_consulting.qmd
+        text: ML Consulting
+      - href: DL_Course.qmd
+        text: DL Course
+  page-footer: 
+    left: "Copyright 2023, Sachinthaka Abeywardana" 
+    center: 
+      - icon: github
+        href: https://github.com/sachinruk
+      - icon: linkedin 
+        href: https://https://www.linkedin.com/in/sachinabeywardana/
+      - icon: youtube
+        href: "https://www.youtube.com/@deepschoolai"
+  # sidebar:
+  #   contents: auto
+
+format:
+  html:
+    theme: 
+      - darkly
+      - fastpages-dracula-highlight.scss
+    css: styles.css
+    toc: true
+
+
+
+
+

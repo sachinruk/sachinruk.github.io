@@ -1,0 +1,208 @@
+# Deep Learning Course
+
+I have created a [DL Course on Udemy](https://www.udemy.com/course/machine-learning-and-data-science-2021/?referralCode=E79228C7436D74315787) to take you from zero to hero. This course is designed to provide you with a comprehensive understanding of deep learning techniques and their applications. Throughout this course, you will learn various concepts, tools, and practical skills related to deep learning.
+
+The following curriculum covers a wide range of topics and progresses from beginner to intermediate and advanced levels. Whether you are new to deep learning or have some experience, this course will provide you with the knowledge and skills to excel in the field.
+
+## Beginner Level
+
+### Section 1: Introduction
+- Introduction
+- How to tackle this course
+- Installations and sign-ups
+- Jupyter Notebooks
+- Course Material
+- Google Drive Link for All Course Material
+
+### Section 2: Basic Python + Pandas + Plotting
+- Intro
+- Basic Data Structures
+- Dictionaries
+- Python functions (methods)
+- Numpy functions
+- Conditional statements
+- For loops
+- Dictionaries again
+- Pandas Intro
+
+### Pandas
+- Pandas simple functions
+- Pandas: Subsetting
+- Pandas: loc and iloc
+- Pandas: loc and iloc 2
+- Pandas: map and apply
+- Pandas: groupby
+
+### Plotting
+- Plotting resources (notebooks)
+- Line plot
+- Plot multiple lines
+- Histograms
+- Scatter Plots
+- Subplots
+- Seaborn + pair plots
+
+## Intermediate Level
+### Section 3: Machine Learning: Numpy + Scikit Learn
+- Your reviews are important to me!
+- Numpy
+- Gradient Descent
+- Kmeans part 1
+- Kmeans part 2
+- Broadcasting
+
+### Scikit Learn
+- Intro
+- Linear Regression Part 1
+- Linear Regression Part 2
+- Classification and Regression Trees
+- CART part 2
+- Random Forest theory
+- Random Forest Code
+- Gradient Boosted Machines
+
+### Section 4: Machine Learning: Classification + Time Series + Model Diagnostics
+- Kaggle part 1
+- Kaggle part 2
+- Theory part 1
+- Theory part 2 + code
+- Titanic dataset
+- Sklearn classification prelude
+- Sklearn classification
+- Dealing with missing values
+
+### Time Series
+- Intro
+- Loss functions
+- FB Prophet part 1
+- FB Prophet part 2
+- Theory behind FB Prophet
+
+### Model Diagnostics
+- Overfitting
+- Cross Validation
+- Stratified K Fold
+- Area Under Curve (AUC) Part 1
+- Area Under Curve (AUC) Part 2
+
+### Section 5: Unsupervised Learning
+- Principal Component Analysis (PCA) theory
+- Fashion MNIST PCA
+- K-means
+- Other clustering methods
+- DBSCAN theory
+- Gaussian Mixture Models (GMM) theory
+
+### Section 6: Natural Language Processing + Regularization
+- Intro
+- Stop words and Term Frequency
+- Term Frequency - Inverse Document Frequency (Tf - Idf) theory
+- Financial News Sentiment Classifier
+- NLTK + Stemming
+- N-grams
+- Word (feature) importance
+- Spacy intro
+- Feature Extraction with Spacy (using Pandas)
+- Classification Example
+- Over-sampling
+
+### Regularization
+- Introduction
+- MSE recap
+- L2 Loss / Ridge Regression intro
+- Ridge regression (L2 penalized regression)
+- S&P500 data preparation for L1 loss
+- L1 Penalized Regression (Lasso)
+- L1/ L2 Penalty theory: why it works
+
+### Section 7: Deep Learning
+- Intro
+- DL theory part 1
+- DL theory part 2
+- Tensorflow + Keras demo problem 1
+- Activation functions
+- First example with Relu
+- MNIST
+
+ and Softmax
+- Deep Learning Input Normalization
+- Softmax theory
+- Batch Norm
+- Batch Norm Theory
+
+### Section 8: Deep Learning (TensorFlow) - Convolutional Neural Nets
+- Intro
+- Fashion MNIST feed forward net for benchmarking
+- Keras Conv2D layer
+- Model fitting and discussion of results
+- Dropout theory and code
+- MaxPool (and comparison to stride)
+- Cifar-10
+- Nose Tip detection with CNNs
+
+### Section 9: Deep Learning: Recurrent Neural Nets
+- Word2vec and Embeddings
+- Kaggle + Word2Vec
+- Word2Vec: Keras Model API
+- Recurrent Neural Nets - Theory
+- Deep Learning - Long Short Term Memory (LSTM) Nets
+- Deep Learning - Stacking LSTMs + GRUs
+- Transfer Learning - GLOVE vectors
+- Sequence to Sequence Introduction + Data Prep
+- Sequence to Sequence model + Keras Model API
+- Sequence to Sequence models: Prediction step
+
+### Section 10: Deep Learning: PyTorch Introduction
+- Notebooks
+- Introduction
+- Pytorch: TensorDataset
+- Pytorch: Dataset and DataLoaders
+- Deep Learning with PyTorch: nn.Sequential models
+- Deep Learning with PyTorch: Loss functions
+- Deep Learning with PyTorch: Stochastic Gradient Descent
+- Deep Learning with PyTorch: Optimizers
+- Pytorch Model API
+- Pytorch in GPUs
+- Deep Learning: Intro to Pytorch Lightning
+
+### Section 11: Deep Learning: Transfer Learning with PyTorch Lightning
+- Notebooks
+- Transfer Learning Introduction
+- Kaggle problem description
+- PyTorch datasets + Torchvision
+- PyTorch transfer learning with ResNet
+- PyTorch Lightning Model
+- PyTorch Lightning Trainer + Model evaluation
+- Deep Learning for Cassava Leaf Classification
+- Cassava Leaf Dataset
+- Data Augmentation with Torchvision Transforms
+- Train vs Test Augmentations + DataLoader parameters
+- Deep Learning: Transfer Learning Model with ResNet
+- Setting up PyTorch Lightning for training
+- Cross Entropy Loss for Imbalanced Classes
+- PyTorch Test dataset setup and evaluation
+- WandB for logging experiments
+
+## Advanced Level
+### Section 12: Pixel Level Segmentation (Semantic Segmentation) with PyTorch 
+- Notebooks
+- Introduction
+- Coco Dataset + Augmentations for Segmentation with Torchvision
+- Unet Architecture overview
+- PyTorch Model Architecture
+- PyTorch Hooks
+- PyTorch Hooks: Step through with breakpoints
+- PyTorch Weighted CrossEntropy Loss
+- Weights and Biases: Logging images.
+- Semantic Segmentation training with PyTorch Lightning
+
+### Section 13: Deep Learning: Transformers and BERT 
+- Resources
+- Introduction to Transformers
+- The illustrated Transformer (blog post by Jay Alammar)
+- Encoder Transformer Models: The Maths
+- BERT - The theory
+- Kaggle Multi-lingual Toxic Comment Classification Challenge
+- Tokenizers and data prep for BERT models
+- Distilbert (Smaller BERT) model
+- PyTorch Lightning + DistilBERT for classification
