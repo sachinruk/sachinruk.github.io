@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>deepschool.ai – dl_course</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./images/favicon_logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-37284264-2', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">deepschool.ai</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./blog.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ML_consulting.html" rel="" target="">
+ <span class="menu-text">ML Consulting</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./DL_Course.html" rel="" target="" aria-current="page">
+ <span class="menu-text">DL Course</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#deep-learning-course" id="toc-deep-learning-course" class="nav-link active" data-scroll-target="#deep-learning-course">Deep Learning Course</a>
+  <ul class="collapse">
+  <li><a href="#beginner-level" id="toc-beginner-level" class="nav-link" data-scroll-target="#beginner-level">Beginner Level</a>
+  <ul class="collapse">
+  <li><a href="#section-1-introduction" id="toc-section-1-introduction" class="nav-link" data-scroll-target="#section-1-introduction">Section 1: Introduction</a></li>
+  <li><a href="#section-2-basic-python-pandas-plotting" id="toc-section-2-basic-python-pandas-plotting" class="nav-link" data-scroll-target="#section-2-basic-python-pandas-plotting">Section 2: Basic Python + Pandas + Plotting</a></li>
+  <li><a href="#pandas" id="toc-pandas" class="nav-link" data-scroll-target="#pandas">Pandas</a></li>
+  <li><a href="#plotting" id="toc-plotting" class="nav-link" data-scroll-target="#plotting">Plotting</a></li>
+  </ul></li>
+  <li><a href="#intermediate-level" id="toc-intermediate-level" class="nav-link" data-scroll-target="#intermediate-level">Intermediate Level</a>
+  <ul class="collapse">
+  <li><a href="#section-3-machine-learning-numpy-scikit-learn" id="toc-section-3-machine-learning-numpy-scikit-learn" class="nav-link" data-scroll-target="#section-3-machine-learning-numpy-scikit-learn">Section 3: Machine Learning: Numpy + Scikit Learn</a></li>
+  <li><a href="#scikit-learn" id="toc-scikit-learn" class="nav-link" data-scroll-target="#scikit-learn">Scikit Learn</a></li>
+  <li><a href="#section-4-machine-learning-classification-time-series-model-diagnostics" id="toc-section-4-machine-learning-classification-time-series-model-diagnostics" class="nav-link" data-scroll-target="#section-4-machine-learning-classification-time-series-model-diagnostics">Section 4: Machine Learning: Classification + Time Series + Model Diagnostics</a></li>
+  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series">Time Series</a></li>
+  <li><a href="#model-diagnostics" id="toc-model-diagnostics" class="nav-link" data-scroll-target="#model-diagnostics">Model Diagnostics</a></li>
+  <li><a href="#section-5-unsupervised-learning" id="toc-section-5-unsupervised-learning" class="nav-link" data-scroll-target="#section-5-unsupervised-learning">Section 5: Unsupervised Learning</a></li>
+  <li><a href="#section-6-natural-language-processing-regularization" id="toc-section-6-natural-language-processing-regularization" class="nav-link" data-scroll-target="#section-6-natural-language-processing-regularization">Section 6: Natural Language Processing + Regularization</a></li>
+  <li><a href="#regularization" id="toc-regularization" class="nav-link" data-scroll-target="#regularization">Regularization</a></li>
+  <li><a href="#section-7-deep-learning" id="toc-section-7-deep-learning" class="nav-link" data-scroll-target="#section-7-deep-learning">Section 7: Deep Learning</a></li>
+  <li><a href="#section-8-deep-learning-tensorflow---convolutional-neural-nets" id="toc-section-8-deep-learning-tensorflow---convolutional-neural-nets" class="nav-link" data-scroll-target="#section-8-deep-learning-tensorflow---convolutional-neural-nets">Section 8: Deep Learning (TensorFlow) - Convolutional Neural Nets</a></li>
+  <li><a href="#section-9-deep-learning-recurrent-neural-nets" id="toc-section-9-deep-learning-recurrent-neural-nets" class="nav-link" data-scroll-target="#section-9-deep-learning-recurrent-neural-nets">Section 9: Deep Learning: Recurrent Neural Nets</a></li>
+  <li><a href="#section-10-deep-learning-pytorch-introduction" id="toc-section-10-deep-learning-pytorch-introduction" class="nav-link" data-scroll-target="#section-10-deep-learning-pytorch-introduction">Section 10: Deep Learning: PyTorch Introduction</a></li>
+  <li><a href="#section-11-deep-learning-transfer-learning-with-pytorch-lightning" id="toc-section-11-deep-learning-transfer-learning-with-pytorch-lightning" class="nav-link" data-scroll-target="#section-11-deep-learning-transfer-learning-with-pytorch-lightning">Section 11: Deep Learning: Transfer Learning with PyTorch Lightning</a></li>
+  </ul></li>
+  <li><a href="#advanced-level" id="toc-advanced-level" class="nav-link" data-scroll-target="#advanced-level">Advanced Level</a>
+  <ul class="collapse">
+  <li><a href="#section-12-pixel-level-segmentation-semantic-segmentation-with-pytorch" id="toc-section-12-pixel-level-segmentation-semantic-segmentation-with-pytorch" class="nav-link" data-scroll-target="#section-12-pixel-level-segmentation-semantic-segmentation-with-pytorch">Section 12: Pixel Level Segmentation (Semantic Segmentation) with PyTorch</a></li>
+  <li><a href="#section-13-deep-learning-transformers-and-bert" id="toc-section-13-deep-learning-transformers-and-bert" class="nav-link" data-scroll-target="#section-13-deep-learning-transformers-and-bert">Section 13: Deep Learning: Transformers and BERT</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="deep-learning-course" class="level1">
+<h1>Deep Learning Course</h1>
+<p>I have created a <a href="https://www.udemy.com/course/machine-learning-and-data-science-2021/?referralCode=E79228C7436D74315787">DL Course on Udemy</a> to take you from zero to hero. This course is designed to provide you with a comprehensive understanding of deep learning techniques and their applications. Throughout this course, you will learn various concepts, tools, and practical skills related to deep learning.</p>
+<p>The following curriculum covers a wide range of topics and progresses from beginner to intermediate and advanced levels. Whether you are new to deep learning or have some experience, this course will provide you with the knowledge and skills to excel in the field.</p>
+<section id="beginner-level" class="level2">
+<h2 class="anchored" data-anchor-id="beginner-level">Beginner Level</h2>
+<section id="section-1-introduction" class="level3">
+<h3 class="anchored" data-anchor-id="section-1-introduction">Section 1: Introduction</h3>
+<ul>
+<li>Introduction</li>
+<li>How to tackle this course</li>
+<li>Installations and sign-ups</li>
+<li>Jupyter Notebooks</li>
+<li>Course Material</li>
+<li>Google Drive Link for All Course Material</li>
+</ul>
+</section>
+<section id="section-2-basic-python-pandas-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="section-2-basic-python-pandas-plotting">Section 2: Basic Python + Pandas + Plotting</h3>
+<ul>
+<li>Intro</li>
+<li>Basic Data Structures</li>
+<li>Dictionaries</li>
+<li>Python functions (methods)</li>
+<li>Numpy functions</li>
+<li>Conditional statements</li>
+<li>For loops</li>
+<li>Dictionaries again</li>
+<li>Pandas Intro</li>
+</ul>
+</section>
+<section id="pandas" class="level3">
+<h3 class="anchored" data-anchor-id="pandas">Pandas</h3>
+<ul>
+<li>Pandas simple functions</li>
+<li>Pandas: Subsetting</li>
+<li>Pandas: loc and iloc</li>
+<li>Pandas: loc and iloc 2</li>
+<li>Pandas: map and apply</li>
+<li>Pandas: groupby</li>
+</ul>
+</section>
+<section id="plotting" class="level3">
+<h3 class="anchored" data-anchor-id="plotting">Plotting</h3>
+<ul>
+<li>Plotting resources (notebooks)</li>
+<li>Line plot</li>
+<li>Plot multiple lines</li>
+<li>Histograms</li>
+<li>Scatter Plots</li>
+<li>Subplots</li>
+<li>Seaborn + pair plots</li>
+</ul>
+</section>
+</section>
+<section id="intermediate-level" class="level2">
+<h2 class="anchored" data-anchor-id="intermediate-level">Intermediate Level</h2>
+<section id="section-3-machine-learning-numpy-scikit-learn" class="level3">
+<h3 class="anchored" data-anchor-id="section-3-machine-learning-numpy-scikit-learn">Section 3: Machine Learning: Numpy + Scikit Learn</h3>
+<ul>
+<li>Your reviews are important to me!</li>
+<li>Numpy</li>
+<li>Gradient Descent</li>
+<li>Kmeans part 1</li>
+<li>Kmeans part 2</li>
+<li>Broadcasting</li>
+</ul>
+</section>
+<section id="scikit-learn" class="level3">
+<h3 class="anchored" data-anchor-id="scikit-learn">Scikit Learn</h3>
+<ul>
+<li>Intro</li>
+<li>Linear Regression Part 1</li>
+<li>Linear Regression Part 2</li>
+<li>Classification and Regression Trees</li>
+<li>CART part 2</li>
+<li>Random Forest theory</li>
+<li>Random Forest Code</li>
+<li>Gradient Boosted Machines</li>
+</ul>
+</section>
+<section id="section-4-machine-learning-classification-time-series-model-diagnostics" class="level3">
+<h3 class="anchored" data-anchor-id="section-4-machine-learning-classification-time-series-model-diagnostics">Section 4: Machine Learning: Classification + Time Series + Model Diagnostics</h3>
+<ul>
+<li>Kaggle part 1</li>
+<li>Kaggle part 2</li>
+<li>Theory part 1</li>
+<li>Theory part 2 + code</li>
+<li>Titanic dataset</li>
+<li>Sklearn classification prelude</li>
+<li>Sklearn classification</li>
+<li>Dealing with missing values</li>
+</ul>
+</section>
+<section id="time-series" class="level3">
+<h3 class="anchored" data-anchor-id="time-series">Time Series</h3>
+<ul>
+<li>Intro</li>
+<li>Loss functions</li>
+<li>FB Prophet part 1</li>
+<li>FB Prophet part 2</li>
+<li>Theory behind FB Prophet</li>
+</ul>
+</section>
+<section id="model-diagnostics" class="level3">
+<h3 class="anchored" data-anchor-id="model-diagnostics">Model Diagnostics</h3>
+<ul>
+<li>Overfitting</li>
+<li>Cross Validation</li>
+<li>Stratified K Fold</li>
+<li>Area Under Curve (AUC) Part 1</li>
+<li>Area Under Curve (AUC) Part 2</li>
+</ul>
+</section>
+<section id="section-5-unsupervised-learning" class="level3">
+<h3 class="anchored" data-anchor-id="section-5-unsupervised-learning">Section 5: Unsupervised Learning</h3>
+<ul>
+<li>Principal Component Analysis (PCA) theory</li>
+<li>Fashion MNIST PCA</li>
+<li>K-means</li>
+<li>Other clustering methods</li>
+<li>DBSCAN theory</li>
+<li>Gaussian Mixture Models (GMM) theory</li>
+</ul>
+</section>
+<section id="section-6-natural-language-processing-regularization" class="level3">
+<h3 class="anchored" data-anchor-id="section-6-natural-language-processing-regularization">Section 6: Natural Language Processing + Regularization</h3>
+<ul>
+<li>Intro</li>
+<li>Stop words and Term Frequency</li>
+<li>Term Frequency - Inverse Document Frequency (Tf - Idf) theory</li>
+<li>Financial News Sentiment Classifier</li>
+<li>NLTK + Stemming</li>
+<li>N-grams</li>
+<li>Word (feature) importance</li>
+<li>Spacy intro</li>
+<li>Feature Extraction with Spacy (using Pandas)</li>
+<li>Classification Example</li>
+<li>Over-sampling</li>
+</ul>
+</section>
+<section id="regularization" class="level3">
+<h3 class="anchored" data-anchor-id="regularization">Regularization</h3>
+<ul>
+<li>Introduction</li>
+<li>MSE recap</li>
+<li>L2 Loss / Ridge Regression intro</li>
+<li>Ridge regression (L2 penalized regression)</li>
+<li>S&amp;P500 data preparation for L1 loss</li>
+<li>L1 Penalized Regression (Lasso)</li>
+<li>L1/ L2 Penalty theory: why it works</li>
+</ul>
+</section>
+<section id="section-7-deep-learning" class="level3">
+<h3 class="anchored" data-anchor-id="section-7-deep-learning">Section 7: Deep Learning</h3>
+<ul>
+<li>Intro</li>
+<li>DL theory part 1</li>
+<li>DL theory part 2</li>
+<li>Tensorflow + Keras demo problem 1</li>
+<li>Activation functions</li>
+<li>First example with Relu</li>
+<li>MNIST</li>
+</ul>
+<p>and Softmax - Deep Learning Input Normalization - Softmax theory - Batch Norm - Batch Norm Theory</p>
+</section>
+<section id="section-8-deep-learning-tensorflow---convolutional-neural-nets" class="level3">
+<h3 class="anchored" data-anchor-id="section-8-deep-learning-tensorflow---convolutional-neural-nets">Section 8: Deep Learning (TensorFlow) - Convolutional Neural Nets</h3>
+<ul>
+<li>Intro</li>
+<li>Fashion MNIST feed forward net for benchmarking</li>
+<li>Keras Conv2D layer</li>
+<li>Model fitting and discussion of results</li>
+<li>Dropout theory and code</li>
+<li>MaxPool (and comparison to stride)</li>
+<li>Cifar-10</li>
+<li>Nose Tip detection with CNNs</li>
+</ul>
+</section>
+<section id="section-9-deep-learning-recurrent-neural-nets" class="level3">
+<h3 class="anchored" data-anchor-id="section-9-deep-learning-recurrent-neural-nets">Section 9: Deep Learning: Recurrent Neural Nets</h3>
+<ul>
+<li>Word2vec and Embeddings</li>
+<li>Kaggle + Word2Vec</li>
+<li>Word2Vec: Keras Model API</li>
+<li>Recurrent Neural Nets - Theory</li>
+<li>Deep Learning - Long Short Term Memory (LSTM) Nets</li>
+<li>Deep Learning - Stacking LSTMs + GRUs</li>
+<li>Transfer Learning - GLOVE vectors</li>
+<li>Sequence to Sequence Introduction + Data Prep</li>
+<li>Sequence to Sequence model + Keras Model API</li>
+<li>Sequence to Sequence models: Prediction step</li>
+</ul>
+</section>
+<section id="section-10-deep-learning-pytorch-introduction" class="level3">
+<h3 class="anchored" data-anchor-id="section-10-deep-learning-pytorch-introduction">Section 10: Deep Learning: PyTorch Introduction</h3>
+<ul>
+<li>Notebooks</li>
+<li>Introduction</li>
+<li>Pytorch: TensorDataset</li>
+<li>Pytorch: Dataset and DataLoaders</li>
+<li>Deep Learning with PyTorch: nn.Sequential models</li>
+<li>Deep Learning with PyTorch: Loss functions</li>
+<li>Deep Learning with PyTorch: Stochastic Gradient Descent</li>
+<li>Deep Learning with PyTorch: Optimizers</li>
+<li>Pytorch Model API</li>
+<li>Pytorch in GPUs</li>
+<li>Deep Learning: Intro to Pytorch Lightning</li>
+</ul>
+</section>
+<section id="section-11-deep-learning-transfer-learning-with-pytorch-lightning" class="level3">
+<h3 class="anchored" data-anchor-id="section-11-deep-learning-transfer-learning-with-pytorch-lightning">Section 11: Deep Learning: Transfer Learning with PyTorch Lightning</h3>
+<ul>
+<li>Notebooks</li>
+<li>Transfer Learning Introduction</li>
+<li>Kaggle problem description</li>
+<li>PyTorch datasets + Torchvision</li>
+<li>PyTorch transfer learning with ResNet</li>
+<li>PyTorch Lightning Model</li>
+<li>PyTorch Lightning Trainer + Model evaluation</li>
+<li>Deep Learning for Cassava Leaf Classification</li>
+<li>Cassava Leaf Dataset</li>
+<li>Data Augmentation with Torchvision Transforms</li>
+<li>Train vs Test Augmentations + DataLoader parameters</li>
+<li>Deep Learning: Transfer Learning Model with ResNet</li>
+<li>Setting up PyTorch Lightning for training</li>
+<li>Cross Entropy Loss for Imbalanced Classes</li>
+<li>PyTorch Test dataset setup and evaluation</li>
+<li>WandB for logging experiments</li>
+</ul>
+</section>
+</section>
+<section id="advanced-level" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-level">Advanced Level</h2>
+<section id="section-12-pixel-level-segmentation-semantic-segmentation-with-pytorch" class="level3">
+<h3 class="anchored" data-anchor-id="section-12-pixel-level-segmentation-semantic-segmentation-with-pytorch">Section 12: Pixel Level Segmentation (Semantic Segmentation) with PyTorch</h3>
+<ul>
+<li>Notebooks</li>
+<li>Introduction</li>
+<li>Coco Dataset + Augmentations for Segmentation with Torchvision</li>
+<li>Unet Architecture overview</li>
+<li>PyTorch Model Architecture</li>
+<li>PyTorch Hooks</li>
+<li>PyTorch Hooks: Step through with breakpoints</li>
+<li>PyTorch Weighted CrossEntropy Loss</li>
+<li>Weights and Biases: Logging images.</li>
+<li>Semantic Segmentation training with PyTorch Lightning</li>
+</ul>
+</section>
+<section id="section-13-deep-learning-transformers-and-bert" class="level3">
+<h3 class="anchored" data-anchor-id="section-13-deep-learning-transformers-and-bert">Section 13: Deep Learning: Transformers and BERT</h3>
+<ul>
+<li>Resources</li>
+<li>Introduction to Transformers</li>
+<li>The illustrated Transformer (blog post by Jay Alammar)</li>
+<li>Encoder Transformer Models: The Maths</li>
+<li>BERT - The theory</li>
+<li>Kaggle Multi-lingual Toxic Comment Classification Challenge</li>
+<li>Tokenizers and data prep for BERT models</li>
+<li>Distilbert (Smaller BERT) model</li>
+<li>PyTorch Lightning + DistilBERT for classification</li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Copyright 2023, Sachinthaka Abeywardana</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sachinruk">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://https://www.linkedin.com/in/sachinabeywardana/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.youtube.com/@deepschoolai">
+      <i class="bi bi-youtube" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

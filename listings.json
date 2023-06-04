@@ -1,0 +1,38 @@
+[
+  {
+    "listing": "/blog.html",
+    "items": [
+      "/blog/2023-04-18-ddpm.html",
+      "/blog/2022-11-07-t5-for-grammar-correction.html",
+      "/blog/2022-09-25-grammar-correction-via-gpt2.html",
+      "/blog/2022-08-07-transformer_compression.html",
+      "/blog/2022-07-03-ds-tests.html",
+      "/blog/2022-03-22-ann-part2.html",
+      "/blog/2022-03-20-kmeans.html",
+      "/blog/2022-02-13-pytorch-prefetch-experiment.html",
+      "/blog/2022-01-26-visionencoderdecoder-model-training.html",
+      "/blog/2021-12-28-vit-to-gpt2-encoder-decoder-model.html",
+      "/blog/2021-11-17-collate-fn-vs-normal.html",
+      "/blog/2021-10-10-zero-shot-classification-with-hf.html",
+      "/blog/2021-08-28-weighted-cross-entropy-loss.html",
+      "/blog/2021-08-21-coco-semantic-segmentation-data.html",
+      "/blog/2021-08-01-dino-self-supervised-vision-transformers.html",
+      "/blog/2021-07-03-image-patches.html",
+      "/blog/2021-06-05-pytorch-collatefn.html",
+      "/blog/2021-04-05-tabnet_from_scratch.html",
+      "/blog/2021-03-07-clip.html",
+      "/blog/2021-02-15-tensorflow-learning-rate-finder.html",
+      "/blog/2020-11-28-focal-loss.html",
+      "/blog/2017-08-24-Docker-for-Data-Science.html",
+      "/blog/2017-07-04-DeepSchool.io.html",
+      "/blog/2016-10-20-Keras-LSTM.html",
+      "/blog/2016-10-16-Quantile-Regression.html",
+      "/blog/2016-08-08-XgBoost.html",
+      "/blog/2015-10-20-Reversible-Jump-MCMC.html",
+      "/blog/2015-10-09-Chinese-Restaurant-Process.html",
+      "/blog/2015-08-10-von-Mises-Fisher.html",
+      "/blog/2015-08-06-Sample-Variance.html",
+      "/blog/2015-08-02-Normal-Distribution.html"
+    ]
+  }
+]
