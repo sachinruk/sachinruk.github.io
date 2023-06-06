@@ -774,7 +774,7 @@
     "href": "blog/2023-04-18-ddpm.html#acknowledgments-references",
     "title": "Annotated DDPM",
     "section": "Acknowledgments/ References",
-    "text": "Acknowledgments/ References\nIf this blog is still leaving you with questions, I would personally recommend the following 3 resources (in order of awesomeness): 1. Fast.ai course page 2. For a deep dive into the maths read this paper. 3. YouTube tutorial by Nvidia. 4. The actual DDPM paper.\nI also want to thank Ben Alexander for helping me untie some of the ugly knots in my understanding of Diffusion Models."
+    "text": "Acknowledgments/ References\nIf this blog is still leaving you with questions, I would personally recommend the following 3 resources (in order of awesomeness):\n\nFast.ai course page\nFor a deep dive into the maths read this paper.\nYouTube tutorial by Nvidia.\nThe actual DDPM paper.\n\nI also want to thank Ben Alexander for helping me untie some of the ugly knots in my understanding of Diffusion Models."
   },
   {
     "objectID": "blog/2021-10-10-zero-shot-classification-with-hf.html",
