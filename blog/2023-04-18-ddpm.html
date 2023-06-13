@@ -8,7 +8,7 @@
 
 <meta name="author" content="Sachin Abeywardana">
 <meta name="dcterms.date" content="2023-04-18">
-<meta name="description" content="Training MNIST via DDPM">
+<meta name="description" content="Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)">
 
 <title>deepschool.ai - Annotated DDPM</title>
 <style>
@@ -116,13 +116,13 @@ ga('send', {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="deepschool.ai - Annotated DDPM">
-<meta property="og:description" content="Training MNIST via DDPM">
+<meta property="og:description" content="Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)">
 <meta property="og:image" content="https://sachinruk.github.io/images/ddpm_image.png">
 <meta property="og:site-name" content="deepschool.ai">
 <meta property="og:image:height" content="400">
 <meta property="og:image:width" content="400">
 <meta name="twitter:title" content="deepschool.ai - Annotated DDPM">
-<meta name="twitter:description" content="Training MNIST via DDPM">
+<meta name="twitter:description" content="Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)">
 <meta name="twitter:image" content="https://sachinruk.github.io/images/ddpm_image.png">
 <meta name="twitter:image-height" content="400">
 <meta name="twitter:image-width" content="400">
@@ -210,7 +210,7 @@ ga('send', {
 
 <div>
   <div class="description">
-    Training MNIST via DDPM
+    Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)
   </div>
 </div>
 
@@ -240,7 +240,7 @@ ga('send', {
 <p><img src="../images/ddpm_image.png" class="img-fluid"></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>It took me many hours and weeks to understand DDPM. There were many intricacies to go from the maths to code. This blog post is meant to cover both the maths side as well as coding. Hopefully, you will not need to venture outside this blog post. I will however assume familiarity with basic Bayesian methods, pytorch and some <strong>high level</strong> understanding of a UNet.</p>
+<p>It took me many hours and weeks to understand DDPM (Denoising Diffusion Probabilistic Models). There were many intricacies in mapping my understanding from the math to code. This blog post is meant to cover both the maths side as well as coding. Hopefully, you will not need to venture outside this blog post. I will however assume familiarity with basic Bayesian methods, pytorch and some <strong>high level</strong> understanding of a UNet.</p>
 <p>Before we get going Kudos to the <a href="https://course.fast.ai/Lessons/lesson19.html">fast.ai</a> explanation of DDPM.</p>
 <p>I will also ask you to throw away presumptions about stable diffusion. DDPM while being one of the first papers that kicked off this area of Deep Learning does not take in a text input. However, hopefully you might see how to add such conditional information as we walk through this.</p>
 <p>A working code example of this tutorial can be found on <a href="https://www.kaggle.com/code/sachin/ddpm-mnist">kaggle</a>.</p>
