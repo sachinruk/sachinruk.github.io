@@ -34,5 +34,13 @@
       "/blog/2015-08-06-Sample-Variance.html",
       "/blog/2015-08-02-Normal-Distribution.html"
     ]
+  },
+  {
+    "listing": "/programming_tips.html",
+    "items": [
+      "/programming_tips/pydantic-post-init.html",
+      "/programming_tips/choosing-timm-model.html",
+      "/programming_tips/pl-learning-rate-finder.html"
+    ]
   }
 ]

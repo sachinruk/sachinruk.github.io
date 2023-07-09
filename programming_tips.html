@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2016-10-20">
 
-<title>deepschool.ai - Keras LSTMs</title>
+<title>deepschool.ai - Programming Tips</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,23 +23,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../images/favicon_logo.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-html/quarto.js"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./images/favicon_logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -61,6 +62,35 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
 
 <script type="text/javascript">
 
@@ -76,13 +106,13 @@ ga('send', {
 });
 </script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="deepschool.ai - Keras LSTMs">
-<meta property="og:description" content="">
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="deepschool.ai - Programming Tips">
 <meta property="og:site-name" content="deepschool.ai">
-<meta name="twitter:title" content="deepschool.ai - Keras LSTMs">
-<meta name="twitter:description" content="">
+<meta name="twitter:title" content="deepschool.ai - Programming Tips">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -93,7 +123,7 @@ ga('send', {
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">deepschool.ai</span>
     </a>
   </div>
@@ -104,19 +134,19 @@ ga('send', {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html" rel="" target="">
+    <a class="nav-link" href="./index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog.html" rel="" target="">
+    <a class="nav-link" href="./blog.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../ML_consulting.html" rel="" target="">
+    <a class="nav-link" href="./ML_consulting.html" rel="" target="">
  <span class="menu-text">ML Consulting</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../DL_Course.html" rel="" target="">
+    <a class="nav-link" href="./DL_Course.html" rel="" target="">
  <span class="menu-text">DL Course</span></a>
   </li>  
 </ul>
@@ -131,37 +161,21 @@ ga('send', {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#faq" id="toc-faq" class="nav-link active" data-scroll-target="#faq">FAQ:</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  </ul>
-</nav>
-    </div>
+        
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="python">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="pytorch">pytorch <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Keras LSTMs</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">blog</div>
-  </div>
-  </div>
+<h1 class="title">Programming Tips</h1>
+</div>
 
 
 
 <div class="quarto-title-meta">
 
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">October 20, 2016</p>
-    </div>
-  </div>
   
     
   </div>
@@ -169,32 +183,113 @@ ga('send', {
 
 </header>
 
-<p>Keras has been one of the really powerful Deep Learning libraries that allow you to have a Deep Net running in a few lines of codes. Best part, don’t worry about the math. In the following videos you will find how to implement a popular Recursive Neural Net (RNN) called Long Short Term Memory RNNs (LSTM).</p>
-<p>Note: You could easily replace the LSTM units with Gated Recurrent Units (GRU) with the same function call.</p>
-<p>Source code: https://github.com/sachinruk/PyData_Keras_Talk/blob/master/cosine_LSTM.ipynb</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ywinX5wgdEU" frameborder="0" allowfullscreen="">
-</iframe>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/e1pEIYVOtqc" frameborder="0" allowfullscreen="">
-</iframe>
-<section id="faq" class="level3">
-<h3 class="anchored" data-anchor-id="faq">FAQ:</h3>
-<ol type="1">
-<li>Why do we need a Dense Layer? The output is still one dimensional (y) and therefore the 32 hidden layers need to be projected down to one. Hence the dense layer is used.</li>
-<li>How do you decide number of layers and number of nodes in each layer? Personally for me this is trial and error. Generally larger number of layers (deeper) is better than going wide (more nodes). But I usually limit myself to 5 at most unless there is a truly large dataset (100MB+)</li>
-</ol>
-</section>
-<section id="references" class="level3">
-<h3 class="anchored" data-anchor-id="references">References</h3>
-<ol type="1">
-<li>To understand the maths behind LSTM: http://colah.github.io/posts/2015-08-Understanding-LSTMs/</li>
-<li>For another guide to Keras LSTMs: http://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/</li>
-<li>If you are still confused (try my stackoverflow post): http://stackoverflow.com/questions/38714959/understanding-keras-lstms</li>
-</ol>
 
 
-</section>
 
-</main> <!-- /main -->
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="python" data-listing-date-sort="1672664400000" data-listing-file-modified-sort="1688885830988" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./programming_tips/pydantic-post-init.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./programming_tips/pydantic-post-init.html">
+<h3 class="no-anchor listing-title">
+Pydantic Post Init
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('python'); return false;">
+python
+</div>
+</div>
+<a href="./programming_tips/pydantic-post-init.html">
+<div class="listing-description">
+
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./programming_tips/pydantic-post-init.html">
+<div class="listing-date">
+Jan 3, 2023
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="pytorch" data-listing-date-sort="1672578000000" data-listing-file-modified-sort="1688885779858" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./programming_tips/choosing-timm-model.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./programming_tips/choosing-timm-model.html">
+<h3 class="no-anchor listing-title">
+Timm choosing a model
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('pytorch'); return false;">
+pytorch
+</div>
+</div>
+<a href="./programming_tips/choosing-timm-model.html">
+<div class="listing-description">
+Choosing a backbone for transfer…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./programming_tips/choosing-timm-model.html">
+<div class="listing-date">
+Jan 2, 2023
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="pytorch" data-listing-date-sort="1672491600000" data-listing-file-modified-sort="1688885486575" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./programming_tips/pl-learning-rate-finder.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./programming_tips/pl-learning-rate-finder.html">
+<h3 class="no-anchor listing-title">
+Pytorch Lightning Learning rate finder
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('pytorch'); return false;">
+pytorch
+</div>
+</div>
+<a href="./programming_tips/pl-learning-rate-finder.html">
+<div class="listing-description">
+The following plots the loss against learning rate in order to discover an “optimal” learning rate.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./programming_tips/pl-learning-rate-finder.html">
+<div class="listing-date">
+Jan 1, 2023
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

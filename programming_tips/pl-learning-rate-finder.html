@@ -6,11 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Sachin Abeywardana">
-<meta name="dcterms.date" content="2022-03-20">
-<meta name="description" content="Implementing kmeans with cosine distance">
+<meta name="dcterms.date" content="2023-01-01">
 
-<title>deepschool.ai - KMeans in PyTorch with Cosine Distance🥧🔦</title>
+<title>deepschool.ai - Pytorch Lightning Learning rate finder</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,21 +109,15 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="deepschool.ai - KMeans in PyTorch with Cosine Distance🥧🔦">
-<meta property="og:description" content="Implementing kmeans with cosine distance">
-<meta property="og:image" content="https://sachinruk.github.io/blog/images/pytorch-logo.png">
+<meta property="og:title" content="deepschool.ai - Pytorch Lightning Learning rate finder">
+<meta property="og:description" content="">
 <meta property="og:site-name" content="deepschool.ai">
-<meta name="twitter:title" content="deepschool.ai - KMeans in PyTorch with Cosine Distance🥧🔦">
-<meta name="twitter:description" content="Implementing kmeans with cosine distance">
-<meta name="twitter:image" content="https://sachinruk.github.io/blog/images/pytorch-logo.png">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="deepschool.ai - Pytorch Lightning Learning rate finder">
+<meta name="twitter:description" content="">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed">
@@ -173,48 +165,28 @@ ga('send', {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm">Algorithm</a></li>
-  <li><a href="#shameless-self-promotion" id="toc-shameless-self-promotion" class="nav-link" data-scroll-target="#shameless-self-promotion">Shameless Self Promotion</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">KMeans in PyTorch with Cosine Distance🥧🔦</h1>
+<h1 class="title">Pytorch Lightning Learning rate finder</h1>
   <div class="quarto-categories">
     <div class="quarto-category">pytorch</div>
   </div>
   </div>
 
-<div>
-  <div class="description">
-    Implementing kmeans with cosine distance
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Sachin Abeywardana </p>
-          </div>
-  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 20, 2022</p>
+      <p class="date">January 1, 2023</p>
     </div>
   </div>
   
@@ -224,126 +196,13 @@ ga('send', {
 
 </header>
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Kmeans is one of the easiest and fastest clustering algorithms. Here we tweak the algorithm to cluster vectors with unit length.</p>
-</section>
-<section id="data" class="level2">
-<h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>We randomly generate a million data points with 768 dimensions (usual size in transformer embeddings). And then we normalize all those data points to unit length.</p>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">1000000</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="dv">768</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> F.normalize(torch.randn(N, D), dim<span class="op">=-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="algorithm" class="level2">
-<h2 class="anchored" data-anchor-id="algorithm">Algorithm</h2>
-<p>The following shows our kmeans implementation. The steps are as follows: 1. Choose <code>n_clusters</code> points from our dataset randomly and set them as our initial centroids. 2. Iterate through all datapoints and assign each point to one of the centroids. 3. Recalculate centroids based by averaging datapoints assigned to each cluster. As an additional step to usual kmeans, normalize to unit length. 4. Repeat from step 2, for <code>epochs</code> iterations.</p>
-<p>In order to preserve some memory usage we calculate similarity batch-wise and store simply the largest index (<code>argmax</code>).</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KMeans:</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_clusters, batch_size, epochs):</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_clusters <span class="op">=</span> n_clusters</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.batch_size <span class="op">=</span> batch_size</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.epochs <span class="op">=</span> epochs</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.centers <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.similarities <span class="op">=</span> []</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fit(<span class="va">self</span>, x):</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.centers <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            idx <span class="op">=</span> np.random.choice(<span class="bu">len</span>(x), <span class="va">self</span>.n_clusters, replace<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            centers <span class="op">=</span> x[idx]</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            centers <span class="op">=</span> <span class="va">self</span>.centers</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.epochs):</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            batch_cluster <span class="op">=</span> []</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            similarity_mean <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> tqdm(<span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(x), <span class="va">self</span>.batch_size)):</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                similarity, idx <span class="op">=</span> (x[i:i<span class="op">+</span><span class="va">self</span>.batch_size] <span class="op">@</span> centers.T).<span class="bu">max</span>(dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                similarity_mean <span class="op">+=</span> similarity.<span class="bu">sum</span>()</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                batch_cluster.append(idx)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            x_assigned_cluster <span class="op">=</span> torch.cat(batch_cluster)    </span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            centers <span class="op">=</span> torch.stack(</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                [</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                    F.normalize(x[x_assigned_cluster<span class="op">==</span>i].mean(dim<span class="op">=</span><span class="dv">0</span>), dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_clusters)</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                ]</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.similarities.append(similarity_mean <span class="op">/</span> <span class="bu">len</span>(x))</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.centers <span class="op">=</span> centers</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>                </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(<span class="dv">1000</span>, <span class="dv">64</span>, <span class="dv">10</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>kmeans.fit(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"d515d5521b6a480a95027d5cd539b7da","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"4fd78bc9a5334788a43c2fd27c439cc0","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"122b894234bf4724a3c8a2cf98ef5a62","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"ae99b18e6f2b47b3b3b8aa5b0157e04a","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"86a182998df447c2b581f2fbf6f87967","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"33073429b50c4ac9a07ceb544b413d58","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"e34a1d542d2843a39293301ba8086565","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"4afe508ba0a34d04814469ec62212987","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"edf943a21019458693c923194d6ea0c9","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"f5f0e77aa2ed4caca9cccfbd0f397a35","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-</div>
-<p>You can see the similarities converging below:</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.plot(kmeans.similarities)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="2022-03-20-kmeans_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
-</div>
-</div>
-</section>
-<section id="shameless-self-promotion" class="level2">
-<h2 class="anchored" data-anchor-id="shameless-self-promotion">Shameless Self Promotion</h2>
-<p>If you enjoyed the tutorial <a href="https://www.udemy.com/course/machine-learning-and-data-science-2021/?referralCode=E79228C7436D74315787">buy my course</a> (usually 90% off).</p>
+<p>The following plots the loss against learning rate in order to discover an “optimal” learning rate.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>lr_finder <span class="op">=</span> trainer.tuner.lr_find(lightning_module, train_dataloaders<span class="op">=</span>train_dl)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> lr_finder.plot(suggest<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When all else fails, 1e-3.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

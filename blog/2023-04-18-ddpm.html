@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sachin Abeywardana">
 <meta name="dcterms.date" content="2023-04-18">
-<meta name="description" content="Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)">
+<meta name="description" content="Training MNIST via DDPM">
 
 <title>deepschool.ai - Annotated DDPM</title>
 <style>
@@ -93,7 +93,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -116,13 +117,13 @@ ga('send', {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="deepschool.ai - Annotated DDPM">
-<meta property="og:description" content="Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)">
+<meta property="og:description" content="Training MNIST via DDPM">
 <meta property="og:image" content="https://sachinruk.github.io/images/ddpm_image.png">
 <meta property="og:site-name" content="deepschool.ai">
 <meta property="og:image:height" content="400">
 <meta property="og:image:width" content="400">
 <meta name="twitter:title" content="deepschool.ai - Annotated DDPM">
-<meta name="twitter:description" content="Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)">
+<meta name="twitter:description" content="Training MNIST via DDPM">
 <meta name="twitter:image" content="https://sachinruk.github.io/images/ddpm_image.png">
 <meta name="twitter:image-height" content="400">
 <meta name="twitter:image-width" content="400">
@@ -193,7 +194,6 @@ ga('send', {
   <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training">Training</a></li>
   <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference">Inference</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
-  <li><a href="#acknowledgments-references" id="toc-acknowledgments-references" class="nav-link" data-scroll-target="#acknowledgments-references">Acknowledgments/ References</a></li>
   </ul>
 </nav>
     </div>
@@ -210,7 +210,7 @@ ga('send', {
 
 <div>
   <div class="description">
-    Code and Maths for Denoising Diffusion Probabilistic Models (DDPM)
+    Training MNIST via DDPM
   </div>
 </div>
 
@@ -237,21 +237,25 @@ ga('send', {
 
 </header>
 
-<p><img src="../images/ddpm_image.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/ddpm_image.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Image saying ‘Annotated DDPM’ on black background</figcaption>
+</figure>
+</div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>It took me many hours and weeks to understand DDPM (Denoising Diffusion Probabilistic Models). There were many intricacies in mapping my understanding from the math to code. This blog post is meant to cover both the maths side as well as coding. Hopefully, you will not need to venture outside this blog post. I will however assume familiarity with basic Bayesian methods, pytorch and some <strong>high level</strong> understanding of a UNet.</p>
-<p>Before we get going Kudos to the <a href="https://course.fast.ai/Lessons/lesson19.html">fast.ai</a> explanation of DDPM.</p>
+<p>It took me many hours and weeks to understand DDPM. There were many intracies to understand from the maths to the code. This blog post is meant to cover both the maths side as well as coding. Hopefully, you will not need to venture outside this blog post. I will however assume familiarity with pytorch and some <strong>high level</strong> understanding of a UNet.</p>
+<p>Before we get going Kudos to the <a href="www.course.fast.ai">fast.ai</a> explanation of DDPM.</p>
 <p>I will also ask you to throw away presumptions about stable diffusion. DDPM while being one of the first papers that kicked off this area of Deep Learning does not take in a text input. However, hopefully you might see how to add such conditional information as we walk through this.</p>
-<p>A working code example of this tutorial can be found on <a href="https://www.kaggle.com/code/sachin/ddpm-mnist">kaggle</a>.</p>
 </section>
 <section id="diffusion-models" class="level2">
 <h2 class="anchored" data-anchor-id="diffusion-models">Diffusion Models</h2>
-<p>The whole point of diffusion models is to model the data distribution <span class="math inline">\(p(x)\)</span>. This is done by transforming a Gaussian distribution <strong>iteratively</strong> through a neural network. This is different to GANs in that this transformation happens only once in GANs. Despite the multiple steps, the performance of diffusion models rates significantly higher.</p>
-<p>In this section, we will step through the maths behind diffusion models. If this does not interest you, feel free to jump to the next section.</p>
+<p>The whole point of diffusion models is to model the data distribution <span class="math inline">\(p(x)\)</span>. This is done by transforming a Gaussian distribution <strong>iteratively</strong> through a neural network. This is different to GANs in that this transformation happens only once in GANs. Despite the multiple steps, the performance of diffusion models are significantly higher.</p>
+<p>In this section we will step through the maths behind diffusion models. If this does not interest you, feel free to jump to the next section.</p>
 <p>The rough idea behind diffusion models is the following integral: <span class="math display">\[
 p(x) = \int p_\theta(x|x_1)p_\theta(x_1|x_2)...p_\theta(x_{T-1}|x_T)p(x_T)dx_1...dx_T
-\]</span> The variables <span class="math inline">\(x_1,...,x_T\)</span> are latent (hidden) variables. In the final inference step, we throw away these variables.</p>
+\]</span> The variables <span class="math inline">\(x_1,...,x_T\)</span> are latent (hidden) variables. In the final inference we throw away these variables.</p>
 <p>In order to make this problem tractable we noise our input via a Gaussian distribution <span class="math inline">\(q(x_t|x_{t-1})=\mathcal{N}(\sqrt{\alpha_t}x_{t-1}, (1-\alpha_t)\mathbf{I})\)</span>. These alpha values are varied between 0 and 1. As alpha is close to zero <span class="math inline">\(q\)</span> is close to the standard normal while, at 1 it is close to being deterministically equal to the previous x timestep. The following diagram below shows how adding Gaussian noise moves you closer to a standard normal distribution on the right. <img src="https://i.imgur.com/6xu0ii6.png" class="img-fluid" alt="Image of non-gaussian distribution being transformed iteratively to Gaussian"></p>
 <p><em>Source: <a href="https://cvpr2022-tutorial-diffusion-models.github.io/">Nvidia tutorial</a>.</em></p>
 <p>So how do these q values come into play? Lucky for us, we can manipulate the above equation as following: <span class="math display">\[
@@ -260,7 +264,7 @@ p(x) = \int p_\theta(x|x_1)p_\theta(x_1|x_2)...p_\theta(x_{T-1}|x_T)p(x_T)dx_1..
 \log p(x) &amp;= \log \int p_\theta(x|x_1)p_\theta(x_1|x_2)...p_\theta(x_{T-1}|x_T)\frac{q(x_1|x)q(x_2|x_1)...q(x_T|x_{T-1})}{q(x_1|x)q(x_2|x_1)...q(x_T|x_{T-1})}dx_1...dx_T \\
 \log p(x) &amp;\ge E_{q(x_{1:T}|x_0)}\left[\log \frac{p_\theta(x_{0:T})}{q(x_{1:T}|x_0)}\right]
 \end{align}
-\]</span> Where the last inequality came into play due to <a href="https://en.wikipedia.org/wiki/Jensen%27s_inequality">Jensen’s inequality</a>. Note in the second equation that <span class="math inline">\(p_\theta(x_1|x_2)\)</span> is in the reverse direction while <span class="math inline">\(q(x_2|x_1)\)</span> is in the forward direction. We solve the reverse process by maximising the lower bound with respect to <span class="math inline">\(\theta\)</span>. This lower bound is commonly known as the Evidence Lower Bound (ELBO).</p>
+\]</span> Where the last inequality came into play due to <a href="https://en.wikipedia.org/wiki/Jensen%27s_inequality">Jensen’s inequality</a>. Note in the second equation that <span class="math inline">\(p_\theta(x_1|x_2)\)</span> is in the reverse direction while <span class="math inline">\(q(x_2|x_1)\)</span> is in the forward direction. We solve the reverse process by maximising the lower bound with respect to <span class="math inline">\(\theta\)</span>. This lower bound is commonly known as the Evidence Lower BOund (ELBO).</p>
 <p>In order for us to make the lower bound tractable we need a few more identities. <span class="math display">\[
 q(x_t|x_{t-1}, x_0) = \frac{q(x_{t-1}|x_t, x_0)q(x_t|x_0)}{q(x_{t-1}|x_0)}
 \]</span> In order to get <span class="math inline">\(q(x_t|x_0)\)</span> given the equation <span class="math inline">\(q(x_t|x_{t-1})=\mathcal{N}(\sqrt{\alpha_t}x_{t-1}, (1-\alpha_t)\mathbf{I})\)</span>, we could iteratively integrate out <span class="math inline">\(x_{t-1}...x_0\)</span> which leads us to the following identity. <span class="math display">\[
@@ -277,8 +281,8 @@ q(x_{t-1}|x_t, x_0) &amp;= \mathcal{N}(\mu_q(x_t, x_0), \sigma_q(t) \mathbf{I})\
 \log p(x) \ge &amp; E_{q(x_{1:T}|x_0)}\left[\log\frac{p(x_T)p_\theta(x_0|x_1)}{q(x_1|x_0)} + \log \prod_{t=2}^T \frac{p_\theta(x_{t-1}|x_0)}{\frac{q(x_{t-1}|x_t, x_0)q(x_t|x_0)}{q(x_{t-1}|x_0)}}\right]\\
 \ge &amp; E_{q(x_{1}|x_0)}(\log p_\theta(x_0|x_1)) - \mathcal{D}_{KL}(q(x_T|x_0)|| p(x_T)) - \sum_{t=2}^TE_{q(x_{t}|x_0)}\left(\mathcal{D}_{KL}(q(x_{t-1}|x_t, x_0)||p_\theta(x_{t-1}|x_t))\right)
 \end{align}
-\]</span> The middle term of the above has no relation to <span class="math inline">\(\theta\)</span> and therefore can be ignored.</p>
-<p>I understand that I might have skipped quite a few steps in deriving the above. If you wish to see the full expansion you can see that in <a href="https://arxiv.org/pdf/2208.11970.pdf">page 9 of this paper</a>.</p>
+\]</span></p>
+<p>I understand that I might have skipped quite a few steps in deriving the above. If you wish to see the full expansion you can see that in <a href="https://arxiv.org/pdf/2208.11970.pdf">page 9 of this paper</a>. The middle term of the above has no relation to <span class="math inline">\(\theta\)</span> and therefore can be ignored.</p>
 </section>
 <section id="practical-considerations-of-solving-elbo" class="level2">
 <h2 class="anchored" data-anchor-id="practical-considerations-of-solving-elbo">Practical Considerations of Solving ELBO</h2>
@@ -286,7 +290,7 @@ q(x_{t-1}|x_t, x_0) &amp;= \mathcal{N}(\mu_q(x_t, x_0), \sigma_q(t) \mathbf{I})\
 p_\theta(x_{t-1}|x_t) = \mathcal{N}(\mu_\theta(x_t, t), \sigma_q(t)\mathbf{I})
 \]</span> where <span class="math inline">\(\mu_\theta\)</span> is a neural network that transforms <span class="math inline">\(x_t\)</span> and we set the variance to be equal to that of <span class="math inline">\(q(x_{t-1}|x_t, x_0)\)</span>. Note that even if <span class="math inline">\(x_t\)</span> was Gaussian <span class="math inline">\(p_\theta(x_{t-1})\)</span> is not Gaussian. This is because <span class="math inline">\(\mu_\theta\)</span> transforms the distribution.</p>
 <p>In the ELBO term above, for the expectation terms we simply take a monte-carlo estimate (one sample of the distribution) since the expectations are intractable. This does not detract from estimating <span class="math inline">\(p_\theta\)</span> since we are doing <em>stochastic</em> gradient descent, and also due to the fact that these single sample estimates are unbiased.</p>
-<p>For the second term, <span class="math inline">\(q(x_T|x_0)\)</span> is far enough from the original distribution that it is safe to assume that it is a standard normal distribution, and <span class="math inline">\(p(x_T)\)</span> is a standard normal by definition. Regardless, this term does not depend on <span class="math inline">\(\theta\)</span> and therefore can be discarded.</p>
+<p>For the second term, <span class="math inline">\(q(x_T|x_0)\)</span> is far enough from the original distribution that it is safe to assume that it is a standard normal distribution, and <span class="math inline">\(p(x_T)\)</span> is a standard normal by definition. Regardless, this term does not depend on <span class="math inline">\(\theta\)</span> therefore can be discarded.</p>
 <p>The final term is the most important term and works out to optimising <span class="math inline">\(\theta\)</span> over the following: <span class="math display">\[
 \argmin_\theta\frac{1}{2\sigma_q^2(t)}||\mu_q(x_t, x_0) - \mu_\theta ||_2^2
 \]</span> While we could use this loss to optimise, we will refactor further to achieve a similar yet emperically more powerful term. We can reuse <span class="math inline">\(q(x_t|x_0)\)</span> to state that, <span class="math display">\[
@@ -335,13 +339,13 @@ x_0 = \frac{x_t - \sqrt{1-\bar{\alpha}_t}\epsilon_0}{\sqrt{\bar{\alpha}_t}}
 </section>
 <section id="denoising-model" class="level2">
 <h2 class="anchored" data-anchor-id="denoising-model">Denoising Model</h2>
-<p>When speaking of the denoising model, the term UNet gets thrown around frequently. However, it is worth noting that there are only two requirements of this model, 1. The model takes in the inputs, <span class="math inline">\(x_t\)</span> (the noised image), as well as the time step <span class="math inline">\(t\)</span>. 2. The size of the output has to be the same as <span class="math inline">\(x_t\)</span>. It is because of the latter requirement that UNets are commonly used. However, as long as you can project the final dimension size back to the same as the input dimension, there is no definite requirement for UNets alone.</p>
+<p>When speaking of the denoising model, the term UNet gets thrown around alot. However, it is worth noting that there are only two requirements of this model, 1. The model takes in the inputs, <span class="math inline">\(x_t\)</span>, the noised image as well as time step <span class="math inline">\(t\)</span>. 2. The size of the output has to be the same as <span class="math inline">\(x_t\)</span>. It is because of the latter requirement that UNets are commonly used. However, as long as you can project the final dimension back to the same as the input dimension, there is no definite requirement for UNets alone.</p>
 <p>In the following we will focus on 1. How to add time information to a ConvNet via <code>ResNetWithTimeEmbed</code>. 2. The UNet architecture. Especially focusing on hooks.</p>
 <section id="injecting-time-information-to-a-convolutional-network" class="level3">
 <h3 class="anchored" data-anchor-id="injecting-time-information-to-a-convolutional-network">Injecting time Information to a Convolutional Network</h3>
 <p>As we denoise our images (or rather estimate the original noise to be more specific), we require an input of the time-step. This allows the network to know the scale of the noise, while also knowing how far it is from the original image. The fact that we vary noise via the Noise Scheduler makes this information even more valuable.</p>
-<p>In the following I have used a linear layer to project the time step to a higher dimension. The logic being that there ought to be a relationship between time step <code>t</code> and <code>t+1</code>. However, it is also common to simply use an embedding layer here. The dimensionality is the same as the final channel in the last convolutional layer.</p>
-<p>Finally, we repeat this over the width and height dimensions before adding onto <code>x</code>. <code>x</code> in this case could be the original image or one of the intermediate noised images.</p>
+<p>In the following I have use a linear layer to project the time step to a higher dimension. The logic being that there ought to be a relationship between time step <code>t</code> and <code>t+1</code>. However, it is also common to simply use an embedding layer here. The dimensionality is the same as the final channel in the last convolutional layer.</p>
+<p>Finally, we repeat this over the width and height dimensions before adding onto <code>x</code>. <code>x</code> in this case could be the original image or one of the intermediate steps through the UNet.</p>
 <p>For brevity, we will skip the explanation of <code>ResNetBlock</code> in the following as it could simply be a convolutional network.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ResNetWithTimeEmbed(nn.Module):</span>
@@ -362,7 +366,16 @@ x_0 = \frac{x_t - \sqrt{1-\bar{\alpha}_t}\epsilon_0}{\sqrt{\bar{\alpha}_t}}
 </section>
 <section id="the-unet-architecture" class="level3">
 <h3 class="anchored" data-anchor-id="the-unet-architecture">The UNet architecture</h3>
-<p>UNet contains a downscaling architecture followed by upscaling. Both architectures contain <code>ResNetWithTimeEmbed</code> components as discussed above.</p>
+<p>UNet contains a downscaling architecture followed by upscaling. Both architectures contain <code>ResNetWithTimeEmbed</code> components as dicussed above.</p>
+<p><code>Down</code> uses <code>nn.MaxPool2d(2)</code> to get the maximum value in a 2x2 region to downscale while, <code>Up</code> uses <code>nn.Upsample</code> to expand the width and height by a factor of 2. The latter takes a linear interpolation method to quadruple the number of pixels. Both methods are preceded by a <code>ResNetWithTimeEmbed</code> which does not change the height or width, but does increase/ decrese the number of channels.</p>
+<p>While it was possible to simply do <code>self.up(self.down(x, t), t)</code>, it made a significant difference to the loss function (which was previously struggling) to include cross connections. Cross connections are depicted by the grey horizontal arrows below. The loss runs where it was &gt;0.6 were all when the model did not have those cross connections.</p>
+<p float="left">
+<img src="https://i.imgur.com/gLJQury.png" alt="Diagram of a UNet" width="45%"> <img src="https://i.imgur.com/jFs0OPg.png" alt="W+B Loss chart over many runs" width="45%">
+</p>
+<p>In order to get these cross connections we use this nifty feature called <code>forward_hooks</code>. Any submodule within a model can <code>register_forward_hook</code>s. It has three inputs into it, 1. The module itself, 2. The current input(s) into the model 3. The output(s).</p>
+<p>Firstly, we save the outputs of the <code>Down</code> modules into the buffer named <code>self.down_outputs</code>. Note how we only do this to the <code>conv_layers</code> of the <code>Down</code> class and does not include the down-sampling maxpool operation.</p>
+<p>The next step is to add these values in the buffer to the layers of the <code>Up</code> module. This is done again by the forward hook using this function: <code>lambda module, input, output: output + self.down_outputs.pop(-1)</code>. This function pops out the last layer of the buffer, but more importantly, it modifies the output. Note how this hook is registered to the <code>self.up.up</code> module. Despite not having submodules like the above <code>self.conv_layers</code>, this hook fires every time <code>self.up.up</code> is called.</p>
+<p>It is also worth noting that there was a bit of trial and error for me to figure out where to place the hooks so that the shapes match up. I also had to resize the inputs to be of size 32x32 so that the down/up-scaling did not affect the width and height required for this addition operation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Down(nn.Module):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, layers: List[<span class="bu">int</span>]):</span>
@@ -405,20 +418,11 @@ x_0 = \frac{x_t - \sqrt{1-\bar{\alpha}_t}\epsilon_0}{\sqrt{\bar{\alpha}_t}}
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x, t):</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.up(<span class="va">self</span>.down(x, t), t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>Down</code> uses <code>nn.MaxPool2d(2)</code> to get the maximum value in a 2x2 region to downscale while, <code>Up</code> uses <code>nn.Upsample</code> to expand the width and height by a factor of 2. The latter takes a linear interpolation method to quadruple the number of pixels. Both methods are preceded by a <code>ResNetWithTimeEmbed</code> which does not change the height or width, but does increase/ decrese the number of channels.</p>
-<p>While it was possible to simply do <code>self.up(self.down(x, t), t)</code>, it made a significant difference to the loss function (which was previously struggling) to include cross-connections. Cross connections are depicted by the grey horizontal arrows below. The loss runs where it was &gt;0.6 were all when the model did not have those cross-connections.</p>
-<p float="left">
-<img src="https://i.imgur.com/gLJQury.png" alt="Diagram of a UNet" width="45%"> <img src="https://i.imgur.com/jFs0OPg.png" alt="W+B Loss chart over many runs" width="45%">
-</p>
-<p>In order to get these cross connections we use this nifty feature called <code>forward_hooks</code>. Any submodule within a model can <code>register_forward_hook</code>s. It has three inputs into it, 1. The module itself, 2. The current input(s) into the model 3. The output(s).</p>
-<p>Firstly, we save the outputs of the <code>Down</code> modules into the buffer named <code>self.down_outputs</code>. Note how we only do this to the <code>conv_layers</code> of the <code>Down</code> class and does not include the down-sampling maxpool operation.</p>
-<p>The next step is to add these values in the buffer to the layers of the <code>Up</code> module. This is done again by the forward hook using this function: <code>lambda module, input, output: output + self.down_outputs.pop(-1)</code>. This function pops out the last layer of the buffer, but more importantly, it modifies the output. Note how this hook is registered to the <code>self.up.up</code> module. Despite not having submodules like the above <code>self.conv_layers</code>, this hook fires every time <code>self.up.up</code> is called.</p>
-<p>It is also worth noting that there was a bit of trial and error for me to figure out where to place the hooks so that the shapes match up. I also had to resize the inputs to be of size 32x32 so that the down/up-scaling did not affect the width and height required for this addition operation.</p>
 </section>
 </section>
 <section id="training" class="level2">
 <h2 class="anchored" data-anchor-id="training">Training</h2>
-<p>The training loop is as shown below. The most important thing to note here is how the loss is estimated. Firstly, note that we only take a batch size of time-steps instead of the full possible 1000 steps. This is depite the original loss function requiring you to sum over all timesteps. However, we can think of this is as a noisy estimate which is scaled down by a factor of <span class="math inline">\(\frac{bs}{T}\)</span>. Furthermore, the KL-divergence term is also over the expectation under <span class="math inline">\(q(x_t|x_0)\)</span>. The expectation again is also ignored and only a single sample of <span class="math inline">\(x_t\)</span> is taken for each <span class="math inline">\(x_0\)</span>. This is called taking a monte-carlo estimate in literature, and gives us a noisy estimate of the expectation.</p>
+<p>The training loop is as shown below. The most important thing to note here is how the loss is estimated. Firstly, note that we only take a batch size of time-steps instead of the full possible 1000 steps. This is depite the original loss function requiring you to sum over all timesteps. However, we can think of this is as a noisy estimate which is scaled down by a factor of <span class="math inline">\(\frac{bs}{T}\)</span>. Furthermore, the KL-divergence term is also over the expectation under <span class="math inline">\(q(x_t|x_0)\)</span>. This is also ignored and only a single sample of <span class="math inline">\(x_t\)</span> is taken for each <span class="math inline">\(x_0\)</span>. This is called taking a monte-carlo estimate in literature, and gives us a noisy estimate of the expectation.</p>
 <p>Despite these approximations, our model manages to learn a good denoiser as shown in the results section. This is due to the fact that we are optimising over many iterations to optimise over <span class="math inline">\(\theta\)</span>. The noisy estimates ends up being of little to no consequence.</p>
 <p>I do also wish to point out that I used gradient clipping. I am fairly convinced that everyone should use this no matter what problem you are tackling using Deep Learning. It made my training significantly smoother.</p>
 <div class="cell">
@@ -444,7 +448,7 @@ x_0 = \frac{x_t - \sqrt{1-\bar{\alpha}_t}\epsilon_0}{\sqrt{\bar{\alpha}_t}}
 </section>
 <section id="inference" class="level2">
 <h2 class="anchored" data-anchor-id="inference">Inference</h2>
-<p>Unfortunately, inference is costly under DDPM taking a 1000 iterations of the model denoising to reach the final state. The number of steps required to denoise are continuously becoming less and less with some of the latest papers.</p>
+<p>Unfortunately, inference is costly under DDPM taking a 1000 iterations of the model denoising to reach the final state. The number of steps are continuously becoming less and less with some of the latest papers requiring just 4 iterations.</p>
 <p>In this case we repeatedly use the distribution <span class="math inline">\(p_\theta(x_{t-1}|x_t) = \mathcal{N}(\mu_\theta(x_t, t), \sigma_q(t)\mathbf{I})\)</span> until we get to <span class="math inline">\(x_0\)</span>. Note also how we actually add more noise during the denoising process. <span class="math inline">\(\sigma_t\)</span> does however get smaller the closer we are to <span class="math inline">\(x_0\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_denoised_images_ddpm(</span>
@@ -470,17 +474,6 @@ x_0 = \frac{x_t - \sqrt{1-\bar{\alpha}_t}\epsilon_0}{\sqrt{\bar{\alpha}_t}}
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>The following shows results of where some of the intermediate steps were also saved. <img src="https://i.imgur.com/qUXpV2d.png" class="img-fluid" alt="Fashion MNIST DDPM Results 1"></p>
-</section>
-<section id="acknowledgments-references" class="level2">
-<h2 class="anchored" data-anchor-id="acknowledgments-references">Acknowledgments/ References</h2>
-<p>If this blog is still leaving you with questions, I would personally recommend the following 3 resources (in order of awesomeness):</p>
-<ol type="1">
-<li><a href="https://course.fast.ai/Lessons/lesson19.html">Fast.ai course page</a></li>
-<li>For a deep dive into the maths read <a href="https://arxiv.org/pdf/2208.11970.pdf">this paper</a>.</li>
-<li><a href="https://www.youtube.com/watch?v=cS6JQpEY9cs&amp;ab_channel=ArashVahdat">YouTube tutorial</a> by Nvidia.</li>
-<li>The actual <a href="https://arxiv.org/pdf/2006.11239.pdf">DDPM paper</a>.</li>
-</ol>
-<p>I also want to thank <a href="https://www.linkedin.com/in/bpale/">Ben Alexander</a> for helping me untie some of the ugly knots in my understanding of Diffusion Models.</p>
 
 
 </section>
