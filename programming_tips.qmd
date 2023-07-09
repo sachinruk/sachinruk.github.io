@@ -1,0 +1,8 @@
+---
+title: "Programming Tips"
+listing:
+  contents: programming_tips
+  sort: "date desc"
+  type: default
+  categories: true
+---
