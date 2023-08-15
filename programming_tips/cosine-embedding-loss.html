@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2023-08-15">
 
-<title>deepschool.ai - Programming Tips</title>
+<title>deepschool.ai - Thoughts on CosineEmbeddingLoss</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +24,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./images/favicon_logo.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../images/favicon_logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -62,35 +61,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
 <script type="text/javascript">
 
@@ -109,10 +79,12 @@ ga('send', {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="deepschool.ai - Programming Tips">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="deepschool.ai - Thoughts on CosineEmbeddingLoss">
+<meta property="og:description" content="">
 <meta property="og:site-name" content="deepschool.ai">
-<meta name="twitter:title" content="deepschool.ai - Programming Tips">
+<meta name="twitter:title" content="deepschool.ai - Thoughts on CosineEmbeddingLoss">
+<meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -123,7 +95,7 @@ ga('send', {
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">deepschool.ai</span>
     </a>
   </div>
@@ -134,23 +106,23 @@ ga('send', {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
+    <a class="nav-link" href="../index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog.html" rel="" target="">
+    <a class="nav-link" href="../blog.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./programming_tips.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="../programming_tips.html" rel="" target="">
  <span class="menu-text">Programming Tips</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ML_consulting.html" rel="" target="">
+    <a class="nav-link" href="../ML_consulting.html" rel="" target="">
  <span class="menu-text">ML Consulting</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./DL_Course.html" rel="" target="">
+    <a class="nav-link" href="../DL_Course.html" rel="" target="">
  <span class="menu-text">DL Course</span></a>
   </li>  
 </ul>
@@ -166,20 +138,29 @@ ga('send', {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="python">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="pytorch">pytorch <span class="quarto-category-count">(3)</span></div></div></div>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Programming Tips</h1>
-</div>
+<h1 class="title">Thoughts on CosineEmbeddingLoss</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">pytorch</div>
+  </div>
+  </div>
 
 
 
 <div class="quarto-title-meta">
 
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 15, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -187,145 +168,19 @@ ga('send', {
 
 </header>
 
+<p>$$</p>
+(x, y) =
+<span class="math display">\[\begin{cases}
+1 - \cos(x_1, x_2) &amp; \text{if } y = 1 \\
+\max(0, \cos(x_1, x_2) - \text{margin}) &amp; \text{if } y = -1
+\end{cases}\]</span>
+<p>$$</p>
+<p><a href="https://pytorch.org/docs/stable/generated/torch.nn.CosineEmbeddingLoss.html">nn.CosineEmbeddingLoss</a> needs 3 arguments, the predicted embedding (<span class="math inline">\(x_1\)</span>), label embedding (<span class="math inline">\(x_2\)</span>) as well as a label (<span class="math inline">\(y\)</span>) indicating that we need to move these embeddings closer (<span class="math inline">\(y = 1\)</span>) and further if not (<span class="math inline">\(y = 0\)</span>).</p>
+<p>The distance between two points (<span class="math inline">\(1 - \cos(x_1, x_2)\)</span>) is minimised, while in the <span class="math inline">\(y = 0\)</span> case, the similarity <span class="math inline">\(\cos(x_1, x_2)\)</span> is minimised. However, if the similarity is lower than a certain margin (defaulting to 0.5) nothing happens. This is due to the clipping that happens with the <code>max</code> function. This causes these examples to have zero gradient.</p>
 
 
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="pytorch" data-listing-date-sort="1692021600000" data-listing-file-modified-sort="1692079945605" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./programming_tips/cosine-embedding-loss.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./programming_tips/cosine-embedding-loss.html">
-<h3 class="no-anchor listing-title">
-Thoughts on CosineEmbeddingLoss
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('pytorch'); return false;">
-pytorch
-</div>
-</div>
-<a href="./programming_tips/cosine-embedding-loss.html">
-<div class="listing-description">
-$
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./programming_tips/cosine-embedding-loss.html">
-<div class="listing-date">
-Aug 15, 2023
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="python" data-listing-date-sort="1672664400000" data-listing-file-modified-sort="1688885830988" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./programming_tips/pydantic-post-init.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./programming_tips/pydantic-post-init.html">
-<h3 class="no-anchor listing-title">
-Pydantic Post Init
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('python'); return false;">
-python
-</div>
-</div>
-<a href="./programming_tips/pydantic-post-init.html">
-<div class="listing-description">
-
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./programming_tips/pydantic-post-init.html">
-<div class="listing-date">
-Jan 3, 2023
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="pytorch" data-listing-date-sort="1672578000000" data-listing-file-modified-sort="1688885779858" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./programming_tips/choosing-timm-model.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./programming_tips/choosing-timm-model.html">
-<h3 class="no-anchor listing-title">
-Timm choosing a model
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('pytorch'); return false;">
-pytorch
-</div>
-</div>
-<a href="./programming_tips/choosing-timm-model.html">
-<div class="listing-description">
-Choosing a backbone for transfer…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./programming_tips/choosing-timm-model.html">
-<div class="listing-date">
-Jan 2, 2023
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="pytorch" data-listing-date-sort="1672491600000" data-listing-file-modified-sort="1688885486575" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./programming_tips/pl-learning-rate-finder.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./programming_tips/pl-learning-rate-finder.html">
-<h3 class="no-anchor listing-title">
-Pytorch Lightning Learning rate finder
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('pytorch'); return false;">
-pytorch
-</div>
-</div>
-<a href="./programming_tips/pl-learning-rate-finder.html">
-<div class="listing-description">
-The following plots the loss against learning rate in order to discover an “optimal” learning rate.
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./programming_tips/pl-learning-rate-finder.html">
-<div class="listing-date">
-Jan 1, 2023
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

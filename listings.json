@@ -38,6 +38,7 @@
   {
     "listing": "/programming_tips.html",
     "items": [
+      "/programming_tips/cosine-embedding-loss.html",
       "/programming_tips/pydantic-post-init.html",
       "/programming_tips/choosing-timm-model.html",
       "/programming_tips/pl-learning-rate-finder.html"
