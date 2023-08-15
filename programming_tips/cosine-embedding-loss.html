@@ -168,13 +168,15 @@ ga('send', {
 
 </header>
 
-<p>$$</p>
-(x, y) =
-<span class="math display">\[\begin{cases}
+<p><span class="math display">\[
+\begin{align}
+\text{loss}(x, y) =
+\begin{cases}
 1 - \cos(x_1, x_2) &amp; \text{if } y = 1 \\
 \max(0, \cos(x_1, x_2) - \text{margin}) &amp; \text{if } y = -1
-\end{cases}\]</span>
-<p>$$</p>
+\end{cases}
+\end{align}
+\]</span></p>
 <p><a href="https://pytorch.org/docs/stable/generated/torch.nn.CosineEmbeddingLoss.html">nn.CosineEmbeddingLoss</a> needs 3 arguments, the predicted embedding (<span class="math inline">\(x_1\)</span>), label embedding (<span class="math inline">\(x_2\)</span>) as well as a label (<span class="math inline">\(y\)</span>) indicating that we need to move these embeddings closer (<span class="math inline">\(y = 1\)</span>) and further if not (<span class="math inline">\(y = 0\)</span>).</p>
 <p>The distance between two points (<span class="math inline">\(1 - \cos(x_1, x_2)\)</span>) is minimised, while in the <span class="math inline">\(y = 0\)</span> case, the similarity <span class="math inline">\(\cos(x_1, x_2)\)</span> is minimised. However, if the similarity is lower than a certain margin (defaulting to 0.5) nothing happens. This is due to the clipping that happens with the <code>max</code> function. This causes these examples to have zero gradient.</p>
 
