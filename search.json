@@ -25,7 +25,7 @@
     "href": "programming_tips/pydantic-post-init.html",
     "title": "Pydantic Post Init",
     "section": "",
-    "text": "import pydantic\n\nclass HyperParameters(pydantic.BaseModel):\n    batch_size: int = 32\n\n    @property\n    def upload_batch_counts(self):\n        return 1_000_000 // self.batch_size\n\n    class Config: # will not allow undefined fields\n        extra = pydantic.Extra.forbid"
+    "text": "import pydantic\n\nclass HyperParameters(pydantic.BaseModel):\n    batch_size: int = 32\n\n    @property\n    def upload_batch_counts(self):\n        return 1_000_000 // self.batch_size\n\n    class Config: # will not allow undefined fields\n        extra = pydantic.Extra.forbid\nIf you want to update an existing property, you can do this:\nclass User(BaseModel):\n    name: str\n    age: int\n\n    def __init__(self, **data):\n        if data.get(\"name\") == \"Charlie\":\n            data[\"age\"] = data.get(\"age\", 0) + 30  # increment age by 30 if name is \"Charlie\"\n        super().__init__(**data)"
   },
   {
     "objectID": "blog/2016-10-16-Quantile-Regression.html",
