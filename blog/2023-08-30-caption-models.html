@@ -177,7 +177,9 @@ ga('send', {
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#pretrained-models" id="toc-pretrained-models" class="nav-link" data-scroll-target="#pretrained-models">Pretrained Models</a></li>
+  <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training">Training</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -264,8 +266,40 @@ ga('send', {
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="training" class="level2">
+<h2 class="anchored" data-anchor-id="training">Training</h2>
+<p>There are a few compulsory things to do when training, but also a few tricks that I used, but I am not sure if they helped. I will go through them all. - We need to prepend a starting token to the decoder input ids. This is because we want to predict the next token and we need a starting token to do so. This also means prepending a 1 to the decoder attention mask. - The loss function is there to predict the next token. This means if we have the caption “A dog is running” we want to predict “dog” when we see “A”. Therefore, we need to shift the decoder input ids by one. This means that the input token ids are the the same as the output token ids, but shifted by one. <code>loss_fn</code> is simply <code>nn.CrossEntropyLoss()</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_loss_fn(loss_fn, logits: torch.Tensor, labels: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    shift_logits <span class="op">=</span> logits[:, :<span class="op">-</span><span class="dv">1</span>, :].contiguous() <span class="co"># (batch_size, seq_len - 1, dim)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    shift_labels <span class="op">=</span> labels[:, <span class="dv">1</span>:].contiguous() <span class="co"># (batch_size, seq_len - 1)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss_fn(shift_logits.view(<span class="op">-</span><span class="dv">1</span>, shift_logits.size(<span class="op">-</span><span class="dv">1</span>)), shift_labels.view(<span class="op">-</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Keep in mind that the <code>projector</code> in the above model is the only part that is untrained. Usually, we would freeze the pretrained models, however, in my experiments I found that it was better to train the entire model. I do not however train any of the token embeddings. This is due to the fact that in the COCO dataset I only see a limited number of tokens. Therefore, I do not want to train the embeddings to overfit to the COCO dataset. If you look at the <a href="https://www.kaggle.com/code/sachin/flan-t5-captions#Training">LightningModule</a> you can see (in <code>__init__</code>) how I leave it as an option to freeze the image encoder and the LLM.</li>
+<li>Finally, in <code>configure_optimizers</code> I set the learning rate of the LLM to be a quarter of the projection layer, and the image model to be a half of the projection layer. This is because of my assumption that the LLM has seen far more training data than an image model, and I do not want to lose that information. Oh, and I have made it a habit to use <code>OneCycleLR</code> scheduler. I find it more effective than a using an optimizer on its own.</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> configure_optimizers(<span class="va">self</span>) <span class="op">-&gt;</span> torch.optim.Optimizer:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> [</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.language_model.decoder.block.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr <span class="op">/</span> <span class="dv">4</span>},</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.language_model.decoder.final_layer_norm.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr <span class="op">/</span> <span class="dv">4</span>},</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.image_model.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr <span class="op">/</span> <span class="dv">2</span>},</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.projector.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr},</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        optimizer <span class="op">=</span> torch.optim.Adam(params)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        scheduler <span class="op">=</span> torch.optim.lr_scheduler.OneCycleLR(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            optimizer,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            max_lr<span class="op">=</span>[param_group[<span class="st">"lr"</span>] <span class="cf">for</span> param_group <span class="kw">in</span> optimizer.param_groups],</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            total_steps<span class="op">=</span><span class="va">self</span>.trainer.estimated_stepping_batches,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [optimizer], [scheduler]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>In the following results 2nd and 5th row is correct. The second to last is a complete miss. This was when we had 5 lienar laters in the projection layer. <img src="https://i.imgur.com/ipebOyr.png" class="img-fluid"></p>
+<p>When I increased the linear layers to 12 the validation loss improves (as expected). The 3rd, 4th and 5th are correct. The first row is a complete miss talking about tennis. This is perhaps due to the model overfitting as there seems to be quite a few tennis images in the COCO dataset. <img src="https://i.imgur.com/gOMOedU.png" class="img-fluid"></p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This model will clearly not be winning any awards, but none the less it was a fun experiment. I hope you learnt something new. If you have any questions or comments please leave them below.</p>
 
 
 </section>
