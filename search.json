@@ -53,7 +53,7 @@
     "href": "blog/2023-08-30-caption-models.html#results",
     "title": "Creating a Caption Model from Scratch",
     "section": "Results",
-    "text": "Results\nIn the following results 2nd and 5th row is correct. The second to last is a complete miss. This was when we had 5 lienar laters in the projection layer. \nWhen I increased the linear layers to 12 the validation loss improves (as expected). The 3rd, 4th and 5th are correct. The first row is a complete miss talking about tennis. This is perhaps due to the model overfitting as there seems to be quite a few tennis images in the COCO dataset."
+    "text": "Results\nLet’s take a look at the results of our captioning model. In the first set of results, the second and fifth captions are correct, but the second to last caption is a complete miss. This was when we had only five linear layers in the projection layer. \nWhen we increased the number of linear layers to 12, the validation loss improved (as expected). In the second set of results, the third, fourth, and fifth captions are correct, but the first caption is a complete miss, talking about tennis. This is likely due to the model overfitting, as there are quite a few tennis images in the COCO dataset."
   },
   {
     "objectID": "blog/2023-08-30-caption-models.html#conclusion",
