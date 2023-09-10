@@ -179,6 +179,7 @@ ga('send', {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#pretrained-models" id="toc-pretrained-models" class="nav-link" data-scroll-target="#pretrained-models">Pretrained Models</a></li>
   <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training">Training</a></li>
+  <li><a href="#update-10092023-training-with-resetting-cross-attention-layers" id="toc-update-10092023-training-with-resetting-cross-attention-layers" class="nav-link" data-scroll-target="#update-10092023-training-with-resetting-cross-attention-layers">Update (10/09/2023): Training with resetting cross attention layers</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
@@ -292,11 +293,23 @@ ga('send', {
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            total_steps<span class="op">=</span><span class="va">self</span>.trainer.estimated_stepping_batches,</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [optimizer], [scheduler]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The updated results are also show below.</p>
+</section>
+<section id="update-10092023-training-with-resetting-cross-attention-layers" class="level2">
+<h2 class="anchored" data-anchor-id="update-10092023-training-with-resetting-cross-attention-layers">Update (10/09/2023): Training with resetting cross attention layers</h2>
+<p>I recently realised that I was training the whole decoder with the same learning rate. However, the cross attention layers relies on the fact that the incoming signals ought to be from a language model which it is not. Therefore, I reset all the weights in all cross attention layers (<code>EncoderDecoderLayer</code>) instead of keeping the pretrained weights. This is done as shown below:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> block <span class="kw">in</span> <span class="va">self</span>.model.language_model.decoder.block:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    cross_attention_layer <span class="op">=</span> block.layer[<span class="dv">1</span>].EncDecAttention</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.q.weight)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.k.weight)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.v.weight)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.o.weight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>Let’s take a look at the results of our captioning model. In the first set of results, the second and fifth captions are correct, but the second to last caption is a complete miss. This was when we had only five linear layers in the projection layer. <img src="https://i.imgur.com/ipebOyr.png" class="img-fluid"></p>
 <p>When we increased the number of linear layers to 12, the validation loss improved (as expected). In the second set of results, the third, fourth, and fifth captions are correct, but the first caption is a complete miss, talking about tennis. This is likely due to the model overfitting, as there are quite a few tennis images in the COCO dataset. <img src="https://i.imgur.com/gOMOedU.png" class="img-fluid"></p>
+<p>Update (10/09/2023): The following results are from when the cross attention layer weights were reset. Again while not perfect, seems to work better than the two models demonstrated above. <img src="https://i.imgur.com/bzUHnp6.png" class="img-fluid"></p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
