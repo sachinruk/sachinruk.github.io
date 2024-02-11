@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/blog/2024-02-11-DDPM-to-DDIM.html",
       "/blog/2023-10-14-Why-Vote-YES.html",
       "/blog/2023-10-01-dreambooth.html",
       "/blog/2023-08-30-caption-models.html",
