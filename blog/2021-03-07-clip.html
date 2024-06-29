@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.5.52">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2021-03-07">
 <meta name="description" content="Training OpenAI’s CLIP on google colab">
 
-<title>deepschool.ai - Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡</title>
+<title>Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡ – deepschool.ai</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -36,7 +36,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -83,7 +83,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -92,6 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -112,17 +119,17 @@ ga('send', {
 });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 <script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="deepschool.ai - Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡">
+<meta property="og:title" content="Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡ – deepschool.ai">
 <meta property="og:description" content="Training OpenAI’s CLIP on google colab">
 <meta property="og:image" content="https://sachinruk.github.io/blog/images/clip.png">
-<meta property="og:site-name" content="deepschool.ai">
-<meta name="twitter:title" content="deepschool.ai - Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡">
+<meta property="og:site_name" content="deepschool.ai">
+<meta name="twitter:title" content="Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡ – deepschool.ai">
 <meta name="twitter:description" content="Training OpenAI’s CLIP on google colab">
 <meta name="twitter:image" content="https://sachinruk.github.io/blog/images/clip.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -132,43 +139,43 @@ ga('send', {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">deepschool.ai</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog.html" rel="" target="">
- <span class="menu-text">Blog</span></a>
+    <a class="nav-link" href="../blog.html"> 
+<span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../programming_tips.html" rel="" target="">
- <span class="menu-text">Programming Tips</span></a>
+    <a class="nav-link" href="../programming_tips.html"> 
+<span class="menu-text">Programming Tips</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../ML_consulting.html" rel="" target="">
- <span class="menu-text">ML Consulting</span></a>
+    <a class="nav-link" href="../ML_consulting.html"> 
+<span class="menu-text">ML Consulting</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../DL_Course.html" rel="" target="">
- <span class="menu-text">DL Course</span></a>
+    <a class="nav-link" href="../DL_Course.html"> 
+<span class="menu-text">DL Course</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -233,12 +240,14 @@ ga('send', {
   </div>
   
 
+
 </header>
+
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../images/clip.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">CLIP</figcaption>
+<figcaption>CLIP</figcaption>
 </figure>
 </div>
 <p>This is a walkthrough of training <a href="https://openai.com/blog/clip/">CLIP</a> by OpenAI. CLIP was designed to put both images and text into a new projected space such that they can map to each other by simply looking at dot products.</p>
@@ -249,7 +258,7 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="acknowledgement">Acknowledgement</h2>
 <p>Kudos to the following CLIP tutorial in <a href="https://keras.io/examples/nlp/nl_image_search/">the keras documentation</a>.</p>
 <p>The important thing to notice about the constants is the embedding dim. We will project the output of a resnet <strong>and</strong> transformers into 512 dimensional space.</p>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:935,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053487982,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="26">
+<div id="cell-5" class="cell" data-executioninfo="{&quot;elapsed&quot;:935,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053487982,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>EMBED_DIM <span class="op">=</span> <span class="dv">512</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>TRANSFORMER_EMBED_DIM <span class="op">=</span> <span class="dv">768</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>MAX_LEN <span class="op">=</span> <span class="dv">32</span> <span class="co"># Maximum length of text</span></span>
@@ -264,7 +273,7 @@ ga('send', {
 <p>We download the coco dataset which contains 5 captions per image and has roughly 82k images. We take 20% of it to be our validation set.</p>
 <p>Considering that the image backbone is trained using imagenet, we normalise it using the imagenet stats as shown in the transforms normalize step. We also resize the image to 128x128 to make sure it trains in reasonable time.</p>
 <p>Warning: Downloading the files will take a while (~5-10 minutes).</p>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:1833,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053674506,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="32">
+<div id="cell-8" class="cell" data-executioninfo="{&quot;elapsed&quot;:1833,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053674506,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Tokenizer:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, tokenizer: BertTokenizer) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tokenizer <span class="op">=</span> tokenizer</span>
@@ -280,16 +289,20 @@ ga('send', {
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> Tokenizer(AutoTokenizer.from_pretrained(TEXT_MODEL))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:1407,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053736947,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-outputid="fb724268-9a9b-435d-f4ea-68a8b098d0dc" data-execution_count="37">
+<div id="cell-10" class="cell" data-executioninfo="{&quot;elapsed&quot;:1407,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053736947,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-outputid="fb724268-9a9b-435d-f4ea-68a8b098d0dc" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> inv_tfm(img)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(np.rot90(img.transpose(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dv">3</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.title(tokenizer.decode(target)[<span class="dv">0</span>])</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:1124,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053741662,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-outputid="76621bfe-a5ce-4b4b-b761-0b790da8b704" data-execution_count="38">
+</div>
+<div id="cell-11" class="cell" data-executioninfo="{&quot;elapsed&quot;:1124,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053741662,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-outputid="76621bfe-a5ce-4b4b-b761-0b790da8b704" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>train_len <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.8</span><span class="op">*</span><span class="bu">len</span>(cap))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>train_data, valid_data <span class="op">=</span> random_split(cap, [train_len, <span class="bu">len</span>(cap) <span class="op">-</span> train_len])</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>train_dl <span class="op">=</span> DataLoader(train_data, BATCH_SIZE, pin_memory<span class="op">=</span><span class="va">True</span>, shuffle<span class="op">=</span><span class="va">True</span>, num_workers<span class="op">=</span><span class="dv">4</span>, drop_last<span class="op">=</span><span class="va">True</span>)</span>
@@ -305,7 +318,7 @@ ga('send', {
 <p>There are two main models, the <code>VisionEncoder</code> and the <code>TextEncoder</code> which have resnet18 and distilbert as backbones. In order to make it multi-lingual, we simply choose the <code>distilbert-multilingual</code> model and that’s it! No need to specifically train on non-english words as you will soon see.</p>
 <p>The <code>Projection</code> module, takes the embeddings from vision and text encoders and projects them into 512 dimensional space.</p>
 <p>Two things to note: 1. We have frozen both the text and vision encoder backbones and do not retrain their weights at all. 2. For both encoders the final output is normalised to be of unit length.</p>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:786,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618051733192,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="9">
+<div id="cell-13" class="cell" data-executioninfo="{&quot;elapsed&quot;:786,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618051733192,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Projection(nn.Module):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_in: <span class="bu">int</span>, d_out: <span class="bu">int</span>, p: <span class="bu">float</span><span class="op">=</span><span class="fl">0.5</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -320,7 +333,7 @@ ga('send', {
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        embeds <span class="op">=</span> <span class="va">self</span>.layer_norm(embed1 <span class="op">+</span> embed2)</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> embeds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:967,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618051735890,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="10">
+<div id="cell-14" class="cell" data-executioninfo="{&quot;elapsed&quot;:967,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618051735890,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> VisionEncoder(nn.Module):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_out: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -337,7 +350,7 @@ ga('send', {
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        projection_len <span class="op">=</span> torch.norm(projected_vec, dim<span class="op">=-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> projected_vec <span class="op">/</span> projection_len</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:1126,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618051739234,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="11">
+<div id="cell-15" class="cell" data-executioninfo="{&quot;elapsed&quot;:1126,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618051739234,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TextEncoder(nn.Module):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_out: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -360,7 +373,7 @@ ga('send', {
 <p>We know that we want the vectors of the corresponding image and the text to line up. Which means that the dot product has to be as close to one as possible. For everything else we need to push it towards 0.</p>
 <p>Therfore for a given caption, we take the softmax of the dot products across all images, and then take cross entropy loss. Similarly for a given image, we repeat the process across all captions. We average these two losses.</p>
 <p>In terms of which element is the true positive within a batch, remember that we are sending image, caption pairs already lined up. Therefore we want all the diagonal elements to line up while all off-diagonal elements we want to push towards zero.</p>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:760,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053755535,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="39">
+<div id="cell-17" class="cell" data-executioninfo="{&quot;elapsed&quot;:760,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618053755535,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> contrastive_loss(logits, dim):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    neg_ce <span class="op">=</span> torch.diag(F.log_softmax(logits, dim<span class="op">=</span>dim))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>neg_ce.mean()</span>
@@ -385,7 +398,7 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="model-1">Model</h2>
 <p>If you haven’t used pytorch lightning before, the benefit is that you do not need to stress about which device to put it in, remembering to zero the optimizer etc. All of that is taken care of. Just simply specify the training and validation steps, along with the optimizer and you are good to go.</p>
 <p>The other benefit that I really like is logging. You just need to write <code>self.log("name", metric_to_track)</code> and it will log to tensorboard by default, or any other kind of logger for that matter.</p>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:919,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618060612025,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="53">
+<div id="cell-19" class="cell" data-executioninfo="{&quot;elapsed&quot;:919,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1618060612025,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-execution_count="53">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Model(pl.LightningModule):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                 lr: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-3</span></span>
@@ -436,7 +449,7 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="train">Train</h2>
 <p>Training is straight forward as show in the five lines below. Using 16 bit precision almost halved the training time from 16 minutes to 9 minutes per epoch. Notice how easy it was to add half precision training and gradient clipping.</p>
 <p>Also one thing to note is that I could not get this working on TPUs so if anyone knows what I need to adjust, please let me know. Setting <code>tpu_cores=8</code> just did not work.</p>
-<div class="cell" data-executioninfo="{&quot;elapsed&quot;:15945,&quot;status&quot;:&quot;error&quot;,&quot;timestamp&quot;:1618060629326,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-outputid="cde7a623-c314-4fd5-9066-652e08f4dd5e" data-execution_count="54">
+<div id="cell-21" class="cell" data-executioninfo="{&quot;elapsed&quot;:15945,&quot;status&quot;:&quot;error&quot;,&quot;timestamp&quot;:1618060629326,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-600}" data-outputid="cde7a623-c314-4fd5-9066-652e08f4dd5e" data-execution_count="54">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Model(<span class="fl">1e-3</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> pl.Trainer(</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    max_epochs<span class="op">=</span> <span class="dv">1</span>,</span>
@@ -448,7 +461,7 @@ ga('send', {
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>trainer.fit(model, train_dl, valid_dl) <span class="co"># </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Run the following cell if you wish to see the logs in tensorboard. But here’s a screenshot I took: <img src="https://i.imgur.com/gGrO6wX.png" class="img-fluid" alt="tensorboard"></p>
-<div class="cell" data-outputid="42fb8c04-1c11-4e0a-f423-1efca5059bcb">
+<div id="cell-23" class="cell" data-outputid="42fb8c04-1c11-4e0a-f423-1efca5059bcb">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the TensorBoard notebook extension</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>reload_ext tensorboard</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>tensorboard <span class="op">--</span>logdir .<span class="op">/</span>lightning_logs<span class="op">/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -473,7 +486,7 @@ ga('send', {
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>I will compare the text embeddings of the first batch (in the validation set) to all the images of the validation set by taking the dot product between them.</p>
-<div class="cell" data-outputid="0eedc11e-fce3-4f99-aa31-222ac70d2bf6">
+<div id="cell-27" class="cell" data-outputid="0eedc11e-fce3-4f99-aa31-222ac70d2bf6">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>similarity <span class="op">=</span> caption_embed <span class="op">@</span> image_embed.T</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>val, closest <span class="op">=</span> similarity.topk(<span class="dv">5</span>, dim<span class="op">=-</span><span class="dv">1</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>similarity.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -483,45 +496,69 @@ ga('send', {
 </div>
 <p><code>draw_result(i, similarity_matrix)</code> is a convenience function that takes the i-th caption and the similarity matrix, and plots the five closest images, along with the true image. The similarity between the caption and the image is shown in the title. The caption is printed first.</p>
 <p>The histogram show the similarity of the caption to all images as a histogram.</p>
-<div class="cell" data-outputid="4fa10b8f-9d09-4c2c-eb94-e865d8aa5f8d">
+<div id="cell-30" class="cell" data-outputid="4fa10b8f-9d09-4c2c-eb94-e865d8aa5f8d">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>draw_result(<span class="dv">2</span>, similarity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>A baseball player in the outfield with his hands up, standing next to a team mascot.</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-21-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-21-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-21-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-21-output-3.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-outputid="d658b3cb-0ffc-4050-d0fe-2c1ce6038167">
+</div>
+<div id="cell-31" class="cell" data-outputid="d658b3cb-0ffc-4050-d0fe-2c1ce6038167">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>draw_result(<span class="dv">1</span>, similarity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>A watch and clock repair shop window with clocks on display.</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-22-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-22-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-22-output-3.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-outputid="3335166e-045c-4fbb-86d6-bd4b579c1e16">
+</div>
+<div id="cell-32" class="cell" data-outputid="3335166e-045c-4fbb-86d6-bd4b579c1e16">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>draw_result(<span class="dv">10</span>, similarity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>A person on a skateboard on the ground.</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-23-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-23-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-23-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Below is the google translted version of one of the captions.</p>
 <p>English caption: “A zebra standing up with it’s head down and eating grass on the dirt ground.”, tranlated into Spanish:</p>
-<div class="cell">
+<div id="cell-35" class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"Una cebra de pie con la cabeza gacha y comiendo hierba en el suelo de tierra."</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>text_dev <span class="op">=</span> {k: v.to(device) <span class="cf">for</span> k, v <span class="kw">in</span> tokenizer(text).items()}</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
@@ -529,20 +566,28 @@ ga('send', {
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>similarity_text <span class="op">=</span> caption_embed_text <span class="op">@</span> image_embed.T</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="2c6b63f4-b770-4baa-8a52-8a3b07f25189">
+<div id="cell-36" class="cell" data-outputid="2c6b63f4-b770-4baa-8a52-8a3b07f25189">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>draw_result_single_query(<span class="dv">10</span>, similarity_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-26-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-26-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Skateboarder conducting a trick with bicycles in the background.</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-26-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-26-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Again a translated version, this time to french. English caption: “A laptop is displayed on a small wooden platform.”</p>
-<div class="cell" data-outputid="15ee6ee4-2884-4806-ce32-0358e35a09fc">
+<div id="cell-38" class="cell" data-outputid="15ee6ee4-2884-4806-ce32-0358e35a09fc">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Guy and woman in glasses shake hands while exchanging gifts.</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"Un ordinateur portable est affiché sur une petite plate-forme en bois."</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>text_dev <span class="op">=</span> {k: v.to(device) <span class="cf">for</span> k, v <span class="kw">in</span> tokenizer(text).items()}</span>
@@ -553,17 +598,25 @@ ga('send', {
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>draw_result_single_query(<span class="dv">3</span>, similarity_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-27-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-27-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Laptop computer on a small table on the side of a bed</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-27-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-27-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The russian translation below is doing terrible though, so its clearly not bullet proof. Or perhaps I need to train for a bit longer. English caption: “A shop filled with different kinds of clocks.</p>
-<div class="cell" data-outputid="beaed1a1-6268-4d1e-ce31-877414fbe5f9">
+<div id="cell-40" class="cell" data-outputid="beaed1a1-6268-4d1e-ce31-877414fbe5f9">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"Магазин с разными часами"</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>text_dev <span class="op">=</span> {k: v.to(device) <span class="cf">for</span> k, v <span class="kw">in</span> tokenizer(text).items()}</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
@@ -573,17 +626,25 @@ ga('send', {
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>draw_result_single_query(<span class="dv">1</span>, similarity_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-28-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-28-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>A room filled with clocks through a window.</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-28-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-28-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>And lastly I check a single word version. Notice how the dog does kind of look like a bear. Maybe it’s name is bear?</p>
-<div class="cell" data-outputid="6239bb15-7324-49a4-914d-1933115abf7b">
+<div id="cell-42" class="cell" data-outputid="6239bb15-7324-49a4-914d-1933115abf7b">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"bear"</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>text_dev <span class="op">=</span> {k: v.to(device) <span class="cf">for</span> k, v <span class="kw">in</span> tokenizer(text).items()}</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
@@ -593,13 +654,21 @@ ga('send', {
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>draw_result_single_query(<span class="dv">1</span>, similarity_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-29-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-29-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Large collection of digital and analog clocks on display. </code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2021-03-07-CLIP_files/figure-html/cell-29-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="2021-03-07-CLIP_files/figure-html/cell-29-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Would love to hear any thoughts and comments on the above.</p>
@@ -650,18 +719,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -693,11 +751,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/sachinruk\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -707,8 +804,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -720,7 +826,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -764,6 +993,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -789,6 +1019,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -851,7 +1107,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Copyright 2023, Sachinthaka Abeywardana</div>   
+    <div class="nav-footer-left">
+<p>Copyright 2023, Sachinthaka Abeywardana</p>
+</div>   
     <div class="nav-footer-center">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">
@@ -879,6 +1137,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
 
 
 
