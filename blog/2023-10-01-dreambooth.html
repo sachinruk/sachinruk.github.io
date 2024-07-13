@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-01-03">
+<meta name="dcterms.date" content="2023-10-01">
 
-<title>Pydantic Post Init – deepschool.ai</title>
+<title>Dreambooth Tutorial – deepschool.ai</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -116,15 +116,23 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Pydantic Post Init – deepschool.ai">
+<meta property="og:title" content="Dreambooth Tutorial – deepschool.ai">
 <meta property="og:description" content="">
+<meta property="og:image" content="https://i.imgur.com/20afrBO.png">
 <meta property="og:site_name" content="deepschool.ai">
-<meta name="twitter:title" content="Pydantic Post Init – deepschool.ai">
+<meta name="twitter:title" content="Dreambooth Tutorial – deepschool.ai">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/20afrBO.png">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -175,17 +183,34 @@ ga('send', {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#stable-diffusion-crash-course" id="toc-stable-diffusion-crash-course" class="nav-link" data-scroll-target="#stable-diffusion-crash-course">Stable Diffusion Crash Course</a></li>
+  <li><a href="#the-prompt" id="toc-the-prompt" class="nav-link" data-scroll-target="#the-prompt">The prompt</a></li>
+  <li><a href="#data-from-google-drive" id="toc-data-from-google-drive" class="nav-link" data-scroll-target="#data-from-google-drive">Data from Google Drive</a></li>
+  <li><a href="#loss-function" id="toc-loss-function" class="nav-link" data-scroll-target="#loss-function">Loss function</a></li>
+  <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training">Training</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#tricks-to-attempt" id="toc-tricks-to-attempt" class="nav-link" data-scroll-target="#tricks-to-attempt">Tricks to attempt</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references-and-acknowledgements" id="toc-references-and-acknowledgements" class="nav-link" data-scroll-target="#references-and-acknowledgements">References and acknowledgements</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Pydantic Post Init</h1>
+<h1 class="title">Dreambooth Tutorial</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">python</div>
+    <div class="quarto-category">LLM</div>
+    <div class="quarto-category">multimodal-models</div>
+    <div class="quarto-category">diffusion-models</div>
   </div>
   </div>
 
@@ -197,7 +222,7 @@ ga('send', {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 3, 2023</p>
+      <p class="date">October 1, 2023</p>
     </div>
   </div>
   
@@ -209,28 +234,136 @@ ga('send', {
 </header>
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pydantic</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HyperParameters(pydantic.BaseModel):</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    batch_size: <span class="bu">int</span> <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> upload_batch_counts(<span class="va">self</span>):</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1_000_000</span> <span class="op">//</span> <span class="va">self</span>.batch_size</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> Config: <span class="co"># will not allow undefined fields</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        extra <span class="op">=</span> pydantic.Extra.forbid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If you want to update an existing property, you can do this:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> User(BaseModel):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    age: <span class="bu">int</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">**</span>data):</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> data.get(<span class="st">"name"</span>) <span class="op">==</span> <span class="st">"Charlie"</span>:</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            data[<span class="st">"age"</span>] <span class="op">=</span> data.get(<span class="st">"age"</span>, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">30</span>  <span class="co"># increment age by 30 if name is "Charlie"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="op">**</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Dreambooth is a cool technique that lets you convert existing diffusion models to output personalized images. It’s one of the two main methods for fine-tuning diffusion models, alongside textual inversion. In this tutorial, I’ll show you how I trained stable diffusion to output images that look like me. The image on the left is my first attempt, while the one on the right is the result of some tweaks I made to my training.</p>
+<p><img src="https://i.imgur.com/20afrBO.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>If you wish to follow along this is the <a href="https://colab.research.google.com/drive/1_WWr51pHdE8noyv1PUs1oIJyYdaE-WqK?usp=sharing">google colab link</a>.</p>
+</section>
+<section id="stable-diffusion-crash-course" class="level2">
+<h2 class="anchored" data-anchor-id="stable-diffusion-crash-course">Stable Diffusion Crash Course</h2>
+<p>Stable diffusion consists of three models: 1. A Variational Auto-Encoder that takes an image and projects it into a lower-dimensional space. The encoder is only used during training, but I’m not convinced that we need the variational aspect of it. 2. A UNet that can take in noise and a text prompt and estimate an image. It does this over 50 steps, denoising bit by bit. I’m oversimplifying here, just go with it. 3. A text encoding model that takes a sentence or prompt and projects it into a fixed dimension.</p>
+<p>In textual inversion, we fine-tune the text encoding model, but in Dreambooth, we freeze that model and only fine-tune the denoising UNet.</p>
+</section>
+<section id="the-prompt" class="level2">
+<h2 class="anchored" data-anchor-id="the-prompt">The prompt</h2>
+<p>Despite having the text model frozen, the prompt construction is important. In order to recommend different views of a subject dreambooth requires you to create the training prompts as <code>A &lt;rare_token&gt; &lt;class&gt;</code>. In this case we use <code>sks</code> as a rare token as pointed out in this <a href="https://www.reddit.com/r/DreamBooth/comments/zc5w3e/rare_tokens_for_dreambooth_training/?rdt=59502">reddit thread</a>, and the class is taken to be “person” for this exercise. However, it seems as though the prompt <code>a person</code> created cartoonish images (as shown below). Therefore, we use the prompt <code>A photo of sks person</code>.</p>
+<p><img src="https://i.imgur.com/mt4QjxY.jpg" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>The reason we use a rare token instead of say a name, is because a language model would have associations with popular names (eg. Donald, we all know who popped up in your head despite me not putting a last name). This way, the UNet is free to interpret the rare token as it sees fit.</p>
+<p>We also use the class to remind the model of what it is constructing. This way it <strong>ought</strong> to be able to understand adjectives like <code>a tall sks person</code>, or <code>a sks person playing basketball</code>.</p>
+</section>
+<section id="data-from-google-drive" class="level2">
+<h2 class="anchored" data-anchor-id="data-from-google-drive">Data from Google Drive</h2>
+<p>If you wish to use your own photos the following is how I did it. You can always upload the photos just to your colab session too. Note how <code>photo_descriptions</code> is all the same caption despite the photos being different.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>photo_files <span class="op">=</span> <span class="bu">list</span>(pathlib.Path(<span class="st">"/content/gdrive/MyDrive/path_to_photos/"</span>).glob(<span class="st">"**/*.jpg"</span>))[:NUM_PHOTOS]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>photo_descriptions <span class="op">=</span> [<span class="st">"A photo of sks person"</span>] <span class="op">*</span> <span class="bu">len</span>(photo_files)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>original_photo_prompts <span class="op">=</span> [<span class="st">"A photo of person"</span>] <span class="op">*</span> <span class="bu">len</span>(photo_files)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>I will note however that <code>NUM_PHOTOS</code> in my case was ten, and I’m starting to wonder if that was too much. The rationale as you will soon see in the results, is that it got confused with too many of my poses and “forgot my face” with more complex prompts.</p>
+<p>If you’re thinking we need more to fine tune, keep in mind that we train our model on noised versions of the images. Therefore even with one we technically have an infinite training set.</p>
+</section>
+<section id="loss-function" class="level2">
+<h2 class="anchored" data-anchor-id="loss-function">Loss function</h2>
+<p>When I first trained Dreambooth, I simply trained the UNet to fit the prompts to my photos. However, this approach had limited success. When I looked at the background of the generated images, it became obvious that the trained model had overfit to my images. For instance, when I used the prompt “Sachin with folded arms”, the background in the resulting image was actually copied from other photos. This is putting aside how distorted my face looks. I am usually angry, but not like this.</p>
+<p><img src="https://i.imgur.com/oZF3EbK.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>The loss function when training diffusion models in general, is shown below:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_loss(pixel_values, input_ids, noise_scheduler):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert images to latent space</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        latents <span class="op">=</span> vae.encode(pixel_values).latent_dist.sample()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        latents <span class="op">=</span> latents <span class="op">*</span> <span class="fl">0.18215</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        encoder_hidden_states <span class="op">=</span> text_encoder(input_ids)[<span class="dv">0</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample noise that we'll add to the latents</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    noise <span class="op">=</span> torch.randn(latents.shape).to(latents.device)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    bsz <span class="op">=</span> latents.shape[<span class="dv">0</span>]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample a random timestep for each image</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    timesteps <span class="op">=</span> torch.randint(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        noise_scheduler.config.num_train_timesteps,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        (bsz,),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        device<span class="op">=</span>latents.device,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ).<span class="bu">long</span>()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add noise to the latents according to the noise magnitude at each timestep</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (this is the forward diffusion process)</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    noisy_latents <span class="op">=</span> noise_scheduler.add_noise(latents, noise, timesteps)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Predict the noise residual</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    noise_pred <span class="op">=</span> unet(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        noisy_latents, timesteps, encoder_hidden_states</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    ).sample</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> (</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        F.mse_loss(noise_pred, noise, reduction<span class="op">=</span><span class="st">"none"</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        .mean([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]) <span class="co"># not sure about the significance of this order</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        .mean()</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In words, the above takes an image, projects it onto it’s latent space via the VAE model. We add noise that depends on the time step. Remember that we add more noise the further we are close to the 1000 timesteps mark, at which point it’s all standard gaussian distributed noise. The role of the UNet is to take this noised image and the prompt, and estimate the noise to denoise the image. We use mean squared error loss for this estimate.</p>
+<p>However, this is unfortunately not enough and leads to “mode collapse”. What this means practically, is that the model ends up associating the class of the prompt with the images provided. In the worst case scenarios you simply end up recreating the provided training images. Conversely, the model will have a hard time generating scenarios and backgrounds that is outside that of the provided images.</p>
+<p>In order to circumvent that we also have a prior loss. Prior loss uses the same function as above, except it takes in a generated image from the prior prompt (<code>A photo of person</code>, i.e.&nbsp;without the rare token). This ensures that the model does not “forget” the form of the class of object that is being generated. This is the main “trick” of dreambooth.</p>
+</section>
+<section id="training" class="level2">
+<h2 class="anchored" data-anchor-id="training">Training</h2>
+<p>During training due to using a colab free version I only had access to a T4. This meant I could only process one batch (1 image prompt pair). I could not even load <code>"prior_pixel_values"</code> (images generated by stable diffusion for <code>A photo of person</code>) into the same batch without the machine crashing. The work around was gradient accumulation. In the following the gradients are cleared in the end of the <strong>second</strong> (not third) for loop (via <code>optimizer.step()</code>). This is the equivalent of adding the loss functions in the third for loop.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(num_train_epochs):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        unet.train()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> step, batch <span class="kw">in</span> <span class="bu">enumerate</span>(train_dataloader):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> accelerator.accumulate(unet):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                total_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                        pixel_values <span class="op">=</span> batch[<span class="st">"pixel_values"</span>]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                        input_ids <span class="op">=</span> batch[<span class="st">"input_ids"</span>]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                        pixel_values <span class="op">=</span> batch[<span class="st">"prior_pixel_values"</span>]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                        input_ids <span class="op">=</span> batch[<span class="st">"prior_input_ids"</span>]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                    loss <span class="op">=</span> calculate_loss(pixel_values, input_ids, noise_scheduler)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                    accelerator.backward(loss)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                    total_loss <span class="op">+=</span> loss.detach()</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> accelerator.sync_gradients:</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                accelerator.clip_grad_norm_(unet.parameters(), args.max_grad_norm)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the <code>"prior_pixel_values"</code> were generated before the training started, and is not updated during training.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The original prompt “A sks person”. I suppose this looks somewhat like me? Like a buffer, squarer me? <img src="https://i.imgur.com/uVhmlW1.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>“A photo of sks person with a beard with folded arms wearing a watch”. I suppose it has recognised I am brown. But that’s where the similarity ends. <img src="https://i.imgur.com/GQM6qJE.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>“A photo of sks person holding blue coat, dark background”. This is where apart from what I was wearing for my photo shoot (a suit), the similarity ends. The skin complexion is quite different I’m afraid. <img src="https://i.imgur.com/neLUVRj.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>“A photo of sks person playing cricket”. And this person is very different from me and is just a generic south asian cricket player. <img src="https://i.imgur.com/1x4lG7i.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+<p>I also tried the DDIM noise scheduler as suggested by <a href="https://www.notion.so/Blog-db678e7bf7a440ad88a524b156fb7258?pvs=21">this HF blog</a>, but gave me worse results with distortions around the face: <img src="https://i.imgur.com/GVcXl7y.png" alt="Dreambooth tutorial image" style="max-height: 300px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="tricks-to-attempt" class="level2">
+<h2 class="anchored" data-anchor-id="tricks-to-attempt">Tricks to attempt</h2>
+<p>The <a href="https://huggingface.co/blog/dreambooth">HF blog</a> does better in this respect, but here are some things I wish I had the time/ GPUs to try:</p>
+<ul>
+<li>Use stable diffusion XL with mixed precision training.</li>
+<li>Increase the number of training steps from 1000 to 2000.</li>
+<li>Create more prior images. Right now I only generate the same number of prior images as the training set. There is no reason to do so apart from the patience of waiting for images to be generated. (Anyone wanna give me free GPUs?). This might have even restricted my loss function since despite being noised is anchored to ten original images.</li>
+<li>I do wonder if over fitting in this context is a bad thing. So wonder what would happen if I weight the prior loss with 0.1 (as opposed to 1.0 now).</li>
+</ul>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I hope you enjoyed that break down. I found the training process to be a little bit more fragile than I hoped. Regardless, the main takeaway here is the innovative use of the “prior loss function” to guide the model.</p>
+<p>If you wish to see more of these tutorials follow me on LinkedIn, or better yet <a href="https://ko-fi.com/sachinruk">buy me a coffee</a>.</p>
+</section>
+<section id="references-and-acknowledgements" class="level2">
+<h2 class="anchored" data-anchor-id="references-and-acknowledgements">References and acknowledgements</h2>
+<ul>
+<li>Huggingface tutorial where most of the code was taken from: https://huggingface.co/docs/diffusers/training/dreambooth</li>
+<li>Tips and tricks on training dreambooth: https://huggingface.co/blog/dreambooth</li>
+<li>Dreambooth paper: https://arxiv.org/pdf/2208.12242.pdf</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

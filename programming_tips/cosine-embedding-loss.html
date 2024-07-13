@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2015-10-09">
+<meta name="dcterms.date" content="2023-08-15">
 
-<title>Chinese Restuarant Process – deepschool.ai</title>
+<title>Thoughts on CosineEmbeddingLoss – deepschool.ai</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -114,10 +114,10 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Chinese Restuarant Process – deepschool.ai">
+<meta property="og:title" content="Thoughts on CosineEmbeddingLoss – deepschool.ai">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="deepschool.ai">
-<meta name="twitter:title" content="Chinese Restuarant Process – deepschool.ai">
+<meta name="twitter:title" content="Thoughts on CosineEmbeddingLoss – deepschool.ai">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -178,9 +178,9 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Chinese Restuarant Process</h1>
+<h1 class="title">Thoughts on CosineEmbeddingLoss</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">statistics, bayesian</div>
+    <div class="quarto-category">pytorch</div>
   </div>
   </div>
 
@@ -192,7 +192,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 9, 2015</p>
+      <p class="date">August 15, 2023</p>
     </div>
   </div>
   
@@ -204,14 +204,17 @@ window.Quarto = {
 </header>
 
 
-<p>In this instance we generate the parameters <span class="math display">\[\theta_k\]</span> from <span class="math display">\[\mathcal{N}(\mathbf{0},3\mathbf{I})\]</span>. The data is generated from <span class="math display">\[\mathcal{N}(\theta_k,0.1\mathbf{I})\]</span>. Where <span class="math display">\[k\]</span> is the table. Table allocation is the main part of the CRP which is determined by: <span class="math display">\[\begin{align}
-k=\begin{cases}
-\text{new table } &amp; \text{with prob = } \frac{\alpha}{\alpha+n-1}\\
-\text{table k } &amp; \text{with prob = } \frac{n_k}{\alpha+n-1}
+<p><span class="math display">\[
+\begin{align}
+\text{loss}(x, y) =
+\begin{cases}
+1 - \cos(x_1, x_2) &amp; \text{if } y = 1 \\
+\max(0, \cos(x_1, x_2) - \text{margin}) &amp; \text{if } y = -1
 \end{cases}
 \end{align}
-\]</span> where <span class="math display">\[n_k\]</span> is the number of customers at table <span class="math display">\[k\]</span>.</p>
-<p>The associated ipython notebook is <a href="https://github.com/sachinruk/sachinruk.github.io/blob/master/_posts/Stats%20Blog/CRP.ipynb">located here</a>.</p>
+\]</span></p>
+<p><a href="https://pytorch.org/docs/stable/generated/torch.nn.CosineEmbeddingLoss.html">nn.CosineEmbeddingLoss</a> needs 3 arguments, the predicted embedding (<span class="math inline">\(x_1\)</span>), label embedding (<span class="math inline">\(x_2\)</span>) as well as a label (<span class="math inline">\(y\)</span>) indicating that we need to move these embeddings closer (<span class="math inline">\(y = 1\)</span>) and further if not (<span class="math inline">\(y = 0\)</span>).</p>
+<p>The distance between two points (<span class="math inline">\(1 - \cos(x_1, x_2)\)</span>) is minimised, while in the <span class="math inline">\(y = 0\)</span> case, the similarity <span class="math inline">\(\cos(x_1, x_2)\)</span> is minimised. However, if the similarity is lower than a certain margin (defaulting to 0.5) nothing happens. This is due to the clipping that happens with the <code>max</code> function. This causes these examples to have zero gradient.</p>
 
 
 

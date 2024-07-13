@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-01-03">
+<meta name="dcterms.date" content="2023-08-30">
 
-<title>Pydantic Post Init – deepschool.ai</title>
+<title>Creating a Caption Model from Scratch – deepschool.ai</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -116,15 +116,23 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Pydantic Post Init – deepschool.ai">
+<meta property="og:title" content="Creating a Caption Model from Scratch – deepschool.ai">
 <meta property="og:description" content="">
+<meta property="og:image" content="https://i.imgur.com/Z9IDb8t.png">
 <meta property="og:site_name" content="deepschool.ai">
-<meta name="twitter:title" content="Pydantic Post Init – deepschool.ai">
+<meta name="twitter:title" content="Creating a Caption Model from Scratch – deepschool.ai">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/Z9IDb8t.png">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -175,17 +183,29 @@ ga('send', {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#pretrained-models" id="toc-pretrained-models" class="nav-link" data-scroll-target="#pretrained-models">Pretrained Models</a></li>
+  <li><a href="#training" id="toc-training" class="nav-link" data-scroll-target="#training">Training</a></li>
+  <li><a href="#update-10092023-training-with-resetting-cross-attention-layers" id="toc-update-10092023-training-with-resetting-cross-attention-layers" class="nav-link" data-scroll-target="#update-10092023-training-with-resetting-cross-attention-layers">Update (10/09/2023): Training with resetting cross attention layers</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Pydantic Post Init</h1>
+<h1 class="title">Creating a Caption Model from Scratch</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">python</div>
+    <div class="quarto-category">LLM</div>
+    <div class="quarto-category">multimodal-models</div>
   </div>
   </div>
 
@@ -197,7 +217,7 @@ ga('send', {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 3, 2023</p>
+      <p class="date">August 30, 2023</p>
     </div>
   </div>
   
@@ -209,28 +229,108 @@ ga('send', {
 </header>
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pydantic</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HyperParameters(pydantic.BaseModel):</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    batch_size: <span class="bu">int</span> <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> upload_batch_counts(<span class="va">self</span>):</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1_000_000</span> <span class="op">//</span> <span class="va">self</span>.batch_size</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> Config: <span class="co"># will not allow undefined fields</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        extra <span class="op">=</span> pydantic.Extra.forbid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If you want to update an existing property, you can do this:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> User(BaseModel):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    age: <span class="bu">int</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">**</span>data):</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> data.get(<span class="st">"name"</span>) <span class="op">==</span> <span class="st">"Charlie"</span>:</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            data[<span class="st">"age"</span>] <span class="op">=</span> data.get(<span class="st">"age"</span>, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">30</span>  <span class="co"># increment age by 30 if name is "Charlie"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="op">**</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="https://i.imgur.com/Z9IDb8t.png" alt="ConvNext - LLM meme" style="width: 50%;"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Before we dive into the details, I want to give you a heads up that this was just an experiment. The results leave a lot to be desired, and you can see for yourself by checking out the results section. However, if you stick around, I’ll share some interesting techniques that I learned along the way.</p>
+<p>You can find the code for this blog post in <a href="https://www.kaggle.com/code/sachin/flan-t5-captions/notebook">this kaggle kernel</a>.</p>
+</section>
+<section id="pretrained-models" class="level2">
+<h2 class="anchored" data-anchor-id="pretrained-models">Pretrained Models</h2>
+<p>To create our captioning model, I started with the hypothesis that we could take a powerful image model and plug it into a pretrained LLM. That’s exactly what I did, but with a twist: I purposely chose a non-transformer image model. This meant that we couldn’t use HF transformer’s <code>EncoderDecoderModel</code>s.</p>
+<p>For the LLM, we used the decoder of Flan-T5. We chose this model because we didn’t need to introduce cross attention layers. Cross-Attention (CA) layers are how we can connect two transformer models. In a nutshell, if the decoder is of shape <code>batch_size x decoder_seq_len x dim</code> and the encoder is of shape <code>batch_size x encoder_seq_len x dim</code>, the CA layer creates a <code>batch_size x encoder_seq_len x decoder_seq_len</code> attention matrix. The attention matrix projects the <strong>encoder sequence</strong> into the decoder space, allowing “instructions” from the image model to mix in with the LLM decoder to create a caption.</p>
+<p>You might be wondering how we can get a CNN architecture to mimic a transformer output. To do this, we need to do some dimension transposing gymnastics. However, we use <code>einops</code> to make things easier. Here’s an example of how we use <code>einops</code> to rearrange the image features:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>    image_features <span class="op">=</span> <span class="va">self</span>.image_model.forward_features(images)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    image_features <span class="op">=</span> einops.rearrange(image_features, <span class="st">"bs num_features w h -&gt; bs (w h) num_features"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    encoder_outputs <span class="op">=</span> <span class="va">self</span>.projector(image_features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>forward_features</code> is used by all <code>timm</code> models to get the layer before the (1000 class) classification layer. In the example above, this leads to a <code>batch_size x num_features x width x height</code> shape. <code>num_features</code> in this case is analogous to the dimensionality in a transformer model, while <code>width</code> and <code>height</code> can be thought of as the tokens. We combine the width and height tokens and move the <code>num_features</code> dimensions to the end. Finally, there’s no guarantee that this dimension size is the same as that of the LLM, so we have a few linear layers to project it to the correct size.</p>
+<p>In order to train Flan-T5, we generally need to provide four things: <code>input_ids</code> and <code>attention_mask</code> on the encoder side, and <code>decoder_input_ids</code> and <code>decoder_attention_mask</code> on the decoder side. However, we can bypass the encoder inputs by providing <code>encoder_outputs</code>. In our case, this is the output from the image model.</p>
+<p>The final model can be seen below.</p>
+<div id="cell-3" class="cell" data-vscode="{&quot;languageId&quot;:&quot;plaintext&quot;}">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Model(nn.Module):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, image_model, language_model, num_projections: <span class="bu">int</span>):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        language_model.encoder.block <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image_model <span class="op">=</span> image_model</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.language_model <span class="op">=</span> language_model</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.projector <span class="op">=</span> nn.Sequential(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="op">*</span>projection_layers(image_model.num_features, language_model.model_dim, num_projections)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.start_token_id <span class="op">=</span> language_model.config.decoder_start_token_id</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> project_image_features(<span class="va">self</span>, images: torch.Tensor):</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        image_features <span class="op">=</span> <span class="va">self</span>.image_model.forward_features(images)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        image_features <span class="op">=</span> einops.rearrange(image_features, <span class="st">"bs num_features w h -&gt; bs (w h) num_features"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        encoder_outputs <span class="op">=</span> <span class="va">self</span>.projector(image_features)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> transformers.modeling_outputs.BaseModelOutputWithPastAndCrossAttentions(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            last_hidden_state<span class="op">=</span>encoder_outputs,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, images: torch.Tensor, tokenized_text: <span class="bu">dict</span>[<span class="bu">str</span>, torch.Tensor]):</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        encoder_outputs <span class="op">=</span> <span class="va">self</span>.project_image_features(images)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.language_model(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            encoder_outputs<span class="op">=</span>encoder_outputs,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            decoder_input_ids<span class="op">=</span>tokenized_text[<span class="st">"input_ids"</span>],</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            decoder_attention_mask<span class="op">=</span>tokenized_text[<span class="st">"attention_mask"</span>],</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> generate(<span class="va">self</span>, images: torch.Tensor, generator_kwargs: <span class="bu">dict</span>[<span class="bu">str</span>, Union[<span class="bu">int</span>, <span class="bu">float</span>]]):</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        encoder_outputs <span class="op">=</span> <span class="va">self</span>.project_image_features(images)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.language_model.generate(</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>            encoder_outputs<span class="op">=</span>encoder_outputs,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">**</span>generator_kwargs</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="training" class="level2">
+<h2 class="anchored" data-anchor-id="training">Training</h2>
+<p>There are a few compulsory things to do when training, but also a few tricks that I used, but I am not sure if they helped. I will go through them all. - We need to prepend a starting token to the decoder input ids. This is because we want to predict the next token and we need a starting token to do so. This also means prepending a 1 to the decoder attention mask. - The loss function is there to predict the next token. This means if we have the caption “A dog is running” we want to predict “dog” when we see “A”. Therefore, we need to shift the decoder input ids by one. This means that the input token ids are the the same as the output token ids, but shifted by one. <code>loss_fn</code> is simply <code>nn.CrossEntropyLoss()</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_loss_fn(loss_fn, logits: torch.Tensor, labels: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    shift_logits <span class="op">=</span> logits[:, :<span class="op">-</span><span class="dv">1</span>, :].contiguous() <span class="co"># (batch_size, seq_len - 1, dim)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    shift_labels <span class="op">=</span> labels[:, <span class="dv">1</span>:].contiguous() <span class="co"># (batch_size, seq_len - 1)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss_fn(shift_logits.view(<span class="op">-</span><span class="dv">1</span>, shift_logits.size(<span class="op">-</span><span class="dv">1</span>)), shift_labels.view(<span class="op">-</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Keep in mind that the <code>projector</code> in the above model is the only part that is untrained. Usually, we would freeze the pretrained models, however, in my experiments I found that it was better to train the entire model. I do not however train any of the token embeddings. This is due to the fact that in the COCO dataset I only see a limited number of tokens. Therefore, I do not want to train the embeddings to overfit to the COCO dataset. If you look at the <a href="https://www.kaggle.com/code/sachin/flan-t5-captions#Training">LightningModule</a> you can see (in <code>__init__</code>) how I leave it as an option to freeze the image encoder and the LLM.</li>
+<li>Finally, in <code>configure_optimizers</code> I set the learning rate of the LLM to be a quarter of the projection layer, and the image model to be a half of the projection layer. This is because of my assumption that the LLM has seen far more training data than an image model, and I do not want to lose that information. Oh, and I have made it a habit to use <code>OneCycleLR</code> scheduler. I find it more effective than a using an optimizer on its own.</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> configure_optimizers(<span class="va">self</span>) <span class="op">-&gt;</span> torch.optim.Optimizer:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> [</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.language_model.decoder.block.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr <span class="op">/</span> <span class="dv">4</span>},</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.language_model.decoder.final_layer_norm.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr <span class="op">/</span> <span class="dv">4</span>},</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.image_model.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr <span class="op">/</span> <span class="dv">2</span>},</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"params"</span>: <span class="va">self</span>.model.projector.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr},</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        optimizer <span class="op">=</span> torch.optim.Adam(params)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        scheduler <span class="op">=</span> torch.optim.lr_scheduler.OneCycleLR(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            optimizer,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            max_lr<span class="op">=</span>[param_group[<span class="st">"lr"</span>] <span class="cf">for</span> param_group <span class="kw">in</span> optimizer.param_groups],</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            total_steps<span class="op">=</span><span class="va">self</span>.trainer.estimated_stepping_batches,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [optimizer], [scheduler]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The updated results are also show below.</p>
+</section>
+<section id="update-10092023-training-with-resetting-cross-attention-layers" class="level2">
+<h2 class="anchored" data-anchor-id="update-10092023-training-with-resetting-cross-attention-layers">Update (10/09/2023): Training with resetting cross attention layers</h2>
+<p>I recently realised that I was training the whole decoder with the same learning rate. However, the cross attention layers relies on the fact that the incoming signals ought to be from a language model which it is not. Therefore, I reset all the weights in all cross attention layers (<code>EncoderDecoderLayer</code>) instead of keeping the pretrained weights. This is done as shown below:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> block <span class="kw">in</span> <span class="va">self</span>.model.language_model.decoder.block:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    cross_attention_layer <span class="op">=</span> block.layer[<span class="dv">1</span>].EncDecAttention</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.q.weight)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.k.weight)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.v.weight)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    nn.init.xavier_uniform_(cross_attention_layer.o.weight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>Let’s take a look at the results of our captioning model. In the first set of results, the second and fifth captions are correct, but the second to last caption is a complete miss. This was when we had only five linear layers in the projection layer. <img src="https://i.imgur.com/ipebOyr.png" class="img-fluid"></p>
+<p>When we increased the number of linear layers to 12, the validation loss improved (as expected). In the second set of results, the third, fourth, and fifth captions are correct, but the first caption is a complete miss, talking about tennis. This is likely due to the model overfitting, as there are quite a few tennis images in the COCO dataset. <img src="https://i.imgur.com/gOMOedU.png" class="img-fluid"></p>
+<p>Update (10/09/2023): The following results are from when the cross attention layer weights were reset. Again while not perfect, seems to work better than the two models demonstrated above. <img src="https://i.imgur.com/bzUHnp6.png" class="img-fluid"></p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This model will clearly not be winning any awards, but none the less it was a fun experiment. I hope you learnt something new. If you have any questions or comments please leave them below.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

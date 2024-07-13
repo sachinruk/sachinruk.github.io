@@ -342,50 +342,59 @@ o_i &amp;= \sum_{t=1}^{i} a_{tj} v_j
 <h2 class="anchored" data-anchor-id="batching">Batching</h2>
 <p>The above method took ~500ms to generate the output. We can optimise further by using a batch instead of the for loop shown above. The steps needed to convert the above process is as follows:</p>
 <ol type="1">
-<li>Repeat each of the key value pairs to the size of the batch. I have use <code>torch.expand</code> here instead of <code>torch.repeat</code> in the hopes that there is no copy overhead, but I am not sure if this actually copied tensors or not: <code>expanded_kv_cache = tuple((k.expand(num_classes, -1, -1, -1), v.expand(num_classes, -1, -1, -1)) for k, v in kv_cache)</code></li>
+<li>Repeat each of the key value pairs to the size of the batch. I have use <code>torch.expand</code> here instead of <code>torch.repeat</code> in the hopes that there is no copy overhead, but I am not sure if this actually copied tensors or not:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>expanded_kv_cache <span class="op">=</span> <span class="bu">tuple</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        k.expand(num_classes, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>), </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        v.expand(num_classes, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k, v <span class="kw">in</span> kv_cache</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
 <li>Despite being able to pass in the stacked keys and values, for some reason the model requires you to stack the new <code>attention_mask</code> (but not the <code>input_ids</code>).</li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>    inputs[<span class="st">"attention_mask"</span>] <span class="op">=</span> torch.cat(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        [</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>            root_inputs[<span class="st">"attention_mask"</span>].expand(num_classes, <span class="op">-</span><span class="dv">1</span>), </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            inputs[<span class="st">"attention_mask"</span>]</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ], </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        dim<span class="op">=-</span><span class="dv">1</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> model(<span class="op">**</span>inputs, past_key_values<span class="op">=</span>expanded_kv_cache, return_dict<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>    inputs[<span class="st">"attention_mask"</span>] <span class="op">=</span> torch.cat(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            root_inputs[<span class="st">"attention_mask"</span>].expand(num_classes, <span class="op">-</span><span class="dv">1</span>), </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            inputs[<span class="st">"attention_mask"</span>]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        ], </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        dim<span class="op">=-</span><span class="dv">1</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> model(<span class="op">**</span>inputs, past_key_values<span class="op">=</span>expanded_kv_cache, return_dict<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol type="1">
 <li>Identify the last index of each sentence. Because we are stacking sentences of varying lengths, the relevant word may not be at the last position in the sequence dimension. Simply taking the last index might cause you to mistakenly include a padded token. To avoid this, use the attention mask to accurately find the last index of each sentence. <code>last_indices = inputs["attention_mask"][:, -seq_length:].sum(dim=-1) - 1</code></li>
 </ol>
 <p>The final code snippet is as follows. This method takes ~250ms, halving the initial for loop time.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> processor(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        text <span class="op">=</span> [class_name <span class="op">+</span> prompt_end <span class="cf">for</span> class_name <span class="kw">in</span> class_names], </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        padding<span class="op">=</span><span class="va">True</span>, </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        truncation<span class="op">=</span><span class="va">True</span>, </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        return_tensors<span class="op">=</span><span class="st">"pt"</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    ).to(device)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    num_classes <span class="op">=</span> <span class="bu">len</span>(class_names)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    inputs[<span class="st">"attention_mask"</span>] <span class="op">=</span> torch.cat(</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        [</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            root_inputs[<span class="st">"attention_mask"</span>].expand(num_classes, <span class="op">-</span><span class="dv">1</span>), </span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            inputs[<span class="st">"attention_mask"</span>]</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        ], </span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        dim<span class="op">=-</span><span class="dv">1</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    ) </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    expanded_kv_cache <span class="op">=</span> <span class="bu">tuple</span>((k.expand(num_classes, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>), v.expand(num_classes, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)) <span class="cf">for</span> k, v <span class="kw">in</span> kv_cache)</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> model(<span class="op">**</span>inputs, past_key_values<span class="op">=</span>expanded_kv_cache, return_dict<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    num_elements, seq_length <span class="op">=</span> inputs[<span class="st">"input_ids"</span>].shape</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    last_indices <span class="op">=</span> inputs[<span class="st">"attention_mask"</span>][:, <span class="op">-</span>seq_length:].<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> F.softmax(</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        torch.cat(</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>            [</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>                outputs.logits[torch.arange(num_elements), last_indices, yes_id], </span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>                outputs.logits[torch.arange(num_elements), last_indices, no_id]</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            ], </span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=</span><span class="dv">0</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        ).squeeze(), dim<span class="op">=</span><span class="dv">0</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>probs.T</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> processor(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        text <span class="op">=</span> [class_name <span class="op">+</span> prompt_end <span class="cf">for</span> class_name <span class="kw">in</span> class_names], </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        padding<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        truncation<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        return_tensors<span class="op">=</span><span class="st">"pt"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ).to(device)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    num_classes <span class="op">=</span> <span class="bu">len</span>(class_names)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    inputs[<span class="st">"attention_mask"</span>] <span class="op">=</span> torch.cat(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            root_inputs[<span class="st">"attention_mask"</span>].expand(num_classes, <span class="op">-</span><span class="dv">1</span>), </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            inputs[<span class="st">"attention_mask"</span>]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        ], </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        dim<span class="op">=-</span><span class="dv">1</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    expanded_kv_cache <span class="op">=</span> <span class="bu">tuple</span>((k.expand(num_classes, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>), v.expand(num_classes, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)) <span class="cf">for</span> k, v <span class="kw">in</span> kv_cache)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> model(<span class="op">**</span>inputs, past_key_values<span class="op">=</span>expanded_kv_cache, return_dict<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    num_elements, seq_length <span class="op">=</span> inputs[<span class="st">"input_ids"</span>].shape</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    last_indices <span class="op">=</span> inputs[<span class="st">"attention_mask"</span>][:, <span class="op">-</span>seq_length:].<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> F.softmax(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        torch.cat(</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            [</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                outputs.logits[torch.arange(num_elements), last_indices, yes_id], </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                outputs.logits[torch.arange(num_elements), last_indices, no_id]</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>            ], </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        ).squeeze(), dim<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>probs.T</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Fun Fact: We can use other VLMs besides <code>phi-3-vision</code>. However, make sure you initialise <code>processor.tokenizer.padding_side = "right"</code> since I spend almost a day with a <del>bug</del> feature due to the padding happening on the left with the <code>Llava</code> models.</p>
 </section>
 <section id="multi-class-extension" class="level2">
@@ -398,40 +407,40 @@ o_i &amp;= \sum_{t=1}^{i} a_{tj} v_j
 </figure>
 </div>
 <p>The prompt in this scenario was structured as follows for the image shown:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>long_sleeve_tshirt <span class="op">=</span> <span class="st">"https://i.ebayimg.com/images/g/-eoAAOSwnHZYRpKL/s-l1200.webp"</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> load_image(long_sleeve_tshirt)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="st">"""&lt;|user|&gt;</span><span class="ch">\n</span><span class="st">You are a fashion expert. Only answer with the number of the following options:</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">1. Shoes</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">2. Long-sleeve shirt</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">3. T-shirt</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">4. Jacket</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="st">5. Skirt</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">6. Sandals</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;|image_1|&gt;</span><span class="ch">\n</span><span class="st"> This image contains the option: """</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>prompt_end <span class="op">=</span> <span class="st">"&lt;|end|&gt;</span><span class="ch">\n</span><span class="st">&lt;|assistant|&gt;</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>multiclass_inputs <span class="op">=</span> processor(text<span class="op">=</span>prompt <span class="op">+</span> prompt_end, images<span class="op">=</span>[image], padding<span class="op">=</span><span class="st">"longest"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>).to(device)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> model(<span class="op">**</span>multiclass_inputs, return_dict<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>long_sleeve_tshirt <span class="op">=</span> <span class="st">"https://i.ebayimg.com/images/g/-eoAAOSwnHZYRpKL/s-l1200.webp"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> load_image(long_sleeve_tshirt)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="st">"""&lt;|user|&gt;</span><span class="ch">\n</span><span class="st">You are a fashion expert. Only answer with the number of the following options:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="st">1. Shoes</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="st">2. Long-sleeve shirt</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="st">3. T-shirt</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">4. Jacket</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="st">5. Skirt</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="st">6. Sandals</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;|image_1|&gt;</span><span class="ch">\n</span><span class="st"> This image contains the option: """</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>prompt_end <span class="op">=</span> <span class="st">"&lt;|end|&gt;</span><span class="ch">\n</span><span class="st">&lt;|assistant|&gt;</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>multiclass_inputs <span class="op">=</span> processor(text<span class="op">=</span>prompt <span class="op">+</span> prompt_end, images<span class="op">=</span>[image], padding<span class="op">=</span><span class="st">"longest"</span>, return_tensors<span class="op">=</span><span class="st">"pt"</span>).to(device)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> model(<span class="op">**</span>multiclass_inputs, return_dict<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The tokens are extracted as what follows. Note that I used <code>range(1, 7)</code> instead of <code>range(6)</code> since python is zero indexed.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>token_ids <span class="op">=</span> []</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> processor.tokenizer</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>):</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    token_id <span class="op">=</span> torch.tensor(tokenizer.encode(<span class="bu">str</span>(i), add_special_tokens<span class="op">=</span><span class="va">False</span>)[<span class="op">-</span><span class="dv">1</span>]).unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> token_id.shape <span class="op">==</span> torch.Size([<span class="dv">1</span>, <span class="dv">1</span>]):</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"id is multiple tokens"</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    token_ids.append(token_id)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>all_token_ids <span class="op">=</span> torch.cat(token_ids).squeeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>token_ids <span class="op">=</span> []</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> processor.tokenizer</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    token_id <span class="op">=</span> torch.tensor(tokenizer.encode(<span class="bu">str</span>(i), add_special_tokens<span class="op">=</span><span class="va">False</span>)[<span class="op">-</span><span class="dv">1</span>]).unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> token_id.shape <span class="op">==</span> torch.Size([<span class="dv">1</span>, <span class="dv">1</span>]):</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"id is multiple tokens"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    token_ids.append(token_id)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>all_token_ids <span class="op">=</span> torch.cat(token_ids).squeeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Finally, in order to get the probabilities, I can do:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>F.softmax(output.logits[:, <span class="op">-</span><span class="dv">1</span>, all_token_ids], dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tensor([[<span class="fl">0.3414</span>, <span class="fl">0.2539</span>, <span class="fl">0.0979</span>, <span class="fl">0.1892</span>, <span class="fl">0.0834</span>, <span class="fl">0.0341</span>]], device<span class="op">=</span><span class="st">'cuda:0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>F.softmax(output.logits[:, <span class="op">-</span><span class="dv">1</span>, all_token_ids], dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>tensor([[<span class="fl">0.3414</span>, <span class="fl">0.2539</span>, <span class="fl">0.0979</span>, <span class="fl">0.1892</span>, <span class="fl">0.0834</span>, <span class="fl">0.0341</span>]], device<span class="op">=</span><span class="st">'cuda:0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The shoes unfortunately got the highest probability, while the correct answer of a “Long sleeve t-shirt” comes in at second. I tried swapping the order of the items and it seems that the LLM has a tendency to prefer 1 regardless of what the context is.</p>
 </section>
 <section id="gotchas-and-final-thoughts" class="level2">
 <h2 class="anchored" data-anchor-id="gotchas-and-final-thoughts">Gotchas and Final Thoughts</h2>
 <p>When I tried Llava as opposed to Phi-3 during my experiments, I could not get the probabilities between the batched and the for loop method to match for a while. It turns out, this was due to the fact that padding does not happen on the right by default with all models. So just to be safe, I would put the following snippet to force it to use this method.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>processor.tokenizer.padding_side <span class="op">=</span> <span class="st">"right"</span>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>processor.tokenizer.padding_side <span class="op">=</span> <span class="st">"right"</span>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Unfortunately, images do take up a large number of tokens (roughly 2000 in my case). So the benefit of caching everything before the <code>&lt;image&gt;</code> token does not amount to much. Especially given the O(n^2) complexity of transformers. I tried resizing the image, but this didn’t help. However, I am hoping that there is some parameter in the <code>processor</code> which will allow me to take up fewer tokens for the image. It makes very little sense that an image will take more than a 1000 tokens given that even GPT-4 only takes up 255 tokens per image according to their <a href="https://openai.com/api/pricing/">pricing page</a>. I have posed this question on <a href="https://stackoverflow.com/questions/78635798/the-number-of-tokens-that-an-image-takes-is-quite-large-2000-is-this-correct">stackoverflow</a> and if you have any insights, I would really appreciate it.</p>
 <p>Also as a side note, remember to use <code>torch.inference_mode()</code> to ensure we don’t spend more time accidentally calculating gradients.</p>
 <p>There are other tricks such as <code>torch.compile</code> but unfortunately, that trick is not available for anything less than a A10 machine.</p>

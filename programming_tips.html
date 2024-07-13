@@ -200,7 +200,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="python">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="pytorch">pytorch <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="python">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="pytorch">pytorch <span class="quarto-category-count">(3)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -229,7 +229,42 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="python" data-listing-date-sort="1672664400000" data-listing-file-modified-sort="1719661549131" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="51">
+<div class="quarto-post image-right" data-index="0" data-categories="pytorch" data-listing-date-sort="1692021600000" data-listing-file-modified-sort="1692080087496" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="118">
+<div class="thumbnail">
+<p><a href="./programming_tips/cosine-embedding-loss.html" class="no-external"></a></p><a href="./programming_tips/cosine-embedding-loss.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./programming_tips/cosine-embedding-loss.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./programming_tips/cosine-embedding-loss.html" class="no-external">Thoughts on CosineEmbeddingLoss</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./programming_tips/cosine-embedding-loss.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('pytorch'); return false;">
+pytorch
+</div>
+</div>
+<div class="listing-description">
+<a href="./programming_tips/cosine-embedding-loss.html" class="no-external"><span class="math display">\[
+\begin{align}
+\text{loss}(x, y) =
+\begin{cases}
+1 - \cos(x_1, x_2) &amp; \text{if } y = 1 \\
+\max(0, \cos(x_1, x_2) - \text{margin}) &amp; \text{if } y =…</span></a>
+</div>
+</div>
+<div class="metadata">
+<a href="./programming_tips/cosine-embedding-loss.html" class="no-external">
+<div class="listing-date">
+Aug 15, 2023
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="python" data-listing-date-sort="1672664400000" data-listing-file-modified-sort="1692925869247" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="125">
 <div class="thumbnail">
 <p><a href="./programming_tips/pydantic-post-init.html" class="no-external"></a></p><a href="./programming_tips/pydantic-post-init.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
@@ -248,14 +283,7 @@ python
 </div>
 </div>
 <div class="listing-description">
-<a href="./programming_tips/pydantic-post-init.html" class="no-external"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im">import</span> pydantic</span>
-<span id="cb1-2"></span>
-<span id="cb1-3"><span class="kw">class</span> HyperParameters(pydantic.BaseModel):</span>
-<span id="cb1-4">    batch_size: <span class="bu">int</span> <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb1-5"></span>
-<span id="cb1-6">    <span class="at">@property</span></span>
-<span id="cb1-7">    <span class="kw">def</span> upload_batch_counts(<span class="va">self</span>):</span>
-<span id="cb1-8">        <span class="cf">return</span> <span class="dv">1_000_000</span> <span class="op">//</span> <span class="va">self</span>.batch_…</span><span id="cb1-9"></span><span id="cb1-10"><span class="kw"></span><span class="co"></span></span><span id="cb1-11"><span class="op"></span></span></code></pre></a>
+<a href="./programming_tips/pydantic-post-init.html" class="no-external">If you want to update an existing property, you can do this:</a>
 </div>
 </div>
 <div class="metadata">
@@ -266,7 +294,7 @@ Jan 3, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="pytorch" data-listing-date-sort="1672578000000" data-listing-file-modified-sort="1719661549131" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
+<div class="quarto-post image-right" data-index="2" data-categories="pytorch" data-listing-date-sort="1672578000000" data-listing-file-modified-sort="1688885791799" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
 <div class="thumbnail">
 <p><a href="./programming_tips/choosing-timm-model.html" class="no-external"></a></p><a href="./programming_tips/choosing-timm-model.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
@@ -296,7 +324,7 @@ Jan 2, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="pytorch" data-listing-date-sort="1672491600000" data-listing-file-modified-sort="1719661549131" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="25">
+<div class="quarto-post image-right" data-index="3" data-categories="pytorch" data-listing-date-sort="1672491600000" data-listing-file-modified-sort="1688885501036" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="25">
 <div class="thumbnail">
 <p><a href="./programming_tips/pl-learning-rate-finder.html" class="no-external"></a></p><a href="./programming_tips/pl-learning-rate-finder.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
