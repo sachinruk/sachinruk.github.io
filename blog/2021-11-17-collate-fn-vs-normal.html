@@ -127,11 +127,11 @@ ga('send', {
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="HuggingFace Tokenizers as Collate Functions Timing 🤗 🤖 – deepschool.ai">
 <meta property="og:description" content="Timing comparison of tokenizer as collate function and after batching">
-<meta property="og:image" content="https://sachinruk.github.io/blog/images/bert.jpeg">
+<meta property="og:image" content="https://sachinruk.github.io/images/tokenizers.webp">
 <meta property="og:site_name" content="deepschool.ai">
 <meta name="twitter:title" content="HuggingFace Tokenizers as Collate Functions Timing 🤗 🤖 – deepschool.ai">
 <meta name="twitter:description" content="Timing comparison of tokenizer as collate function and after batching">
-<meta name="twitter:image" content="https://sachinruk.github.io/blog/images/bert.jpeg">
+<meta name="twitter:image" content="https://sachinruk.github.io/images/tokenizers.webp">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -230,7 +230,7 @@ ga('send', {
 
 
 <p>Since I have been trying to use collate functions alot I wanted to see what the speed was with. TLDR: It’s quicker to use tokenizer after normal batching than it is through a collate function. Not sure why.</p>
-<div id="cell-4" class="cell" data-execution_count="30">
+<div id="cell-3" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>BATCH_SIZE <span class="op">=</span> <span class="dv">64</span></span>
@@ -241,7 +241,7 @@ ga('send', {
 </details>
 </div>
 <p>We will be using the <a href="https://huggingface.co/datasets/snli">SNLI dataset</a> sentences (and throwing away labels) for this experiment.</p>
-<div id="cell-6" class="cell" data-outputid="5918b8bd-d835-45c0-ba0a-41a23b17f5c6" data-execution_count="3">
+<div id="cell-5" class="cell" data-outputid="5918b8bd-d835-45c0-ba0a-41a23b17f5c6" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>snli <span class="op">=</span> datasets.load_dataset(<span class="st">'snli'</span>, split<span class="op">=</span><span class="st">'train'</span>)</span>
@@ -303,7 +303,7 @@ ga('send', {
 </div>
 </div>
 <p>Let’s define a collate function, which is just your usual HuggingFace tokenizer, but with some defaults.</p>
-<div id="cell-8" class="cell" data-outputid="07956863-9f5f-4b22-99bd-2aa7c284ddd9" data-execution_count="23">
+<div id="cell-7" class="cell" data-outputid="07956863-9f5f-4b22-99bd-2aa7c284ddd9" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(LANGUAGE_MODEL)</span>
@@ -345,7 +345,7 @@ ga('send', {
 </div>
 </div>
 <p>As can be seen in the following two experiments, the inline <code>collate_fn</code> is twice as slow. Would be great to hear your opinions as to why. My only guess is that considering the DataLoader multiprocessor is clashing with the tokenizer multiprocessor. However, changing <code>workers</code> to <code>1</code> in second cell below did nothing to help.</p>
-<div id="cell-10" class="cell" data-outputid="29b9cfa2-1f92-4140-a2c5-f8bd59babca5" data-execution_count="32">
+<div id="cell-9" class="cell" data-outputid="29b9cfa2-1f92-4140-a2c5-f8bd59babca5" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>time</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sentence_dl <span class="op">=</span> DataLoader(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    sentence_ds,</span>
@@ -368,7 +368,7 @@ ga('send', {
 Wall time: 13.8 s</code></pre>
 </div>
 </div>
-<div id="cell-11" class="cell" data-outputid="7a3aa4f6-1042-40a6-c472-edc5b96a75f4" data-execution_count="33">
+<div id="cell-10" class="cell" data-outputid="7a3aa4f6-1042-40a6-c472-edc5b96a75f4" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>time</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sentence_dl <span class="op">=</span> DataLoader(</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    sentence_ds,</span>

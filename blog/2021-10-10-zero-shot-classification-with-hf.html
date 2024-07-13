@@ -127,11 +127,11 @@ ga('send', {
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Zero Shot Classification with Huggingface + Sentence Transformers 🤗 🤖 – deepschool.ai">
 <meta property="og:description" content="Fast Zero Shot classification of text">
-<meta property="og:image" content="https://sachinruk.github.io/blog/images/bert.jpeg">
+<meta property="og:image" content="https://sachinruk.github.io/images/bert.jpeg">
 <meta property="og:site_name" content="deepschool.ai">
 <meta name="twitter:title" content="Zero Shot Classification with Huggingface + Sentence Transformers 🤗 🤖 – deepschool.ai">
 <meta name="twitter:description" content="Fast Zero Shot classification of text">
-<meta name="twitter:image" content="https://sachinruk.github.io/blog/images/bert.jpeg">
+<meta name="twitter:image" content="https://sachinruk.github.io/images/bert.jpeg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -239,7 +239,7 @@ ga('send', {
 </header>
 
 
-<p><img src="https://pbs.twimg.com/profile_banners/2496408438/1579879132/1500x500.png" class="img-fluid" alt="bert image"> Photo credit: <a href="https://twitter.com/bertsesame/">Bert</a>.</p>
+<p><img src="../images/bert.jpeg" class="img-fluid" alt="bert image"> Photo credit: <a href="https://twitter.com/bertsesame/">Bert</a>.</p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>When it comes to text classification Bert/ Distilbert is our goto. However, quite often we lack labels to start off our classification process. Huggingface released a tool about a year ago to do exactly this but by using <a href="https://huggingface.co/transformers/model_doc/bart.html">BART</a>. The concept behind zero shot classification is to match the text to a <strong>topic word</strong>. The words used in a topic sentence contains information that describes the cluster as opposed to a one hot encoded vector.</p>
