@@ -2,182 +2,186 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sachinruk.github.io/blog.html</loc>
-    <lastmod>2024-07-13T05:02:44.986Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips.html</loc>
-    <lastmod>2023-07-09T06:49:13.878Z</lastmod>
+    <lastmod>2024-08-03T01:52:49.901Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips/cosine-embedding-loss.html</loc>
-    <lastmod>2023-08-15T06:14:47.496Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.481Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips/2021-08-28-weighted-cross-entropy-loss.html</loc>
-    <lastmod>2023-07-09T06:38:41.723Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.481Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips/pydantic-post-init.html</loc>
-    <lastmod>2023-08-25T01:11:09.247Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.481Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2023-08-30-caption-models.html</loc>
-    <lastmod>2024-07-13T04:54:41.743Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2016-10-16-Quantile-Regression.html</loc>
-    <lastmod>2024-07-13T04:49:46.649Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2020-11-28-focal-loss.html</loc>
-    <lastmod>2024-07-13T04:50:44.333Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.406Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2022-01-26-visionencoderdecoder-model-training.html</loc>
-    <lastmod>2023-08-30T12:43:40.372Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-10-10-zero-shot-classification-with-hf.html</loc>
-    <lastmod>2024-07-13T04:27:50.217Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.454Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2015-08-06-Sample-Variance.html</loc>
-    <lastmod>2024-07-13T04:48:53.449Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2015-10-20-Reversible-Jump-MCMC.html</loc>
-    <lastmod>2024-07-13T04:46:23.319Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2016-10-20-Keras-LSTM.html</loc>
-    <lastmod>2024-07-13T04:49:59.075Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-12-28-vit-to-gpt2-encoder-decoder-model.html</loc>
-    <lastmod>2023-08-16T11:17:18.461Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2015-10-09-Chinese-Restaurant-Process.html</loc>
-    <lastmod>2024-07-13T04:47:56.767Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2015-08-10-von-Mises-Fisher.html</loc>
-    <lastmod>2024-07-13T04:48:33.042Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-04-05-tabnet_from_scratch.html</loc>
-    <lastmod>2024-07-13T04:51:50.889Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2022-03-22-ann-part2.html</loc>
-    <lastmod>2023-08-16T11:16:15.917Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2017-07-04-DeepSchool.io.html</loc>
-    <lastmod>2024-07-13T04:50:13.389Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2021-07-03-image-patches.html</loc>
-    <lastmod>2024-07-13T04:52:31.764Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2022-08-07-transformer_compression.html</loc>
-    <lastmod>2024-07-13T04:55:22.189Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2024-02-11-DDPM-to-DDIM.html</loc>
-    <lastmod>2024-07-13T04:54:03.488Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/index.html</loc>
-    <lastmod>2023-08-26T03:17:02.926Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2015-08-02-Normal-Distribution.html</loc>
-    <lastmod>2024-07-13T04:49:05.738Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2022-02-13-pytorch-prefetch-experiment.html</loc>
-    <lastmod>2024-07-13T04:21:47.620Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2021-02-15-tensorflow-learning-rate-finder.html</loc>
-    <lastmod>2024-07-13T04:50:58.476Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2024-06-29-kv-cache.html</loc>
-    <lastmod>2024-07-13T04:53:44.479Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2021-03-07-clip.html</loc>
-    <lastmod>2024-07-13T04:51:28.186Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2022-11-07-t5-for-grammar-correction.html</loc>
-    <lastmod>2024-07-13T04:55:06.266Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2021-03-07-clip.html</loc>
+    <lastmod>2024-08-03T02:15:16.449Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2024-06-29-kv-cache.html</loc>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2021-02-15-tensorflow-learning-rate-finder.html</loc>
+    <lastmod>2024-08-03T02:15:16.406Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2022-02-13-pytorch-prefetch-experiment.html</loc>
+    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2015-08-02-Normal-Distribution.html</loc>
+    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/index.html</loc>
+    <lastmod>2024-08-03T02:15:16.480Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2024-02-11-DDPM-to-DDIM.html</loc>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2022-08-07-transformer_compression.html</loc>
+    <lastmod>2024-08-03T02:15:16.457Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2021-07-03-image-patches.html</loc>
+    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2017-07-04-DeepSchool.io.html</loc>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2022-03-22-ann-part2.html</loc>
+    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2024-07-31-argo.html</loc>
+    <lastmod>2024-08-03T02:15:16.459Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2022-03-20-kmeans.html</loc>
-    <lastmod>2024-07-13T04:19:19.084Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-11-17-collate-fn-vs-normal.html</loc>
-    <lastmod>2024-07-13T04:28:33.216Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.455Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2016-08-08-XgBoost.html</loc>
-    <lastmod>2024-07-13T04:49:20.507Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2017-08-24-Docker-for-Data-Science.html</loc>
-    <lastmod>2024-07-13T04:50:27.497Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.406Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2023-10-14-Why-Vote-YES.html</loc>
-    <lastmod>2023-10-14T00:34:32.926Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2022-09-25-grammar-correction-via-gpt2.html</loc>
-    <lastmod>2024-07-13T04:55:14.789Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.457Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2023-04-18-ddpm.html</loc>
-    <lastmod>2024-07-13T04:54:57.890Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2022-07-03-ds-tests.html</loc>
-    <lastmod>2024-07-13T04:55:33.965Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.457Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-08-01-dino-self-supervised-vision-transformers.html</loc>
-    <lastmod>2024-07-13T04:52:43.557Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.454Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-06-05-pytorch-collatefn.html</loc>
-    <lastmod>2024-07-13T04:52:05.575Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2023-10-01-dreambooth.html</loc>
-    <lastmod>2024-07-13T04:54:31.852Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/ML_consulting.html</loc>
-    <lastmod>2023-07-09T06:38:41.617Z</lastmod>
+    <lastmod>2024-08-03T01:52:49.846Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips/2021-08-21-coco-semantic-segmentation-data.html</loc>
-    <lastmod>2024-07-13T04:31:07.117Z</lastmod>
+    <lastmod>2024-08-03T02:15:16.481Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips/choosing-timm-model.html</loc>
-    <lastmod>2023-07-09T06:56:31.799Z</lastmod>
+    <lastmod>2024-08-03T01:52:49.902Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/programming_tips/pl-learning-rate-finder.html</loc>
-    <lastmod>2023-07-09T06:51:41.036Z</lastmod>
+    <lastmod>2024-08-03T01:52:49.902Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/DL_Course.html</loc>
-    <lastmod>2023-07-09T06:38:41.617Z</lastmod>
+    <lastmod>2024-08-03T01:52:49.846Z</lastmod>
   </url>
 </urlset>
