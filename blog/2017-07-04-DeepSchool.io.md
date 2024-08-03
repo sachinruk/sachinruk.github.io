@@ -2,9 +2,9 @@
 layout: post
 title: "DeepSchool.io"
 modified:
-categories: blog
+categories:
 excerpt: Open Source Deep Learning learning.
-tags: [Deep Learning, Tutorial]
+tags: [Deep Learning]
 
 date: 2017-07-04
 share: true

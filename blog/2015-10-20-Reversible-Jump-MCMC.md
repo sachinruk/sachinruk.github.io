@@ -2,10 +2,10 @@
 layout: post
 title: "Reversible jump MCMC"
 modified:
-categories: blog
-excerpt: How to change dimensions of parameters in a Bayesian setting
-tags: [MCMC, Bayesian, clustering]
-
+categories:
+- Bayesian
+- Unsupervised Learning
+Description: How to change dimensions of parameters in a Bayesian setting
 date: 2015-10-20
 share: true
 ads: true

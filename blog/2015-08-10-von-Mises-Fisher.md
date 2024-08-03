@@ -2,7 +2,8 @@
 layout: post
 title: "von Mises-Fisher Distribution"
 modified:
-categories: blog
+categories: 
+- Statistics
 excerpt: von Mises-Fisher Distribution, mean and covariance.
 tags: [Expectation, Covariance, Exponential Distributions]
 

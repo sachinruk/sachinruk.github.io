@@ -48,6 +48,8 @@ code {
 	// Lighter colour to better highlight short code words
 	border-color: $overlay-light;
 	background-color: $overlay;
+	font-size: 1em; // Adjusted to match paragraph font-size
+	line-height: 1.5; // Adjust to match paragraph line-height if necessary
 }
 
 .page-description {

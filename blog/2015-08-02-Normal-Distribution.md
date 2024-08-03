@@ -2,10 +2,10 @@
 layout: post
 title: "Normal Distribution"
 modified:
-categories: blog
+categories: 
+- Statistics
 excerpt: Derive mean and variance of normal distribution.
 tags: [Normal-Dist, Gaussian, Mean, Variance]
-
 date: 2015-08-02
 share: true
 ads: true

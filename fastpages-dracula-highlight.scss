@@ -26,6 +26,7 @@ $dt-green-light: rgb(172, 229, 145);
 [class^="language-"]:not(.language-plaintext) code {
     background-color: $dt-code-cell-background !important;
     color: $dt-gray-light;
+    font-size: 1em;  // Adjust font size here
 }
 
 .language-python + .language-plaintext code { background-color: white !important; }
@@ -73,13 +74,13 @@ $dt-green-light: rgb(172, 229, 145);
  */
 
 .highlight {
-    background: $dt-code-cell-background !important;
-    color: $dt-gray-light !important;
-    pre, code {
-     background: $dt-code-cell-background;
-     color: $dt-gray-light;
-     font-size: 110%;
-    }
+  background: $dt-code-cell-background !important;
+  color: $dt-gray-light !important;
+  pre, code {
+      background: $dt-code-cell-background;
+      color: $dt-gray-light;
+      font-size: 1em;  // Changed to match the paragraph font size
+  }
    
     .hll,
     .s,
@@ -218,6 +219,6 @@ $dt-green-light: rgb(172, 229, 145);
     }
 }
 
-p code{
-  font-size: 19px;
+p code {
+  font-size: 1em;  // Changed to match the paragraph font size
 }

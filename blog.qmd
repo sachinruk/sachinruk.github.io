@@ -6,3 +6,11 @@ listing:
   type: default
   categories: true
 ---
+
+---
+
+<div style="text-align: center;">
+  <img src="./images/compressing_transformer.jpg" alt="" style="height: 200px;">
+</div>
+Welcome to my random thoughts, that is mostly an evolving (not reverse) diffusion process.
+---

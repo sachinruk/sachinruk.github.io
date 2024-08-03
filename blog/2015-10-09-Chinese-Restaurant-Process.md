@@ -2,14 +2,16 @@
 layout: post
 title: "Chinese Restuarant Process"
 modified:
-categories: blog
+categories: 
+- Bayesian
+- Unsupervised Learning
 excerpt: Generative Process of the Chinese Restaurant Process (CRP).
-tags: [Bayesian, Clustering, Dirichlet Process]
 
 date: 2015-10-09
 share: true
 ads: true
 ---
+
 In this instance we generate the parameters $$\theta_k$$ from $$\mathcal{N}(\mathbf{0},3\mathbf{I})$$. The data is generated from $$\mathcal{N}(\theta_k,0.1\mathbf{I})$$. Where $$k$$ is the table. Table allocation is the main part of the CRP which is determined by:
 $$\begin{align}
 k=\begin{cases}

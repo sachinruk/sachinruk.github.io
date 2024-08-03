@@ -2,7 +2,8 @@
 layout: post
 title: "Sample Variance"
 modified:
-categories: blog
+categories: 
+- Statistics
 excerpt: Derive the 'n-1' term in sample variance.
 tags: [Variance, Degrees of Freedom]
 

@@ -2,7 +2,8 @@
 layout: post
 title: "Deep Learning Quantile Regression -  Keras"
 modified:
-categories: blog
+categories:
+- Loss Function
 excerpt: Simple code to do quantile regression with Keras
 tags: [Keras]
 

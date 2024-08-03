@@ -2,10 +2,11 @@
 layout: post
 title: "Docker for Data Science"
 modified:
-categories: blog
+categories: 
+- Docker
 excerpt: Simplifying the Installation Process.
-tags: [Data Science, Docker]
-
+tags: [Docker]
+image: ../images/docker.png
 date: 2017-08-24
 share: true
 ads: true

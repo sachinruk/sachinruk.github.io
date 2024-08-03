@@ -2,10 +2,9 @@
 layout: post
 title: "Keras LSTMs"
 modified:
-categories: blog
+categories: 
+- Deep Learning
 excerpt: How to Use LSTMs and stateful LSTMs
-tags: [Machine Learning, Keras]
-
 date: 2016-10-20
 share: true
 ads: true
