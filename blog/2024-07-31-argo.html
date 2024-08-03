@@ -241,18 +241,19 @@ ga('send', {
 <section id="dockerising-your-experiments" class="level2">
 <h2 class="anchored" data-anchor-id="dockerising-your-experiments">Dockerising your experiments</h2>
 <p>Docker is like a virtual environment but better. It goes beyond just your python environment to control almost the entire software stack. The best part is that you can build on top of the work of other engineers to build the most optimal environments without having to install software yourself.</p>
-<pre class="docker"><code>FROM pytorch/pytorch:2.3.1-cuda12.1-cudnn8-runtime@sha256:fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a
-
-WORKDIR /app
-
-# Copy the requirements.txt file into the container at /app
-COPY requirements.txt /app/
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the current directory contents into the container at /app
-COPY ./src/ /app</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ARG</span> SHA_ID=fc47f8018254e6df30f48c48f2db1c758d44de21a8c553de1a1c451a65baa70a</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> pytorch/pytorch:2.3.1-cuda12.1-cudnn8-runtime@sha256:<span class="va">$SHA_ID</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">WORKDIR</span> /app</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy the requirements.txt file into the container at /app</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> requirements.txt /app/</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Install any needed packages specified in requirements.txt</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> pip install <span class="at">--no-cache-dir</span> <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy the current directory contents into the container at /app</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">COPY</span> ./src/ /app</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>In our case we built our container on top of meta’s <code>pytorch</code> base, and installed a few libraries via a requirements.txt file. All the python source code lives under the <code>src</code> folder at the same level within the repo.</p>
 <p>Given that we have a number of projects within the repo, we do not want to build the container if we make a change to something irrelevant. In order to do this, we leverage buildkite to only build a container if there has been a change in code in the current commit, for the current folder. We use the following snippet to do this work:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">DOCKERFILE_PATHS</span><span class="op">=</span><span class="va">$(</span><span class="fu">find</span> <span class="st">"</span><span class="va">${ROOT_FOLDER}</span><span class="st">/</span><span class="va">${PROJECT_FOLDER}</span><span class="st">"</span> <span class="at">-name</span> <span class="st">"Dockerfile"</span> <span class="at">-type</span> f <span class="at">-exec</span> dirname {} <span class="dt">\;</span><span class="va">)</span></span>
