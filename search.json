@@ -872,7 +872,7 @@
     "href": "blog/2024-07-31-argo.html#kudos",
     "title": "BuildKite + ArgoWF for ML Training Jobs",
     "section": "Kudos",
-    "text": "Kudos\nBig shout out to Ryan senpai who (patiently 😅) taught me everything I know about Argo and Geoff Breemer who showed me launch.json and many other vscod goodies. Of course, biggest kudos goes to Wei Feng for setting up the Argo cluster for us."
+    "text": "Kudos\nBig shout out to Ryan senpai who (patiently 😅) taught me everything I know about Argo and Geoff Breemer who showed me launch.json and many other vscode goodies. Of course, biggest kudos goes to Wei Feng for setting up the Argo cluster for us."
   },
   {
     "objectID": "blog/2022-03-20-kmeans.html",
