@@ -221,4 +221,10 @@ $dt-green-light: rgb(172, 229, 145);
 
 p code {
   font-size: 1em;  // Changed to match the paragraph font size
+  color: $dt-red;
+  background-color: $dt-gray-dark;
+}
+
+p code:not(.sourceCode) {
+  background-color: $dt-gray;
 }
