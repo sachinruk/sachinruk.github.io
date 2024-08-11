@@ -243,6 +243,7 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In this blog, we will explore the process of creating a captioning model by leveraging a small language model (LLM). It is important to note that many of the Visual Language Models (VLMs) available today are not genuinely multimodal. With the exception of models like <a href="https://openreview.net/pdf?id=TegmlsD8oQ">Apple’s 4M</a>, there are no general-purpose multimodal models currently available. Instead, we typically train vision models to “speak” English by generating textual descriptions from visual data. However, most VLMs are not capable of generating image tokens directly. This tutorial focuses on the conversion of visual information into text, specifically in a vision-to-text context.</p>
 <p>For this tutorial, we will utilize the <code>HuggingFaceTB/SmolLM-135M-Instruct</code> as the LLM and <code>mobilenetv4_conv_medium.e500_r256_in1k</code> as the vision model. It’s worth noting that the LLM we are using is approximately 60 times smaller than the Llama3-8B model.</p>
+<p>Full code for this blog can be found <a href="https://www.kaggle.com/code/sachin/vlms-from-scratch-smollm-mobilenet-caption-model">here</a> (please upvote if useful).</p>
 </section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
