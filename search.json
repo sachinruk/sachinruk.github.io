@@ -1383,7 +1383,7 @@
     "href": "blog/2024-10-20-structured-outputs.html",
     "title": "Supercharging Structured Outputs with Open Source Models 🚀",
     "section": "",
-    "text": "In this exploration, I set out to speed up structured outputs by comparing three open-source models. Since caching a common prompt isn’t cost-effective here, I opted for the following models:\nWe specifically chose NuExtract because it claims to outperform GPT-4o for structure extraction (see their blog for more details). To follow along see my Kaggle Kernel (please upvovote).\nFor instance, let’s take this sample text from NuExtract:\nWith a target structure like this:"
+    "text": "In this exploration, I set out to speed up structured outputs by comparing three open-source models. Since caching a common prompt isn’t directly possible via an API, I opted for the following models:\nWe specifically chose NuExtract because it claims to outperform GPT-4o for structure extraction (see their blog for more details). To follow along see my Kaggle Kernel (please upvovote).\nFor instance, let’s take this sample text from NuExtract:\nWith a target structure like this:"
   },
   {
     "objectID": "blog/2024-10-20-structured-outputs.html#extraction-code",
