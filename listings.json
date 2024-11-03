@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/blog/2024-10-20-structured-outputs.html",
       "/blog/2024-08-11-vision-language-models.html",
       "/blog/2024-07-31-argo.html",
       "/blog/2024-06-29-kv-cache.html",
