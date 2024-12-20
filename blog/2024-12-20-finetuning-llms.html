@@ -431,15 +431,15 @@ ga('send', {
 <li><strong>Introduction to Hugging Face Trainer</strong></li>
 </ol>
 <p>While the Hugging Face Trainer simplifies many aspects of training, its lack of fine-grained control initially made it less appealing. Logging examples post-training was also not well-documented. This tutorial demonstrates training a large language model (LLM), using Weights &amp; Biases (wandb) for tracking, and tackling common challenges.</p>
-<ol type="1">
+<ol start="2" type="1">
 <li><strong>Collate Function Requirements</strong></li>
 </ol>
 <p>Hugging Face models need input_ids, attention_mask, and labels for loss calculation. Custom collate functions ensure these are correctly generated. For <code>*-instruct</code> models, inputs must follow a specific format to optimize convergence. This format varies slightly by model but has common patterns.</p>
-<ol type="1">
+<ol start="3" type="1">
 <li><strong>Targeted Loss Masking</strong></li>
 </ol>
 <p>When the input includes a query and the goal is to generate an answer, it’s unnecessary to calculate loss for regenerating the query. A custom mask ensures the loss focuses only on the answer portion. Techniques like cumulative sum and broadcasting are used to efficiently identify and mask everything before the target token (e.g., “assistant”).</p>
-<ol type="1">
+<ol start="4" type="1">
 <li><strong>Using Callbacks for Enhanced Functionality</strong></li>
 </ol>
 <p>Callbacks in the Hugging Face Trainer enable customization of the training loop. In this example, callbacks generate responses over the validation set at the beginning of training and at the end of each epoch. This provides insights into model performance during training. The full range of callbacks is available in the Hugging Face documentation.</p>
