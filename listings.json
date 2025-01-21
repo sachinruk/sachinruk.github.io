@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/blog/2025-01-21-Transformers-inference.html",
       "/blog/2024-12-20-finetuning-llms.html",
       "/blog/2024-10-20-structured-outputs.html",
       "/blog/2024-08-11-vision-language-models.html",
