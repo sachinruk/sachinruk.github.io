@@ -65,59 +65,19 @@
     <lastmod>2024-08-03T02:15:16.405Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2015-08-10-von-Mises-Fisher.html</loc>
-    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
+    <loc>https://sachinruk.github.io/blog/2025-04-27-parallel-experiments.html</loc>
+    <lastmod>2025-04-27T09:48:55.700Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2021-04-05-tabnet_from_scratch.html</loc>
-    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2024-12-20-finetuning-llms.html</loc>
-    <lastmod>2024-12-20T17:32:19.598Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2022-03-22-ann-part2.html</loc>
+    <loc>https://sachinruk.github.io/blog/2022-03-20-kmeans.html</loc>
     <lastmod>2024-08-03T02:15:16.456Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2017-07-04-DeepSchool.io.html</loc>
-    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
+    <loc>https://sachinruk.github.io/blog/2024-07-31-argo.html</loc>
+    <lastmod>2024-08-03T03:23:16.500Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2021-07-03-image-patches.html</loc>
-    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2021-02-15-tensorflow-learning-rate-finder.html</loc>
-    <lastmod>2024-08-03T02:15:16.406Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2022-02-13-pytorch-prefetch-experiment.html</loc>
-    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2015-08-02-Normal-Distribution.html</loc>
-    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/index.html</loc>
-    <lastmod>2024-08-03T02:15:16.480Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2024-02-11-DDPM-to-DDIM.html</loc>
-    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2022-08-07-transformer_compression.html</loc>
-    <lastmod>2024-08-03T02:15:16.457Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2025-01-21-Transformers-inference.html</loc>
-    <lastmod>2025-01-21T08:22:39.030Z</lastmod>
-  </url>
-  <url>
-    <loc>https://sachinruk.github.io/blog/2024-06-29-kv-cache.html</loc>
+    <loc>https://sachinruk.github.io/blog/2022-11-07-t5-for-grammar-correction.html</loc>
     <lastmod>2024-08-03T02:15:16.458Z</lastmod>
   </url>
   <url>
@@ -125,16 +85,60 @@
     <lastmod>2024-08-03T02:15:16.449Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2022-11-07-t5-for-grammar-correction.html</loc>
+    <loc>https://sachinruk.github.io/blog/2024-06-29-kv-cache.html</loc>
     <lastmod>2024-08-03T02:15:16.458Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2024-07-31-argo.html</loc>
-    <lastmod>2024-08-03T03:23:16.500Z</lastmod>
+    <loc>https://sachinruk.github.io/blog/2025-01-21-Transformers-inference.html</loc>
+    <lastmod>2025-01-21T08:22:39.030Z</lastmod>
   </url>
   <url>
-    <loc>https://sachinruk.github.io/blog/2022-03-20-kmeans.html</loc>
+    <loc>https://sachinruk.github.io/blog/2022-08-07-transformer_compression.html</loc>
+    <lastmod>2024-08-03T02:15:16.457Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2024-02-11-DDPM-to-DDIM.html</loc>
+    <lastmod>2024-08-03T02:15:16.458Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/index.html</loc>
+    <lastmod>2024-08-03T02:15:16.480Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2015-08-02-Normal-Distribution.html</loc>
+    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2022-02-13-pytorch-prefetch-experiment.html</loc>
     <lastmod>2024-08-03T02:15:16.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2021-02-15-tensorflow-learning-rate-finder.html</loc>
+    <lastmod>2024-08-03T02:15:16.406Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2021-07-03-image-patches.html</loc>
+    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2017-07-04-DeepSchool.io.html</loc>
+    <lastmod>2024-08-03T02:15:16.405Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2022-03-22-ann-part2.html</loc>
+    <lastmod>2024-08-03T02:15:16.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2024-12-20-finetuning-llms.html</loc>
+    <lastmod>2024-12-20T17:32:19.598Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2021-04-05-tabnet_from_scratch.html</loc>
+    <lastmod>2024-08-03T02:15:16.450Z</lastmod>
+  </url>
+  <url>
+    <loc>https://sachinruk.github.io/blog/2015-08-10-von-Mises-Fisher.html</loc>
+    <lastmod>2024-08-03T02:15:16.404Z</lastmod>
   </url>
   <url>
     <loc>https://sachinruk.github.io/blog/2021-11-17-collate-fn-vs-normal.html</loc>
