@@ -263,6 +263,7 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Most CLIP-style systems use encoder-type text models that are <strong>built to produce a single sequence embedding</strong> (e.g., via a [CLS] token or mean pooling). In contrast, this work <strong>intentionally uses a causal LLM</strong>—Qwen3 (QLoRA-tuned)—as the text tower. A causal LLM is optimized for <strong>next-token prediction</strong>, not pooled sequence representations, so it doesn’t natively hand you a single “caption vector.”</p>
 <p>To bridge that mismatch, I take a JEPA view—<strong>learn to predict in a shared embedding space</strong>—and introduce a lightweight interface that coerces a causal model into producing one vector per caption: wrap the text with special markers <code>&lt;EMBED&gt; ... &lt;/EMBED&gt;</code> and read the <strong>final hidden state at <code>&lt;/EMBED&gt;</code></strong> as the caption embedding. Paired with a MobileNetV4 vision encoder and simple projection heads, the two towers are trained on COCO to land images and captions in the same metric space, using CyCLIP/SigLIP-style objectives. The rest of the post unpacks the token trick, projection design, loss choices, and training setup.</p>
+<p>See the <a href="https://github.com/sachinruk/clip_jepa">code repo</a>.</p>
 </section>
 <section id="clip-recap" class="level2">
 <h2 class="anchored" data-anchor-id="clip-recap">CLIP Recap</h2>
@@ -315,32 +316,47 @@ ga('send', {
 <h3 class="anchored" data-anchor-id="text-embedding-with-a-causal-llm-the-trick-forward-hook">Text Embedding with a causal LLM: The <embed> trick + forward hook</h3>
 <p>Given that LLMs are designed for generation, we need a way to extract a single embedding vector from the sequence of hidden states. One way to do this is to average out the hidden states across all tokens, but this can blur the signal. Instead, I prepend <code>&lt;EMBED&gt;</code> and append <code>&lt;/EMBED&gt;</code> to the text and extract the hidden state at the closing token. The inital <code>&lt;EMBED&gt;</code> token serves as a marker to indicate that we are about to embed this sequence, as opposed to asking a question as we would normally do with a LLM.</p>
 <p>The closing <code>&lt;/EMBED&gt;</code> token indicates where to extract the embedding from. The aim is that the LLM learns to summarize the entire input text into the hidden state at this position.</p>
+<p>These two tokens need to be added to the tokenizer and model’s embedding table. Here is how to do this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_embed_tokens(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    tokenizer: Qwen2Tokenizer,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    llm_model: Qwen2_5_VLForConditionalGeneration,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> ModelComponents:</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    embed_start_token <span class="op">=</span> <span class="st">"&lt;EMBED&gt;"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    embed_end_token <span class="op">=</span> <span class="st">"&lt;/EMBED&gt;"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    tokenizer.add_special_tokens({<span class="st">"additional_special_tokens"</span>: [embed_start_token, embed_end_token]})</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    embed_start_token_id <span class="op">=</span> tokenizer.convert_tokens_to_ids(embed_start_token)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    embed_end_token_id <span class="op">=</span> tokenizer.convert_tokens_to_ids(embed_end_token)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    llm_model.resize_token_embeddings(<span class="bu">len</span>(tokenizer))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tokenizer, llm_model</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>In order to get the hidden state at the <code>&lt;/EMBED&gt;</code> token, we do the following:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> llm_model(<span class="op">**</span>inputs, output_hidden_states<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    h_last: torch.Tensor <span class="op">=</span> out.hidden_states[<span class="op">-</span><span class="dv">1</span>]  <span class="co"># [B, T+2, H]</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    last_idx <span class="op">=</span> inputs[<span class="st">"input_ids"</span>] <span class="op">==</span> model_components.embed_end_token_id</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> h_last[last_idx]  <span class="co"># [B, H]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> llm_model(<span class="op">**</span>inputs, output_hidden_states<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    h_last: torch.Tensor <span class="op">=</span> out.hidden_states[<span class="op">-</span><span class="dv">1</span>]  <span class="co"># [B, T+2, H]</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    last_idx <span class="op">=</span> inputs[<span class="st">"input_ids"</span>] <span class="op">==</span> model_components.embed_end_token_id</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> h_last[last_idx]  <span class="co"># [B, H]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The reason we do <code>out.hidden_states[-1]</code> is because without it, <code>out.hidden_states</code> contains the hidden states from all layers, and we only want the last layer. From there, we cannot simply do <code>h_last[:, -1, :]</code> since the position of the <code>&lt;/EMBED&gt;</code> token may vary depending on the length of the input text. Therefore, we create a mask <code>last_idx</code> to identify the positions of the <code>&lt;/EMBED&gt;</code> tokens in the batch and extract the corresponding hidden states.</p>
 <p>In order to learn these special token embeddings, there are two options: 1. Fine-tune the entire input embedding table, and zero out the gradients for all other tokens, which can be memory-intensive. This requires a gradient hook on the embedding weights. 2. Keep the input embedding table frozen, and add a small delta to the output embeddings only for these special tokens using a forward hook.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DeltaOnEmbedding(nn.Module):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Adds a (2, H) delta to the *output* of the input embedding only where</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">    input_ids == start_id or end_id. Keeps the base embedding frozen &amp; intact.</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, start_id: <span class="bu">int</span>, end_id: <span class="bu">int</span>, hidden_size: <span class="bu">int</span>, init_std: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.02</span>, dtype<span class="op">=</span><span class="va">None</span>, device<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.start_id <span class="op">=</span> <span class="bu">int</span>(start_id)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.end_id <span class="op">=</span> <span class="bu">int</span>(end_id)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.delta <span class="op">=</span> nn.Parameter(torch.zeros(<span class="dv">2</span>, hidden_size, dtype<span class="op">=</span>dtype, device<span class="op">=</span>device)) <span class="co"># 2 x hidden_size</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        nn.init.normal_(<span class="va">self</span>.delta, mean<span class="op">=</span><span class="fl">0.0</span>, std<span class="op">=</span>init_std)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hook(<span class="va">self</span>, embed_module: nn.Embedding, inputs: <span class="bu">tuple</span>[torch.Tensor, ...], output: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        input_ids <span class="op">=</span> inputs[<span class="dv">0</span>]</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        emb <span class="op">=</span> output <span class="co"># batch_size x time_seq x hidden_size</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        mask_start <span class="op">=</span> (input_ids <span class="op">==</span> <span class="va">self</span>.start_id).unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="co"># batch_size x time_seq x 1</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        mask_end <span class="op">=</span> (input_ids <span class="op">==</span> <span class="va">self</span>.end_id).unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="co"># batch_size x time_seq x 1</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        emb <span class="op">=</span> emb <span class="op">+</span> mask_start.to(emb.dtype) <span class="op">*</span> <span class="va">self</span>.delta[<span class="dv">0</span>] <span class="op">+</span> mask_end.to(emb.dtype) <span class="op">*</span> <span class="va">self</span>.delta[<span class="dv">1</span>] <span class="co"># batch_size x time_seq x hidden_size</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> emb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DeltaOnEmbedding(nn.Module):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Adds a (2, H) delta to the *output* of the input embedding only where</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">    input_ids == start_id or end_id. Keeps the base embedding frozen &amp; intact.</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, start_id: <span class="bu">int</span>, end_id: <span class="bu">int</span>, hidden_size: <span class="bu">int</span>, init_std: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.02</span>, dtype<span class="op">=</span><span class="va">None</span>, device<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.start_id <span class="op">=</span> <span class="bu">int</span>(start_id)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.end_id <span class="op">=</span> <span class="bu">int</span>(end_id)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.delta <span class="op">=</span> nn.Parameter(torch.zeros(<span class="dv">2</span>, hidden_size, dtype<span class="op">=</span>dtype, device<span class="op">=</span>device)) <span class="co"># 2 x hidden_size</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        nn.init.normal_(<span class="va">self</span>.delta, mean<span class="op">=</span><span class="fl">0.0</span>, std<span class="op">=</span>init_std)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hook(<span class="va">self</span>, embed_module: nn.Embedding, inputs: <span class="bu">tuple</span>[torch.Tensor, ...], output: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        input_ids <span class="op">=</span> inputs[<span class="dv">0</span>]</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        emb <span class="op">=</span> output <span class="co"># batch_size x time_seq x hidden_size</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        mask_start <span class="op">=</span> (input_ids <span class="op">==</span> <span class="va">self</span>.start_id).unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="co"># batch_size x time_seq x 1</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        mask_end <span class="op">=</span> (input_ids <span class="op">==</span> <span class="va">self</span>.end_id).unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="co"># batch_size x time_seq x 1</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        emb <span class="op">=</span> emb <span class="op">+</span> mask_start.to(emb.dtype) <span class="op">*</span> <span class="va">self</span>.delta[<span class="dv">0</span>] <span class="op">+</span> mask_end.to(emb.dtype) <span class="op">*</span> <span class="va">self</span>.delta[<span class="dv">1</span>] <span class="co"># batch_size x time_seq x hidden_size</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> emb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p>Note: PyTorch module forward hooks receive (module, inputs, output) and may return a new output (which replaces the original)—perfect for small, surgical edits like this. ￼</p>
 </blockquote>
@@ -363,21 +379,21 @@ ga('send', {
 <section id="zeroing-out-embedding-grads" class="level3">
 <h3 class="anchored" data-anchor-id="zeroing-out-embedding-grads">Zeroing out embedding grads</h3>
 <p>I also experimented with a gradient hook on the input‐embedding table to zero out grads except on the special tokens. While this method works, it takes up more memory.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GradMaskHook:</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, embed_start_token_id: <span class="bu">int</span>, embed_end_token_id: <span class="bu">int</span>, embed_shape: <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">int</span>], device: torch.device):</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embed_start_token_id <span class="op">=</span> embed_start_token_id</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embed_end_token_id <span class="op">=</span> embed_end_token_id</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mask <span class="op">=</span> torch.zeros(embed_shape, dtype<span class="op">=</span>torch.<span class="bu">bool</span>, device<span class="op">=</span>device)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mask[embed_start_token_id] <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mask[embed_end_token_id] <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, grad: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> grad <span class="op">*</span> <span class="va">self</span>.mask.to(grad.dtype)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> embedding_zero_grad(lora_model: Qwen2_5_VLForConditionalGeneration, grad_hook: GradMaskHook):</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    embed <span class="op">=</span> lora_model.get_input_embeddings()</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    embed.weight.requires_grad_(<span class="va">True</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    embed.weight.register_hook(grad_hook)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GradMaskHook:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, embed_start_token_id: <span class="bu">int</span>, embed_end_token_id: <span class="bu">int</span>, embed_shape: <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">int</span>], device: torch.device):</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embed_start_token_id <span class="op">=</span> embed_start_token_id</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.embed_end_token_id <span class="op">=</span> embed_end_token_id</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mask <span class="op">=</span> torch.zeros(embed_shape, dtype<span class="op">=</span>torch.<span class="bu">bool</span>, device<span class="op">=</span>device)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mask[embed_start_token_id] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mask[embed_end_token_id] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, grad: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> grad <span class="op">*</span> <span class="va">self</span>.mask.to(grad.dtype)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> embedding_zero_grad(lora_model: Qwen2_5_VLForConditionalGeneration, grad_hook: GradMaskHook):</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    embed <span class="op">=</span> lora_model.get_input_embeddings()</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    embed.weight.requires_grad_(<span class="va">True</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    embed.weight.register_hook(grad_hook)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p>Quick refresher: Tensor hooks (e.g., weight.register_hook) see gradients, while module forward hooks see inputs/outputs and can replace the output. ￼</p>
 </blockquote>
@@ -393,13 +409,13 @@ ga('send', {
 <li>Chat templates: Qwen uses a distinct chat template—my pipeline formats messages and appends  to select the hidden state. The repo docs call out this step explicitly. ￼</li>
 <li>The text data needs to be wrapped in the chat format expected by Qwen. Here’s how I formatted the captions:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>        [</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You summarize text."</span>}, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: text}</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        ]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> text <span class="kw">in</span> texts</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You summarize text."</span>}, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: text}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> text <span class="kw">in</span> texts</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>MacOS dataloaders still dislike high worker counts (I keep <code>num_workers = 0</code>).</li>
 </ul>
