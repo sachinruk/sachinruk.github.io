@@ -42,7 +42,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-da1bd30b34ef13fae2531ac61cb67aae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8f2d6c132e5b4348c35330d651bf4f33.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -208,6 +208,19 @@ window.Quarto = {
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+<div class="newsletter-subscribe newsletter-top" id="newsletter-top">
+  <form onsubmit="submitNewsletter(event, 'top')" class="newsletter-form-inline">
+    <span class="newsletter-icon">✉</span>
+    <span class="newsletter-cta">Get notified of new posts</span>
+    <input type="text" name="firstName" placeholder="First name" class="newsletter-input" required="">
+    <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required="">
+    <input type="email" name="email" placeholder="Email address" class="newsletter-input" required="">
+    <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
+    <input type="hidden" name="token" value="nb-s8k2m9x4q7w1">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+  <div class="newsletter-status" id="newsletter-status-top"></div>
+</div>
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -478,6 +491,75 @@ x_{\tau-1} = \sqrt{\alpha_{\tau-1}}  \underbrace{\left(\frac{x_\tau - \sqrt{1 - 
 </section>
 
 </main> <!-- /main -->
+<div class="newsletter-subscribe newsletter-bottom" id="newsletter-bottom">
+  <h3 class="newsletter-heading">Enjoyed this post?</h3>
+  <p class="newsletter-description">Subscribe to get notified when I publish new posts about deep learning, ML engineering, and more.</p>
+  <form onsubmit="submitNewsletter(event, 'bottom')" class="newsletter-form-stacked">
+    <div class="newsletter-inputs">
+      <input type="text" name="firstName" placeholder="First name" class="newsletter-input" required="">
+      <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required="">
+      <input type="email" name="email" placeholder="Email address" class="newsletter-input" required="">
+      <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
+      <input type="hidden" name="token" value="nb-s8k2m9x4q7w1">
+    </div>
+    <button type="submit" class="newsletter-btn newsletter-btn-large">Subscribe</button>
+  </form>
+  <div class="newsletter-status" id="newsletter-status-bottom"></div>
+  <p class="newsletter-fine-print">No spam. Unsubscribe anytime.</p>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr107JdH9YC4h10TudqmmEFALfUZRGO9t1rDdJnFwqHTfuz6UW0mQjt50ubtYACsMtgw/exec';
+const FORM_TOKEN = 'nb-s8k2m9x4q7w1';
+
+function submitNewsletter(event, position) {
+  event.preventDefault();
+  const form = event.target;
+  const statusTop = document.getElementById('newsletter-status-top');
+  const statusBottom = document.getElementById('newsletter-status-bottom');
+
+  const showStatus = function(message, className) {
+    [statusTop, statusBottom].forEach(function(el) {
+      if (el) {
+        el.textContent = message;
+        el.className = 'newsletter-status ' + className;
+      }
+    });
+  };
+
+  const firstName = form.firstName.value.trim();
+  const lastName = form.lastName.value.trim();
+  const email = form.email.value.trim();
+  const website = form.website.value;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showStatus('Please enter a valid email address.', 'newsletter-error');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('firstName', firstName);
+  formData.append('lastName', lastName);
+  formData.append('email', email);
+  formData.append('website', website);
+  formData.append('token', FORM_TOKEN);
+
+  showStatus('Subscribing...', '');
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData
+  }).then(function() {
+    showStatus('Thanks for subscribing!', 'newsletter-success');
+    document.querySelectorAll('.newsletter-subscribe form').forEach(function(f) {
+      f.reset();
+    });
+  }).catch(function() {
+    showStatus('Something went wrong. Please try again.', 'newsletter-error');
+  });
+}
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
