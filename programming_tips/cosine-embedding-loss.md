@@ -3,7 +3,7 @@ layout: post
 title: "Thoughts on CosineEmbeddingLoss"
 modified:
 categories: pytorch
-excerpt: Explanation of Cosine Embedding Loss in Pytorch
+description: How PyTorch's CosineEmbeddingLoss works to push similar embeddings closer and dissimilar ones apart using cosine distance and a margin threshold
 
 date: 2023-08-15
 share: true

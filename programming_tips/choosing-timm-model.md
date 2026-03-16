@@ -3,7 +3,7 @@ layout: post
 title: "Timm choosing a model"
 modified:
 categories: pytorch
-excerpt: Choose small model for transfer learning
+description: How to choose a small, high-accuracy timm backbone for transfer learning by filtering ImageNet results by accuracy and parameter count
 
 date: 2023-01-02
 share: true

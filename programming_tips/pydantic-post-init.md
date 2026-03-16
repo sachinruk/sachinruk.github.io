@@ -3,7 +3,7 @@ layout: post
 title: "Pydantic Post Init"
 modified:
 categories: python
-excerpt: Workaround for pydantic v1 post_init
+description: Workaround for Pydantic v1 post-init logic using properties and custom __init__ overrides
 
 date: 2023-01-03
 share: true

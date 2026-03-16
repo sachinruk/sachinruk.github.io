@@ -3,7 +3,7 @@ layout: post
 title: "Pytorch Lightning Learning rate finder"
 modified:
 categories: pytorch
-excerpt: Get learning rate
+description: Using PyTorch Lightning's built-in learning rate finder to plot loss vs learning rate and pick an optimal value
 
 date: 2023-01-01
 share: true
