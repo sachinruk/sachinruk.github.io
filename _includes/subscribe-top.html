@@ -1,0 +1,13 @@
+<div class="newsletter-subscribe newsletter-top" id="newsletter-top">
+  <form onsubmit="submitNewsletter(event, 'top')" class="newsletter-form-inline">
+    <span class="newsletter-icon">&#9993;</span>
+    <span class="newsletter-cta">Get notified of new posts</span>
+    <input type="text" name="firstName" placeholder="First name" class="newsletter-input" required>
+    <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required>
+    <input type="email" name="email" placeholder="Email address" class="newsletter-input" required>
+    <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
+    <input type="hidden" name="token" value="FORM_TOKEN">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+  <div class="newsletter-status" id="newsletter-status-top"></div>
+</div>

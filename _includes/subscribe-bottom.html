@@ -1,0 +1,64 @@
+<div class="newsletter-subscribe newsletter-bottom" id="newsletter-bottom">
+  <h3 class="newsletter-heading">Enjoyed this post?</h3>
+  <p class="newsletter-description">Subscribe to get notified when I publish new posts about deep learning, ML engineering, and more.</p>
+  <form onsubmit="submitNewsletter(event, 'bottom')" class="newsletter-form-stacked">
+    <div class="newsletter-inputs">
+      <input type="text" name="firstName" placeholder="First name" class="newsletter-input" required>
+      <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required>
+      <input type="email" name="email" placeholder="Email address" class="newsletter-input" required>
+      <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
+      <input type="hidden" name="token" value="FORM_TOKEN">
+    </div>
+    <button type="submit" class="newsletter-btn newsletter-btn-large">Subscribe</button>
+  </form>
+  <div class="newsletter-status" id="newsletter-status-bottom"></div>
+  <p class="newsletter-fine-print">No spam. Unsubscribe anytime.</p>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'APPS_SCRIPT_URL';
+const FORM_TOKEN = 'FORM_TOKEN';
+
+function submitNewsletter(event, position) {
+  event.preventDefault();
+  const form = event.target;
+  const statusTop = document.getElementById('newsletter-status-top');
+  const statusBottom = document.getElementById('newsletter-status-bottom');
+
+  const firstName = form.firstName.value.trim();
+  const lastName = form.lastName.value.trim();
+  const email = form.email.value.trim();
+  const website = form.website.value;
+
+  const formData = new FormData();
+  formData.append('firstName', firstName);
+  formData.append('lastName', lastName);
+  formData.append('email', email);
+  formData.append('website', website);
+  formData.append('token', FORM_TOKEN);
+
+  const showStatus = function(message, className) {
+    [statusTop, statusBottom].forEach(function(el) {
+      if (el) {
+        el.textContent = message;
+        el.className = 'newsletter-status ' + className;
+      }
+    });
+  };
+
+  showStatus('Subscribing...', '');
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData
+  }).then(function() {
+    showStatus('Thanks for subscribing!', 'newsletter-success');
+    document.querySelectorAll('.newsletter-subscribe form').forEach(function(f) {
+      f.reset();
+    });
+  }).catch(function() {
+    showStatus('Something went wrong. Please try again.', 'newsletter-error');
+  });
+}
+</script>

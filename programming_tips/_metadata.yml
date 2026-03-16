@@ -1,0 +1,4 @@
+format:
+  html:
+    include-before-body: ../_includes/subscribe-top.html
+    include-after-body: ../_includes/subscribe-bottom.html
