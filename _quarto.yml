@@ -32,9 +32,10 @@ website:
 
 format:
   html:
-    theme: 
+    theme:
       - darkly
       - fastpages-dracula-highlight.scss
+      - newsletter-styles.scss
     css: styles.css
     toc: true
 
