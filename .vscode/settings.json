@@ -1,0 +1,63 @@
+{
+    // Enable word-based suggestions for all files
+    "editor.wordBasedSuggestions": "allDocuments",
+    
+    // Enable quick suggestions for markdown files
+    "[markdown]": {
+      "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+      },
+      "editor.wordBasedSuggestions": "allDocuments",
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.tabCompletion": "on"
+    },
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+      },
+      "editor.wordBasedSuggestions": "allDocuments",
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.tabCompletion": "on"
+    },
+    "ruff.lineLength": 100,
+    "ruff.lint.enable": true,
+    "[jupyter]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+      },
+      "editor.wordBasedSuggestions": "allDocuments",
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.tabCompletion": "on"
+    },
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+      // "notebook.source.fixAll": "explicit",
+      "notebook.source.organizeImports": "explicit"
+    },
+
+    
+    
+  // Also enable for other text-based files
+  "[plaintext]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.wordBasedSuggestions": "allDocuments"
+  },
+
+  // Python interpreter for Jupyter notebooks
+  "python.defaultInterpreterPath": "~/work/canva/tools/build/python/third_party/.venv/bin/python3"
+  
+}
+  
+  

@@ -2,3 +2,4 @@
 /_site/
 /ml_consulting_files/
 .DS_Store
+**/*.quarto_ipynb
