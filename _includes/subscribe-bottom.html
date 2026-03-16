@@ -7,7 +7,7 @@
       <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required>
       <input type="email" name="email" placeholder="Email address" class="newsletter-input" required>
       <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
-      <input type="hidden" name="token" value="FORM_TOKEN">
+      <input type="hidden" name="token" value="nb-s8k2m9x4q7w1">
     </div>
     <button type="submit" class="newsletter-btn newsletter-btn-large">Subscribe</button>
   </form>
@@ -16,26 +16,14 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = 'APPS_SCRIPT_URL';
-const FORM_TOKEN = 'FORM_TOKEN';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr107JdH9YC4h10TudqmmEFALfUZRGO9t1rDdJnFwqHTfuz6UW0mQjt50ubtYACsMtgw/exec';
+const FORM_TOKEN = 'nb-s8k2m9x4q7w1';
 
 function submitNewsletter(event, position) {
   event.preventDefault();
   const form = event.target;
   const statusTop = document.getElementById('newsletter-status-top');
   const statusBottom = document.getElementById('newsletter-status-bottom');
-
-  const firstName = form.firstName.value.trim();
-  const lastName = form.lastName.value.trim();
-  const email = form.email.value.trim();
-  const website = form.website.value;
-
-  const formData = new FormData();
-  formData.append('firstName', firstName);
-  formData.append('lastName', lastName);
-  formData.append('email', email);
-  formData.append('website', website);
-  formData.append('token', FORM_TOKEN);
 
   const showStatus = function(message, className) {
     [statusTop, statusBottom].forEach(function(el) {
@@ -45,6 +33,23 @@ function submitNewsletter(event, position) {
       }
     });
   };
+
+  const firstName = form.firstName.value.trim();
+  const lastName = form.lastName.value.trim();
+  const email = form.email.value.trim();
+  const website = form.website.value;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showStatus('Please enter a valid email address.', 'newsletter-error');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('firstName', firstName);
+  formData.append('lastName', lastName);
+  formData.append('email', email);
+  formData.append('website', website);
+  formData.append('token', FORM_TOKEN);
 
   showStatus('Subscribing...', '');
 
