@@ -6,7 +6,7 @@ website:
   favicon: "images/favicon_logo.png"
   twitter-card: true
   open-graph: true
-  google-analytics: "UA-37284264-2"
+  google-analytics: "G-9994M738H0"
   navbar:
     left:
       - href: index.qmd
@@ -19,7 +19,7 @@ website:
       - href: DL_Course.qmd
         text: DL Course
   page-footer: 
-    left: "Copyright 2023, Sachinthaka Abeywardana" 
+    left: "Copyright 2026, Sachinthaka Abeywardana" 
     center: 
       - icon: github
         href: https://github.com/sachinruk
