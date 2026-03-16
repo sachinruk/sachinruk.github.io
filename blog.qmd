@@ -1,16 +1,26 @@
 ---
 title: "Blog"
 listing:
-  contents: blog
-  sort: "date desc"
-  type: default
-  categories: true
+  - id: pinned-posts
+    contents:
+      - blog/2021-03-07-CLIP.ipynb
+      - blog/2021-08-01-dino-self-supervised-vision-transformers.ipynb
+    sort: "date desc"
+    type: default
+  - id: all-posts
+    contents: blog
+    sort: "date desc"
+    type: default
+    categories: true
+    page-size: 9999
 ---
 
-<!-- ---
+## Pinned
 
-<div style="text-align: center;">
-  <img src="./images/compressing_transformer.jpg" alt="" style="height: 200px;">
-</div>
-Welcome to my random thoughts, that is mostly an evolving (not reverse) diffusion process.
---- -->
+:::{#pinned-posts}
+:::
+
+## All Posts
+
+:::{#all-posts}
+:::
