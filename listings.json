@@ -2,6 +2,9 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/blog/2021-08-01-dino-self-supervised-vision-transformers.html",
+      "/blog/2021-03-07-clip.html",
+      "/blog/2025-10-25-clip-jepa.html",
       "/blog/2025-08-17-image-segmentation.html",
       "/blog/2025-04-27-parallel-experiments.html",
       "/blog/2025-01-21-Transformers-inference.html",
@@ -27,11 +30,9 @@
       "/blog/2021-12-28-vit-to-gpt2-encoder-decoder-model.html",
       "/blog/2021-11-17-collate-fn-vs-normal.html",
       "/blog/2021-10-10-zero-shot-classification-with-hf.html",
-      "/blog/2021-08-01-dino-self-supervised-vision-transformers.html",
       "/blog/2021-07-03-image-patches.html",
       "/blog/2021-06-05-pytorch-collatefn.html",
       "/blog/2021-04-05-tabnet_from_scratch.html",
-      "/blog/2021-03-07-clip.html",
       "/blog/2021-02-15-tensorflow-learning-rate-finder.html",
       "/blog/2020-11-28-focal-loss.html",
       "/blog/2017-08-24-Docker-for-Data-Science.html",
@@ -55,6 +56,13 @@
       "/programming_tips/pl-learning-rate-finder.html",
       "/programming_tips/2021-08-28-weighted-cross-entropy-loss.html",
       "/programming_tips/2021-08-21-coco-semantic-segmentation-data.html"
+    ]
+  },
+  {
+    "listing": "/index.html",
+    "items": [
+      "/blog/2021-08-01-dino-self-supervised-vision-transformers.html",
+      "/blog/2021-03-07-clip.html"
     ]
   }
 ]

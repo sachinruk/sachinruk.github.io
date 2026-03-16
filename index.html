@@ -31,6 +31,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./images/favicon_logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-pinned-posts .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-pinned-posts'] = new List('listing-pinned-posts', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
 
 <script type="text/javascript">
 
@@ -84,17 +115,46 @@ ga('send', {
 });
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="DeepSchool.ai – deepschool.ai">
 <meta property="og:description" content="">
-<meta property="og:image" content="https://sachinruk.github.io/images/deep_school_banner.png">
+<meta property="og:image" content="https://deepschool.ai/images/deep_school_banner.png">
 <meta property="og:site_name" content="deepschool.ai">
 <meta property="og:image:height" content="512">
 <meta property="og:image:width" content="1818">
 <meta name="twitter:title" content="DeepSchool.ai – deepschool.ai">
 <meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://sachinruk.github.io/images/deep_school_banner.png">
+<meta name="twitter:image" content="https://deepschool.ai/images/deep_school_banner.png">
 <meta name="twitter:image-height" content="512">
 <meta name="twitter:image-width" content="1818">
 <meta name="twitter:card" content="summary_large_image">
@@ -150,8 +210,14 @@ ga('send', {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#featured-posts" id="toc-featured-posts" class="nav-link active" data-scroll-target="#featured-posts">Featured Posts</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -177,8 +243,67 @@ ga('send', {
 
 <p><img src="./images/deep_school_banner.png" class="img-fluid"></p>
 <p>Welcome to my website! I’m Dr.&nbsp;Sachin Abeywardana, an experienced Deep Learning Engineer specialized in NLP and Computer Vision. I offer my expertise as a consultant, having successfully delivered transformative solutions across various industries. Notably, as Lead ML Engineer at Canva, I innovated customer service using NLP, employing BERT for feedback classification and fine-tuning GPT2 for content titles. At Remi AI, I predicted demand and optimized prices using advanced DL models, whilst also mentoring other data scientists. In my role at Data Processors, I improved sports betting models and video analysis using Computer Vision. Holding a Ph.D.&nbsp;in Bayesian ML, my research includes quantile regression and market segmentation. I’m also a Udemy Instructor, contributing to the ML community. As a consultant, I aim to drive innovation and collaboration, offering custom AI solutions to push boundaries and achieve exceptional results. Feel free to get in touch with me on <a href="https://https://www.linkedin.com/in/sachinabeywardana/">LinkedIn</a>.</p>
+<section id="featured-posts" class="level2">
+<h2 class="anchored" data-anchor-id="featured-posts">Featured Posts</h2>
+<div id="listing-pinned-posts" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="cHl0b3JjaCUyQ0xvc3MlMjBGdW5jdGlvbg==" data-listing-date-sort="1627740000000" data-listing-file-modified-sort="1761374453493" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1023">
+<div class="thumbnail"><a href="./blog/2021-08-01-dino-self-supervised-vision-transformers.html" class="no-external">
+
+<img loading="lazy" src="./images/dino.jpg" class="thumbnail-image">
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./blog/2021-08-01-dino-self-supervised-vision-transformers.html" class="no-external">DINO Self Supervised Vision Transformers</a>
+</h3>
+<div class="delink listing-description"><a href="./blog/2021-08-01-dino-self-supervised-vision-transformers.html" class="no-external">
+<p>Getting image embeddings with no negative samples</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="./blog/2021-08-01-dino-self-supervised-vision-transformers.html" class="no-external">
+<div class="listing-date">
+Aug 1, 2021
+</div>
+<div class="listing-author">
+Sachin Abeywardana
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="cHl0b3JjaCUyQ0xvc3MlMjBGdW5jdGlvbg==" data-listing-date-sort="1615035600000" data-listing-file-modified-sort="1761374453490" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="848">
+<div class="thumbnail"><a href="./blog/2021-03-07-clip.html" class="no-external">
+
+<img loading="lazy" src="./images/clip.png" class="thumbnail-image">
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./blog/2021-03-07-clip.html" class="no-external">Multilingual CLIP with Huggingface + PyTorch Lightning 🤗 ⚡</a>
+</h3>
+<div class="delink listing-description"><a href="./blog/2021-03-07-clip.html" class="no-external">
+<p>Training OpenAI’s CLIP on google colab</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="./blog/2021-03-07-clip.html" class="no-external">
+<div class="listing-date">
+Mar 7, 2021
+</div>
+<div class="listing-author">
+Sachin Abeywardana
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">No matching items</div>
+</div>
 
 
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -254,7 +379,7 @@ ga('send', {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/sachinruk\.github\.io\/");
+        var filterRegex = new RegExp("https:\/\/deepschool\.ai");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
