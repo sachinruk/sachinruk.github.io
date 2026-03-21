@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://deepschool.ai/blog.html</loc>
-    <lastmod>2026-03-16T06:22:42.889Z</lastmod>
+    <loc>https://deepschool.ai/DL_Course.html</loc>
+    <lastmod>2025-10-25T06:40:53.459Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/programming_tips.html</loc>
-    <lastmod>2025-10-25T06:40:53.556Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips/pl-learning-rate-finder.html</loc>
+    <lastmod>2026-03-16T11:11:26.540Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/programming_tips/cosine-embedding-loss.html</loc>
-    <lastmod>2026-03-16T11:11:18.027Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips/choosing-timm-model.html</loc>
+    <lastmod>2026-03-16T11:11:27.024Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/programming_tips/2021-08-28-weighted-cross-entropy-loss.html</loc>
-    <lastmod>2026-03-17T00:21:03.773Z</lastmod>
-  </url>
-  <url>
-    <loc>https://deepschool.ai/programming_tips/pydantic-post-init.html</loc>
-    <lastmod>2026-03-16T11:11:26.075Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips/2021-08-21-coco-semantic-segmentation-data.html</loc>
+    <lastmod>2025-10-25T06:40:53.557Z</lastmod>
   </url>
   <url>
     <loc>https://deepschool.ai/blog/2023-08-30-caption-models.html</loc>
@@ -110,7 +106,7 @@
   </url>
   <url>
     <loc>https://deepschool.ai/index.html</loc>
-    <lastmod>2026-03-16T06:22:42.903Z</lastmod>
+    <lastmod>2026-03-21T11:28:45.329Z</lastmod>
   </url>
   <url>
     <loc>https://deepschool.ai/blog/2024-02-11-DDPM-to-DDIM.html</loc>
@@ -197,23 +193,19 @@
     <lastmod>2025-10-25T06:40:53.496Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/ML_consulting.html</loc>
-    <lastmod>2025-10-25T06:40:53.459Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips/pydantic-post-init.html</loc>
+    <lastmod>2026-03-16T11:11:26.075Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/programming_tips/2021-08-21-coco-semantic-segmentation-data.html</loc>
-    <lastmod>2025-10-25T06:40:53.557Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips/2021-08-28-weighted-cross-entropy-loss.html</loc>
+    <lastmod>2026-03-17T00:21:03.773Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/programming_tips/choosing-timm-model.html</loc>
-    <lastmod>2026-03-16T11:11:27.024Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips/cosine-embedding-loss.html</loc>
+    <lastmod>2026-03-16T11:11:18.027Z</lastmod>
   </url>
   <url>
-    <loc>https://deepschool.ai/programming_tips/pl-learning-rate-finder.html</loc>
-    <lastmod>2026-03-16T11:11:26.540Z</lastmod>
-  </url>
-  <url>
-    <loc>https://deepschool.ai/DL_Course.html</loc>
-    <lastmod>2025-10-25T06:40:53.459Z</lastmod>
+    <loc>https://deepschool.ai/programming_tips.html</loc>
+    <lastmod>2025-10-25T06:40:53.556Z</lastmod>
   </url>
 </urlset>
