@@ -1,1 +1,25 @@
 /* css styles */
+
+.linkedin-float {
+  position: fixed;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a66c2;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 20px;
+  text-decoration: none;
+  z-index: 1040;
+  transition: background-color 0.2s ease;
+}
+
+.linkedin-float:hover {
+  background-color: #004182;
+  color: #fff;
+}
