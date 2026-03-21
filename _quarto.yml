@@ -38,6 +38,7 @@ format:
       - newsletter-styles.scss
     css: styles.css
     toc: true
+    include-after-body: _includes/linkedin-float.html
 
 
 
