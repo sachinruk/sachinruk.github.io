@@ -278,7 +278,7 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 </div>
 <p>The naive method to use the training data here would be to simply use the bad sentence as an input and the good sentence as the output. However, the model should also recognise when to leave a good sentence as is. Therefore, we calculate loss once for each scenario described and sum them up.</p>
 <p>This brings us to the second gotcha. When I trained the first time around I simply used the tokenized sentence of the input/ output sentence. It fortunately trained well and masked a serious mathematical error. That was during inference, when we call the <code>model.generate(...)</code> function, it always starts off with a special token in the decoder. This could be accessed via <code>model.config.decoder_start_token_id</code>. Therefore, during training we need to prepend this token to the output sentence. We can see this in the <code>LightningModule</code> below.</p>
-<div id="6af2efba" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.028509,&quot;end_time&quot;:&quot;2022-11-07T01:12:17.529126&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-11-07T01:12:17.500617&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="6">
+<div id="6af2efba" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.028509,&quot;end_time&quot;:&quot;2022-11-07T01:12:17.529126&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-11-07T01:12:17.500617&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LightningModule(pl.LightningModule):</span>
@@ -297,11 +297,11 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.generation_kwargs <span class="op">=</span> generation_kwargs</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.loss_fn <span class="op">=</span> loss_fn</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prepend_sentence <span class="op">=</span> PREPEND_SENTENCE</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        decoder_start_token_id <span class="op">=</span> model.config.decoder_start_token_id</span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prepend_input_ids <span class="op">=</span> torch.LongTensor([decoder_start_token_id] <span class="op">*</span> BATCH_SIZE)[:, <span class="va">None</span>]</span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prepend_attention_masks <span class="op">=</span> torch.LongTensor([<span class="dv">1</span>] <span class="op">*</span> BATCH_SIZE)[:, <span class="va">None</span>]</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model.train()</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> IS_FREEZE_LAYERS:</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> layer <span class="kw">in</span> <span class="va">self</span>.model.encoder.block[:FREEZE_LAYERS]:</span>
@@ -312,102 +312,114 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                layer.<span class="bu">eval</span>()</span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> p <span class="kw">in</span> layer.parameters():</span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                    p.requires_grad <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.table_logging <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> prepend_tokens(<span class="va">self</span>, tokenized_batch: Dict[<span class="bu">str</span>, torch.LongTensor], len_batch: <span class="bu">int</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, torch.LongTensor]:</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        input_ids <span class="op">=</span> torch.cat(</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>            [</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.prepend_input_ids[:len_batch, :].to(<span class="va">self</span>.device),</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>                tokenized_batch[<span class="st">"input_ids"</span>],</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>            ],</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=-</span><span class="dv">1</span>,</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        attention_mask <span class="op">=</span> torch.cat(</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>            [</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.prepend_attention_masks[:len_batch, :].to(<span class="va">self</span>.device),</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>                tokenized_batch[<span class="st">"attention_mask"</span>],</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>            ],</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=-</span><span class="dv">1</span>,</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>            <span class="st">"input_ids"</span>: input_ids,</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>            <span class="st">"attention_mask"</span>: attention_mask,</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_loss(<span class="va">self</span>, input_sentences: List[<span class="bu">str</span>], output_sentences: List[<span class="bu">str</span>]) <span class="op">-&gt;</span> torch.FloatTensor:</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        tokenized_input <span class="op">=</span> <span class="va">self</span>.tokenizer(</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>            [<span class="va">self</span>.prepend_sentence <span class="op">+</span> sentence <span class="cf">for</span> sentence <span class="kw">in</span> input_sentences], </span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.device</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>        tokenized_output <span class="op">=</span> <span class="va">self</span>.prepend_tokens(<span class="va">self</span>.tokenizer(output_sentences, <span class="va">self</span>.device), <span class="bu">len</span>(output_sentences))</span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>        labels <span class="op">=</span> tokenized_output[<span class="st">"input_ids"</span>].clone()</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>        labels[tokenized_output[<span class="st">"attention_mask"</span>] <span class="op">==</span> <span class="dv">0</span>] <span class="op">==</span> LABEL_MASK</span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> <span class="va">self</span>.model(</span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>            input_ids<span class="op">=</span>tokenized_input[<span class="st">"input_ids"</span>],</span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>            attention_mask<span class="op">=</span>tokenized_input[<span class="st">"attention_mask"</span>],</span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>            decoder_input_ids<span class="op">=</span>tokenized_output[<span class="st">"input_ids"</span>],</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>            decoder_attention_mask<span class="op">=</span>tokenized_output[<span class="st">"attention_mask"</span>],</span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> calculate_loss_fn(<span class="va">self</span>.loss_fn, out.logits, labels)</span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> common_step(<span class="va">self</span>, batch: Dict[<span class="bu">str</span>, <span class="bu">str</span>]) <span class="op">-&gt;</span> torch.Tensor:</span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>        bad_grammar_loss <span class="op">=</span> <span class="va">self</span>.get_loss(batch[<span class="st">"input"</span>], batch[<span class="st">"output"</span>])</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>        good_grammar_loss <span class="op">=</span> <span class="va">self</span>.get_loss(batch[<span class="st">"output"</span>], batch[<span class="st">"output"</span>])</span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> good_grammar_loss <span class="op">+</span> bad_grammar_loss</span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> training_step(</span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, batch: Dict[<span class="bu">str</span>, torch.LongTensor], batch_idx: <span class="bu">int</span>,</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.Tensor:</span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> <span class="va">self</span>.common_step(batch)     </span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.log(<span class="st">"training_loss"</span>, loss, on_step<span class="op">=</span><span class="va">True</span>, on_epoch<span class="op">=</span><span class="va">True</span>, batch_size<span class="op">=</span><span class="bu">len</span>(batch[<span class="st">"input"</span>]))</span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>             </span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> loss</span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> validation_step(</span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, batch: Tuple[torch.Tensor, List[<span class="bu">str</span>]], batch_idx: <span class="bu">int</span>,</span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.Tensor:</span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> <span class="va">self</span>.common_step(batch)</span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.log(<span class="st">"validation_loss"</span>, loss, on_step<span class="op">=</span><span class="va">False</span>, on_epoch<span class="op">=</span><span class="va">True</span>, batch_size<span class="op">=</span><span class="bu">len</span>(batch[<span class="st">"input"</span>]))</span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> batch_idx <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.log_examples(batch)</span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> log_examples(<span class="va">self</span>, batch):</span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>        good_grammar_batch <span class="op">=</span> <span class="va">self</span>.tokenizer(batch[<span class="st">"output"</span>], device<span class="op">=</span><span class="va">self</span>.device)</span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>        bad_grammar_batch <span class="op">=</span> <span class="va">self</span>.tokenizer(batch[<span class="st">"input"</span>], device<span class="op">=</span><span class="va">self</span>.device)</span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>        encoded_good_outputs <span class="op">=</span> <span class="va">self</span>.model.generate(<span class="op">**</span>good_grammar_batch, <span class="op">**</span><span class="va">self</span>.generation_kwargs)</span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>        encoded_bad_outputs <span class="op">=</span> <span class="va">self</span>.model.generate(<span class="op">**</span>bad_grammar_batch, <span class="op">**</span><span class="va">self</span>.generation_kwargs)</span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>        generated_good_sentences <span class="op">=</span> <span class="va">self</span>.tokenizer.batch_decode(encoded_good_outputs)</span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>        generated_bad_sentences <span class="op">=</span> <span class="va">self</span>.tokenizer.batch_decode(encoded_bad_outputs)</span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>        columns <span class="op">=</span> [<span class="st">"good input"</span>, <span class="st">"good output"</span>, <span class="st">"bad input"</span>, <span class="st">"bad output"</span>]</span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> [</span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>            [good_input, good_output, bad_input, bad_output]</span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> good_input, good_output, bad_input, bad_output <span class="kw">in</span> <span class="bu">zip</span>(</span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>                batch[<span class="st">"output"</span>], generated_good_sentences, batch[<span class="st">"input"</span>], generated_bad_sentences</span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>        ]</span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>        table <span class="op">=</span> wandb.Table(data<span class="op">=</span>data, columns<span class="op">=</span>columns)</span>
-<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.logger <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.table_logging <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.logger.experiment.log({<span class="ss">f"epoch </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>table_logging<span class="sc">}</span><span class="ss"> results"</span>: table})</span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> configure_optimizers(<span class="va">self</span>) <span class="op">-&gt;</span> torch.optim.Optimizer:</span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> IS_FREEZE_LAYERS:</span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> adam.FusedAdam(</span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>                [</span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>                    {<span class="st">"params"</span>: layer.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr} <span class="cf">for</span> layer <span class="kw">in</span> language_model.encoder.block[FREEZE_LAYERS:]</span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>                ] <span class="op">+</span> <span class="op">\</span></span>
-<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>                [</span>
-<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>                    {<span class="st">"params"</span>: layer.parameters() , <span class="st">"lr"</span>: <span class="va">self</span>.lr} <span class="cf">for</span> layer <span class="kw">in</span> language_model.decoder.block[FREEZE_LAYERS:]</span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>                ]</span>
-<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> adam.FusedAdam(<span class="va">self</span>.model.parameters(), <span class="va">self</span>.lr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> prepend_tokens(</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, tokenized_batch: Dict[<span class="bu">str</span>, torch.LongTensor], len_batch: <span class="bu">int</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, torch.LongTensor]:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        input_ids <span class="op">=</span> torch.cat(</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>            [</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.prepend_input_ids[:len_batch, :].to(<span class="va">self</span>.device),</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>                tokenized_batch[<span class="st">"input_ids"</span>],</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=-</span><span class="dv">1</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        attention_mask <span class="op">=</span> torch.cat(</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>            [</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.prepend_attention_masks[:len_batch, :].to(<span class="va">self</span>.device),</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>                tokenized_batch[<span class="st">"attention_mask"</span>],</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=-</span><span class="dv">1</span>,</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>            <span class="st">"input_ids"</span>: input_ids,</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>            <span class="st">"attention_mask"</span>: attention_mask,</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_loss(</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, input_sentences: List[<span class="bu">str</span>], output_sentences: List[<span class="bu">str</span>]</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.FloatTensor:</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>        tokenized_input <span class="op">=</span> <span class="va">self</span>.tokenizer(</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>            [<span class="va">self</span>.prepend_sentence <span class="op">+</span> sentence <span class="cf">for</span> sentence <span class="kw">in</span> input_sentences], <span class="va">self</span>.device</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        tokenized_output <span class="op">=</span> <span class="va">self</span>.prepend_tokens(</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.tokenizer(output_sentences, <span class="va">self</span>.device), <span class="bu">len</span>(output_sentences)</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>        labels <span class="op">=</span> tokenized_output[<span class="st">"input_ids"</span>].clone()</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>        labels[tokenized_output[<span class="st">"attention_mask"</span>] <span class="op">==</span> <span class="dv">0</span>] <span class="op">==</span> LABEL_MASK</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> <span class="va">self</span>.model(</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>            input_ids<span class="op">=</span>tokenized_input[<span class="st">"input_ids"</span>],</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>            attention_mask<span class="op">=</span>tokenized_input[<span class="st">"attention_mask"</span>],</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>            decoder_input_ids<span class="op">=</span>tokenized_output[<span class="st">"input_ids"</span>],</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>            decoder_attention_mask<span class="op">=</span>tokenized_output[<span class="st">"attention_mask"</span>],</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> calculate_loss_fn(<span class="va">self</span>.loss_fn, out.logits, labels)</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> common_step(<span class="va">self</span>, batch: Dict[<span class="bu">str</span>, <span class="bu">str</span>]) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>        bad_grammar_loss <span class="op">=</span> <span class="va">self</span>.get_loss(batch[<span class="st">"input"</span>], batch[<span class="st">"output"</span>])</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>        good_grammar_loss <span class="op">=</span> <span class="va">self</span>.get_loss(batch[<span class="st">"output"</span>], batch[<span class="st">"output"</span>])</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> good_grammar_loss <span class="op">+</span> bad_grammar_loss</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> training_step(</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>        batch: Dict[<span class="bu">str</span>, torch.LongTensor],</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>        batch_idx: <span class="bu">int</span>,</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> <span class="va">self</span>.common_step(batch)</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.log(<span class="st">"training_loss"</span>, loss, on_step<span class="op">=</span><span class="va">True</span>, on_epoch<span class="op">=</span><span class="va">True</span>, batch_size<span class="op">=</span><span class="bu">len</span>(batch[<span class="st">"input"</span>]))</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> loss</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> validation_step(</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>        batch: Tuple[torch.Tensor, List[<span class="bu">str</span>]],</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>        batch_idx: <span class="bu">int</span>,</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> <span class="va">self</span>.common_step(batch)</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.log(</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>            <span class="st">"validation_loss"</span>, loss, on_step<span class="op">=</span><span class="va">False</span>, on_epoch<span class="op">=</span><span class="va">True</span>, batch_size<span class="op">=</span><span class="bu">len</span>(batch[<span class="st">"input"</span>])</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> batch_idx <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.log_examples(batch)</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> log_examples(<span class="va">self</span>, batch):</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>        good_grammar_batch <span class="op">=</span> <span class="va">self</span>.tokenizer(batch[<span class="st">"output"</span>], device<span class="op">=</span><span class="va">self</span>.device)</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>        bad_grammar_batch <span class="op">=</span> <span class="va">self</span>.tokenizer(batch[<span class="st">"input"</span>], device<span class="op">=</span><span class="va">self</span>.device)</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>        encoded_good_outputs <span class="op">=</span> <span class="va">self</span>.model.generate(<span class="op">**</span>good_grammar_batch, <span class="op">**</span><span class="va">self</span>.generation_kwargs)</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>        encoded_bad_outputs <span class="op">=</span> <span class="va">self</span>.model.generate(<span class="op">**</span>bad_grammar_batch, <span class="op">**</span><span class="va">self</span>.generation_kwargs)</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>        generated_good_sentences <span class="op">=</span> <span class="va">self</span>.tokenizer.batch_decode(encoded_good_outputs)</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>        generated_bad_sentences <span class="op">=</span> <span class="va">self</span>.tokenizer.batch_decode(encoded_bad_outputs)</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>        columns <span class="op">=</span> [<span class="st">"good input"</span>, <span class="st">"good output"</span>, <span class="st">"bad input"</span>, <span class="st">"bad output"</span>]</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> [</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>            [good_input, good_output, bad_input, bad_output]</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> good_input, good_output, bad_input, bad_output <span class="kw">in</span> <span class="bu">zip</span>(</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>                batch[<span class="st">"output"</span>], generated_good_sentences, batch[<span class="st">"input"</span>], generated_bad_sentences</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>        table <span class="op">=</span> wandb.Table(data<span class="op">=</span>data, columns<span class="op">=</span>columns)</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.logger <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.table_logging <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.logger.experiment.log({<span class="ss">f"epoch </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>table_logging<span class="sc">}</span><span class="ss"> results"</span>: table})</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> configure_optimizers(<span class="va">self</span>) <span class="op">-&gt;</span> torch.optim.Optimizer:</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> IS_FREEZE_LAYERS:</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> adam.FusedAdam(</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>                [</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>                    {<span class="st">"params"</span>: layer.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr}</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> layer <span class="kw">in</span> language_model.encoder.block[FREEZE_LAYERS:]</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>                <span class="op">+</span> [</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>                    {<span class="st">"params"</span>: layer.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr}</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> layer <span class="kw">in</span> language_model.decoder.block[FREEZE_LAYERS:]</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> adam.FusedAdam(<span class="va">self</span>.model.parameters(), <span class="va">self</span>.lr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -420,12 +432,14 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adam.FusedAdam(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    [</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"params"</span>: layer.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr} <span class="cf">for</span> layer <span class="kw">in</span> language_model.encoder.block[FREEZE_LAYERS:]</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    ] <span class="op">+</span> <span class="op">\</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    [</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"params"</span>: layer.parameters() , <span class="st">"lr"</span>: <span class="va">self</span>.lr} <span class="cf">for</span> layer <span class="kw">in</span> language_model.decoder.block[FREEZE_LAYERS:]</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"params"</span>: layer.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr}</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> layer <span class="kw">in</span> language_model.encoder.block[FREEZE_LAYERS:]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> [</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"params"</span>: layer.parameters(), <span class="st">"lr"</span>: <span class="va">self</span>.lr}</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> layer <span class="kw">in</span> language_model.decoder.block[FREEZE_LAYERS:]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>

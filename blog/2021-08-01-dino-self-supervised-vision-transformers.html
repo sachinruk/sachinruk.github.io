@@ -289,7 +289,7 @@ window.Quarto = {
 <p>This implementation is based off of <a href="https://arxiv.org/pdf/2104.14294.pdf">this paper</a> by FAIR. The reason I’m excited about this paper is because 1. I was able to implement this by reading the paper (don’t underestimate how convoluted this step is) 2. We have a setting where we ignore any kind of labels altogether, i.e.&nbsp;completely self supervised. 3. We <strong>don’t need negative labels</strong>.</p>
 <p>In a nutshell what the paper attempts to do, is to take two different augmentations of the same image, and try and push these embeddings closer together. Most (and possibly all) other such tasks attempt to do a triplet loss where the image is compared to a similar image (positive example), and different image(s) (negative examples). What’s amazing about this paper is that it ignores negative examples altogether and is still able to get a meaningful embedding space for a given image.</p>
 <p>If you wish to run this live, please visit <a href="https://www.kaggle.com/sachin/dino-self-supervised-vision-transformers">this kaggle kernel</a> instead of the colab link above.</p>
-<div id="a33f9164" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.051454,&quot;end_time&quot;:&quot;2021-07-26T12:30:08.208492&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:08.157038&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="2">
+<div id="a33f9164" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.051454,&quot;end_time&quot;:&quot;2021-07-26T12:30:08.208492&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:08.157038&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Image parameters</span></span>
@@ -297,10 +297,10 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>IMAGE_SIZE <span class="op">=</span> <span class="dv">256</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>PATCH_SIZE <span class="op">=</span> <span class="dv">16</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ZERO_PCT <span class="op">=</span> <span class="fl">0.1</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>PATCHES_PER_ROW <span class="op">=</span> (IMAGE_SIZE <span class="op">//</span> PATCH_SIZE)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>NUM_PATCHES <span class="op">=</span> PATCHES_PER_ROW <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>PATCHES_PER_ROW <span class="op">=</span> IMAGE_SIZE <span class="op">//</span> PATCH_SIZE</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>NUM_PATCHES <span class="op">=</span> PATCHES_PER_ROW<span class="op">**</span><span class="dv">2</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>RGB_CHANNELS <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>NUM_PIXELS <span class="op">=</span> PATCH_SIZE <span class="op">**</span> <span class="dv">2</span> <span class="op">*</span> RGB_CHANNELS</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>NUM_PIXELS <span class="op">=</span> PATCH_SIZE<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> RGB_CHANNELS</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>VALID_IMAGES <span class="op">=</span> <span class="dv">5</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>TOPK <span class="op">=</span> <span class="dv">5</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
@@ -324,23 +324,23 @@ window.Quarto = {
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <p>The following shows how a given image is passed through two transforms (<code>RandomResizedCrop</code>) with one guaranteed to be atleast half as large as the original image. A collate function is then used to break it up into 16x16 patches, and stack those patches into a sequence, so that we can fit it into a transformer. The collate function is a minor detail in the overall picture, but if you wish to read about it you can do so <a href="https://sachinruk.github.io/blog/pytorch/data/2021/06/05/PyTorch-CollateFn.html">here</a>.</p>
-<div id="fe2ce4e0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.055879,&quot;end_time&quot;:&quot;2021-07-26T12:30:08.392587&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:08.336708&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="3">
+<div id="fe2ce4e0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.055879,&quot;end_time&quot;:&quot;2021-07-26T12:30:08.392587&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:08.336708&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImageData(Dataset):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, files: List[<span class="bu">str</span>]):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.files <span class="op">=</span> files</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.randcrop_big <span class="op">=</span> transforms.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">1.0</span>))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.randcrop_small <span class="op">=</span> transforms.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE))</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.files)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, i):</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> io.read_image(<span class="va">self</span>.files[i])</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        img1 <span class="op">=</span> <span class="va">self</span>.randcrop_big(img)</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        img2 <span class="op">=</span> <span class="va">self</span>.randcrop_small(img)</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> img.shape[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            img1 <span class="op">=</span> torch.cat([img1]<span class="op">*</span><span class="dv">3</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            img2 <span class="op">=</span> torch.cat([img2]<span class="op">*</span><span class="dv">3</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            img1 <span class="op">=</span> torch.cat([img1] <span class="op">*</span> <span class="dv">3</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            img2 <span class="op">=</span> torch.cat([img2] <span class="op">*</span> <span class="dv">3</span>)</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> img1, img2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -349,28 +349,22 @@ window.Quarto = {
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CollateFn:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> reshape(<span class="va">self</span>, batch):</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        patches <span class="op">=</span> torch.stack(batch)<span class="op">\</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                    .unfold(<span class="dv">2</span>, PATCH_SIZE, PATCH_SIZE)<span class="op">\</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                    .unfold(<span class="dv">3</span>, PATCH_SIZE, PATCH_SIZE)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        patches <span class="op">=</span> (</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            torch.stack(batch).unfold(<span class="dv">2</span>, PATCH_SIZE, PATCH_SIZE).unfold(<span class="dv">3</span>, PATCH_SIZE, PATCH_SIZE)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        num_images <span class="op">=</span> <span class="bu">len</span>(patches)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        patches <span class="op">=</span> patches.reshape(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            num_images,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            RGB_CHANNELS, </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            NUM_PATCHES, </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            PATCH_SIZE, </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            PATCH_SIZE</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        patches.transpose_(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> patches.reshape(num_images, NUM_PATCHES, <span class="op">-</span><span class="dv">1</span>) <span class="op">/</span> <span class="fl">255.0</span> <span class="op">-</span> <span class="fl">0.5</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, batch: List[Tuple[torch.Tensor, torch.Tensor]]</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> Tuple[torch.FloatTensor, torch.FloatTensor]:</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        x1, x2 <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>batch)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.reshape(x1), <span class="va">self</span>.reshape(x2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        patches <span class="op">=</span> patches.reshape(num_images, RGB_CHANNELS, NUM_PATCHES, PATCH_SIZE, PATCH_SIZE)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        patches.transpose_(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> patches.reshape(num_images, NUM_PATCHES, <span class="op">-</span><span class="dv">1</span>) <span class="op">/</span> <span class="fl">255.0</span> <span class="op">-</span> <span class="fl">0.5</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, batch: List[Tuple[torch.Tensor, torch.Tensor]]</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> Tuple[torch.FloatTensor, torch.FloatTensor]:</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        x1, x2 <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>batch)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.reshape(x1), <span class="va">self</span>.reshape(x2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -378,7 +372,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="model">Model</h2>
 <p>The model is simply the 256 image patches passed through an encoder transformer with a CLS token. However, a few things that I think newcomers to the transformer/ pytorch field ought to know is as follows (also I made these mistakes 😅). - Make sure to use <code>self.register_parameter</code> when declaring trainable variables in pytorch. doing <code>self.myvar = nn.Parameter(...)</code> is not enough. - I have used <code>LayerNorm</code> everywhere possible to keep gradient sizes reasonable for a optimizer with constant learning rate.</p>
 <p>The walkthough of the model operation ignoring normalisations is as follows: 1. Take the flattened 3x16x16 image patches and append them to a positional encoding. 2. Pass this through a linear layer and append the CLS token embedding to this. 3. Pass this through transformer, and take the 0th token since this correspond to the CLS token. 4. Normalize this vector to unit length so that you have a final image embedding.</p>
-<div id="12c5459c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.057848,&quot;end_time&quot;:&quot;2021-07-26T12:30:19.810838&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:19.752990&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="6">
+<div id="12c5459c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.057848,&quot;end_time&quot;:&quot;2021-07-26T12:30:19.810838&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:19.752990&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Model(nn.Module):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_model, n_head, n_layers):</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -387,8 +381,8 @@ window.Quarto = {
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoder <span class="op">=</span> nn.TransformerEncoder(encoder_layer, num_layers<span class="op">=</span>n_layers)</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># positional embedding</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        w_pos <span class="op">=</span> torch.randn(NUM_PATCHES, d_model) <span class="op">/</span> d_model <span class="op">**</span> <span class="fl">0.5</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        cls_token <span class="op">=</span> torch.randn(<span class="dv">1</span>, d_model) <span class="op">/</span> d_model <span class="op">**</span> <span class="fl">0.5</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        w_pos <span class="op">=</span> torch.randn(NUM_PATCHES, d_model) <span class="op">/</span> d_model<span class="op">**</span><span class="fl">0.5</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        cls_token <span class="op">=</span> torch.randn(<span class="dv">1</span>, d_model) <span class="op">/</span> d_model<span class="op">**</span><span class="fl">0.5</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.register_parameter(<span class="st">"pos_embed"</span>, nn.Parameter(w_pos))</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.register_parameter(<span class="st">"cls_token"</span>, nn.Parameter(cls_token))</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
@@ -402,9 +396,9 @@ window.Quarto = {
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        position <span class="op">=</span> torch.stack([<span class="va">self</span>.pos_embed] <span class="op">*</span> batch_size)</span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.cat([x, position], dim<span class="op">=-</span><span class="dv">1</span>)</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        pixel_proj <span class="op">=</span> <span class="va">self</span>.norm2(F.relu(<span class="va">self</span>.linear(<span class="va">self</span>.norm1(x))))</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        batched_cls_token <span class="op">=</span> torch.stack([<span class="va">self</span>.cls_token]<span class="op">*</span>batch_size)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        batched_cls_token <span class="op">=</span> torch.stack([<span class="va">self</span>.cls_token] <span class="op">*</span> batch_size)</span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        cls_x <span class="op">=</span> torch.cat([batched_cls_token, pixel_proj], dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        cls_x.transpose_(<span class="dv">0</span>, <span class="dv">1</span>)</span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> F.normalize(<span class="va">self</span>.encoder(cls_x)[<span class="dv">0</span>, ...], dim<span class="op">=-</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -416,22 +410,19 @@ window.Quarto = {
 <p>My personal intuition as to why this might be better might be as follows: (Feel free to correct me if I am wrong). When trying to maximise dot products, we are asking two points on a sphere to move towards each other. Now there is an obvious shortest path distance when you visualise it by drawing a line between the two points. However, going away from the point will also, eventually get you to the same point but by taking a longer time.</p>
 <p>By using the following equation we need two histograms to line up, which is a simpler derivative, and therefore more likely to get to a local minima faster. <span class="math display">\[ \frac{1}{N}\sum_{n=1}^N\sum_{j=1}^J q_j\log p_j\]</span></p>
 <p>Note that in the implementation below, we have extra two concepts of centering, and using a temperature. I’m not sure about the centering, but the temperature variable (which is positive but less than one), sharpens the histogram, making the peaks more prominent.</p>
-<div id="3ed1f1d0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.051519,&quot;end_time&quot;:&quot;2021-07-26T12:30:19.999734&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:19.948215&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="7">
+<div id="3ed1f1d0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.051519,&quot;end_time&quot;:&quot;2021-07-26T12:30:19.999734&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:19.948215&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HLoss:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, temperature_t: <span class="bu">float</span>, temperature_s: <span class="bu">float</span>):</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.temperature_t <span class="op">=</span> temperature_t</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.temperature_s <span class="op">=</span> temperature_s</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        t: torch.FloatTensor, </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        s: torch.FloatTensor, </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        center: torch.FloatTensor</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.FloatTensor:</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        t <span class="op">=</span> F.softmax((t.detach() <span class="op">-</span> center) <span class="op">/</span> <span class="va">self</span>.temperature_t, dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        log_s <span class="op">=</span> F.log_softmax(s <span class="op">/</span> <span class="va">self</span>.temperature_s, dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>(t <span class="op">*</span> log_s).<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">1</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>, t: torch.FloatTensor, s: torch.FloatTensor, center: torch.FloatTensor</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.FloatTensor:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        t <span class="op">=</span> F.softmax((t.detach() <span class="op">-</span> center) <span class="op">/</span> <span class="va">self</span>.temperature_t, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        log_s <span class="op">=</span> F.log_softmax(s <span class="op">/</span> <span class="va">self</span>.temperature_s, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>(t <span class="op">*</span> log_s).<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">1</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="training" class="level2">
@@ -439,7 +430,7 @@ window.Quarto = {
 <p>The <code>LightningModule</code> below goes through the training step. The main steps are: 1. Create two copies of the model with the exact same parameters. One would be considered teacher (with the gradients not being calculated at backprop) and the student. 2. Pass both augmentations through both student and teacher. 3. Calculate the loss function shown above for the two augmentations, but with one embedding from teacher and the other from the student. 4. Calculate the new exponentially weighted teacher parameters with the corresponding student parameters. 5. Calculate a new (exponentially weighted) center parameter from the embeddings passed through the teacher only. Steps 1-4 being the most important aspects IMO. 5th step feels more like a trick needed to stabalize optimization.</p>
 <p>The following gif from the <a href="https://github.com/facebookresearch/dino">official repo</a> is an overview of the algorithm: <img src="https://github.com/facebookresearch/dino/raw/main/.github/dino.gif" class="img-fluid"></p>
 <p>The non-standard (and important to note) things I’ve done in the <code>LightningModule</code> are as follows: - Set all parameters in <code>teacher</code> model to non-trainable. - Register a buffer (not parameter) <code>center</code> to track the output of the teacher. - At each <code>validation_epoch_end</code> randomly pick an image from validation set and find 5 closest images. Use these results and push it to weights and biases as a table of images. - Every 50th batch save a histogram of gradients to weights and biases. This ensures that there is no gradient explosion or degredation as training evolves.</p>
-<div id="3f96031b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.067769,&quot;end_time&quot;:&quot;2021-07-26T12:30:20.305048&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:20.237279&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="9">
+<div id="3f96031b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:0.067769,&quot;end_time&quot;:&quot;2021-07-26T12:30:20.305048&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:20.237279&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LightningModel(pl.LightningModule):</span>
@@ -462,7 +453,7 @@ window.Quarto = {
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.p_mom <span class="op">=</span> param_momentum</span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.register_buffer(<span class="st">"center"</span>, torch.zeros((<span class="dv">1</span>, dim)).<span class="bu">float</span>())</span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.valid_files <span class="op">=</span> valid_files</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> p <span class="kw">in</span> <span class="va">self</span>.teacher.parameters():</span>
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>            p.requires_grad <span class="op">=</span> <span class="va">False</span></span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
@@ -471,12 +462,12 @@ window.Quarto = {
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        batch: Tuple[torch.FloatTensor, torch.FloatTensor],</span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.FloatTensor:</span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        x1, x2 <span class="op">=</span> batch</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        s1, s2 <span class="op">=</span> <span class="va">self</span>.student(x1), <span class="va">self</span>.student(x2)</span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        t1, t2 <span class="op">=</span> <span class="va">self</span>.teacher(x1), <span class="va">self</span>.teacher(x2)</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> <span class="va">self</span>.loss_fn(t1, s2, <span class="va">self</span>.center) <span class="op">+</span> <span class="va">self</span>.loss_fn(t2, s1, <span class="va">self</span>.center)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        emperical_center <span class="op">=</span> F.normalize(</span>
 <span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>            torch.cat([t1, t2]).mean(dim<span class="op">=</span><span class="dv">0</span>, keepdims<span class="op">=</span><span class="va">True</span>),</span>
 <span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=-</span><span class="dv">1</span>,</span>
@@ -488,52 +479,50 @@ window.Quarto = {
 <span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">-&gt;</span> torch.Tensor:</span>
 <span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        loss, emperical_center <span class="op">=</span> <span class="va">self</span>.loss_calculation(batch)</span>
 <span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.log(name<span class="op">=</span><span class="st">"Training loss"</span>, value<span class="op">=</span>loss, on_step<span class="op">=</span><span class="va">True</span>, on_epoch<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.center <span class="op">=</span> F.normalize(</span>
 <span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.c_mom <span class="op">*</span> <span class="va">self</span>.center <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> <span class="va">self</span>.c_mom) <span class="op">*</span> emperical_center,</span>
 <span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>            dim<span class="op">=-</span><span class="dv">1</span>,</span>
 <span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> s_p, t_p <span class="kw">in</span> <span class="bu">zip</span>(<span class="va">self</span>.student.parameters(), <span class="va">self</span>.teacher.parameters()):</span>
 <span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>            t_p.data <span class="op">=</span> <span class="va">self</span>.p_mom <span class="op">*</span> t_p.data <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> <span class="va">self</span>.p_mom) <span class="op">*</span> s_p.data</span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> loss</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> validation_step(<span class="va">self</span>, images: torch.FloatTensor, <span class="op">*</span>args: List[Any]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.teacher(images)</span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> validation_epoch_end(<span class="va">self</span>, validation_step_outputs):</span>
 <span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>        valid_embeds <span class="op">=</span> torch.cat([pred <span class="cf">for</span> pred <span class="kw">in</span> validation_step_outputs])</span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>        columns <span class="op">=</span> [<span class="st">"image"</span>] <span class="op">+</span> [<span class="ss">f"closest_</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(TOPK)]</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>        columns <span class="op">=</span> [<span class="st">"image"</span>] <span class="op">+</span> [<span class="ss">f"closest_</span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(TOPK)]</span>
 <span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>        indices <span class="op">=</span> np.random.choice(<span class="bu">len</span>(<span class="va">self</span>.valid_files), VALID_IMAGES, replace<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>        rows <span class="op">=</span> [get_closest_wandb_images(valid_embeds, i, <span class="va">self</span>.valid_files) <span class="cf">for</span> i <span class="kw">in</span> indices]</span>
 <span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>        table <span class="op">=</span> wandb.Table(data<span class="op">=</span>rows, columns<span class="op">=</span>columns)</span>
 <span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.logger.experiment.log({<span class="ss">f"epoch </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>current_epoch<span class="sc">}</span><span class="ss"> results"</span>: table})</span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_after_backward(<span class="va">self</span>):</span>
 <span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.trainer.global_step <span class="op">%</span> <span class="dv">50</span> <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># don't make the tf file huge</span></span>
 <span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>            global_step <span class="op">=</span> <span class="va">self</span>.trainer.global_step</span>
 <span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> name, param <span class="kw">in</span> <span class="va">self</span>.student.named_parameters():</span>
 <span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="st">"weight"</span> <span class="kw">in</span> name <span class="kw">and</span> <span class="kw">not</span> <span class="st">"norm"</span> <span class="kw">in</span> name <span class="kw">and</span> param.requires_grad:</span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>                    <span class="va">self</span>.logger.experiment.log(</span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>                        {<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_grad"</span>: wandb.Histogram(param.grad.cpu())}</span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>                    )</span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> configure_optimizers(<span class="va">self</span>) <span class="op">-&gt;</span> torch.optim.Optimizer:</span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> FusedAdam(<span class="va">self</span>.student.parameters(), lr<span class="op">=</span><span class="va">self</span>.lr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>                    <span class="va">self</span>.logger.experiment.log({<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_grad"</span>: wandb.Histogram(param.grad.cpu())})</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> configure_optimizers(<span class="va">self</span>) <span class="op">-&gt;</span> torch.optim.Optimizer:</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> FusedAdam(<span class="va">self</span>.student.parameters(), lr<span class="op">=</span><span class="va">self</span>.lr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Thanks to PyTorch Lightning and WandB I can easily do half precision training and log the results to a beautiful dashboard, with results in the link below.</p>
-<div id="8b5c97be" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:16761.359072,&quot;end_time&quot;:&quot;2021-07-26T17:09:41.799268&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:20.440196&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="10">
+<div id="8b5c97be" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:16761.359072,&quot;end_time&quot;:&quot;2021-07-26T17:09:41.799268&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T12:30:20.440196&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir <span class="op">/</span>kaggle<span class="op">/</span>working<span class="op">/</span>logs</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>teacher <span class="op">=</span> Model(NUM_PIXELS, N_HEADS, N_LAYERS)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>h_loss <span class="op">=</span> HLoss(TEMPERATURE_T, TEMPERATURE_S)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>lightning_model <span class="op">=</span> LightningModel(</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    teacher, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    teacher,</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    LR,</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    h_loss,</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    valid_files,</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    NUM_PIXELS,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    CENTER_MOMENTUM, </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    CENTER_MOMENTUM,</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    TEACHER_MOMENTUM,</span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
@@ -604,7 +593,7 @@ Time to load fused_adam op: 29.516473054885864 seconds</code></pre>
 {"model_id":"b34c6b05ce6b4357a0bb01f30876a824","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display">
 <pre><code>1</code></pre>
 </div>
 </div>
@@ -612,14 +601,14 @@ Time to load fused_adam op: 29.516473054885864 seconds</code></pre>
 <section id="evaluate-results" class="level2">
 <h2 class="anchored" data-anchor-id="evaluate-results">Evaluate results</h2>
 <p>Finally lets look at some random images with its most closest images according to the model. Note that at this point, we throw away the student and simply take the teacher, even though it is only the student that used gradient information directly. The following image shows the weights and biases table that I created during training using <strong>only</strong> the validation dataset. The results that follow use the entire set of images and it’s corresponding closest images. Considering that this is a self supervised task, this is not “cheating”. <img src="../images/wanb_table.jpg" class="img-fluid"></p>
-<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:1222.440701,&quot;end_time&quot;:&quot;2021-07-26T17:30:04.508760&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T17:09:42.068059&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]" data-execution_count="12">
+<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;papermill&quot;,&quot;value&quot;:{&quot;duration&quot;:1222.440701,&quot;end_time&quot;:&quot;2021-07-26T17:30:04.508760&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2021-07-26T17:09:42.068059&quot;,&quot;status&quot;:&quot;completed&quot;}}" data-tags="[]">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>teacher <span class="op">=</span> teacher.<span class="bu">eval</span>().to(device)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>embedding <span class="op">=</span> []</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> tqdm(image_orig_dl):</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> teacher(x.to(device))</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        embedding.append(out.cpu())</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    embedding <span class="op">=</span> torch.cat(embedding, dim<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">

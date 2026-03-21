@@ -273,33 +273,39 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <div id="cell-6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:8277,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1633763224685,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-outputid="c07d8d5f-279b-4a7b-c906-0687a315178e">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Mean Pooling - Take attention mask into account for correct averaging</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean Pooling - Take attention mask into account for correct averaging</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean_pooling(model_output, attention_mask):</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    token_embeddings <span class="op">=</span> model_output[<span class="dv">0</span>] <span class="co">#First element of model_output contains all token embeddings</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    input_mask_expanded <span class="op">=</span> attention_mask.unsqueeze(<span class="op">-</span><span class="dv">1</span>).expand(token_embeddings.size()).<span class="bu">float</span>()</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.<span class="bu">sum</span>(token_embeddings <span class="op">*</span> input_mask_expanded, <span class="dv">1</span>) <span class="op">/</span> torch.clamp(input_mask_expanded.<span class="bu">sum</span>(<span class="dv">1</span>), <span class="bu">min</span><span class="op">=</span><span class="fl">1e-9</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_embedding_batch(model, tokenizer, sentences: List[<span class="bu">str</span>]) <span class="op">-&gt;</span> torch.FloatTensor:</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> tokenizer(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        sentences, </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        max_length<span class="op">=</span>MAX_TEXT_LENGTH, </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        truncation<span class="op">=</span><span class="va">True</span>, </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        padding<span class="op">=</span><span class="st">"max_length"</span>, </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        return_tensors<span class="op">=</span><span class="st">"pt"</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    x_dev <span class="op">=</span> {k: v.to(device) <span class="cf">for</span> k, v <span class="kw">in</span> x.items()}</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> model(<span class="op">**</span>x_dev)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    embeds <span class="op">=</span> mean_pooling(out, x_dev[<span class="st">"attention_mask"</span>]).cpu()</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    embed_lens <span class="op">=</span> torch.norm(embeds, dim<span class="op">=-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> embeds <span class="op">/</span> embed_lens</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_embeddings(model, tokenizer, sentences, batch_size):</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        embeds <span class="op">=</span> []</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> tqdm(<span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(sentences), batch_size)):</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>            embeds.append(get_embedding_batch(model, tokenizer, sentences[i:i<span class="op">+</span>batch_size]))</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat(embeds)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    token_embeddings <span class="op">=</span> model_output[</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    ]  <span class="co"># First element of model_output contains all token embeddings</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    input_mask_expanded <span class="op">=</span> attention_mask.unsqueeze(<span class="op">-</span><span class="dv">1</span>).expand(token_embeddings.size()).<span class="bu">float</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.<span class="bu">sum</span>(token_embeddings <span class="op">*</span> input_mask_expanded, <span class="dv">1</span>) <span class="op">/</span> torch.clamp(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        input_mask_expanded.<span class="bu">sum</span>(<span class="dv">1</span>), <span class="bu">min</span><span class="op">=</span><span class="fl">1e-9</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_embedding_batch(model, tokenizer, sentences: List[<span class="bu">str</span>]) <span class="op">-&gt;</span> torch.FloatTensor:</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> tokenizer(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        sentences,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        max_length<span class="op">=</span>MAX_TEXT_LENGTH,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        truncation<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        padding<span class="op">=</span><span class="st">"max_length"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        return_tensors<span class="op">=</span><span class="st">"pt"</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    x_dev <span class="op">=</span> {k: v.to(device) <span class="cf">for</span> k, v <span class="kw">in</span> x.items()}</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> model(<span class="op">**</span>x_dev)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    embeds <span class="op">=</span> mean_pooling(out, x_dev[<span class="st">"attention_mask"</span>]).cpu()</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    embed_lens <span class="op">=</span> torch.norm(embeds, dim<span class="op">=-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> embeds <span class="op">/</span> embed_lens</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_embeddings(model, tokenizer, sentences, batch_size):</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        embeds <span class="op">=</span> []</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> tqdm(<span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(sentences), batch_size)):</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>            embeds.append(get_embedding_batch(model, tokenizer, sentences[i : i <span class="op">+</span> batch_size]))</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat(embeds)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
@@ -339,7 +345,7 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 </div>
 <p>As can be seen below, even when it does get it wrong, the predictions are close. If your topics are quite distinct you might observe better results than what is shown below.</p>
 <div id="cell-11" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:284,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1633764644815,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-outputid="5158bb0c-80d4-4ba6-b2cb-74850184e7f9">
-<div class="cell-output cell-output-display" data-execution_count="39">
+<div class="cell-output cell-output-display">
 <div>
 
 

@@ -256,12 +256,12 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:1792,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1613382619990,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-outputid="6e033dc8-80dc-49d1-9b2f-1fba386709da" data-execution_count="2">
+<div id="cell-4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:1792,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1613382619990,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-outputid="6e033dc8-80dc-49d1-9b2f-1fba386709da">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(x_train, y_train), (x_test, y_test) <span class="op">=</span> tf.keras.datasets.mnist.load_data()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> x_train.reshape(<span class="bu">len</span>(x_train), <span class="op">-</span><span class="dv">1</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> x_test.reshape(<span class="bu">len</span>(x_test), <span class="op">-</span><span class="dv">1</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Rescale the images from [0,255] to the [0.0,1.0] range.</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>x_train, x_test <span class="op">=</span> x_train<span class="op">/</span><span class="fl">255.0</span>, x_test<span class="op">/</span><span class="fl">255.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>x_train, x_test <span class="op">=</span> x_train <span class="op">/</span> <span class="fl">255.0</span>, x_test <span class="op">/</span> <span class="fl">255.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
 11493376/11490434 [==============================] - 0s 0us/step</code></pre>
@@ -292,7 +292,7 @@ Epoch 4/5
 Epoch 5/5
 938/938 [==============================] - 2s 3ms/step - loss: 0.0632 - accuracy: 0.9811</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display">
 <pre><code>&lt;tensorflow.python.keras.callbacks.History at 0x7f60660ca0f0&gt;</code></pre>
 </div>
 </div>
@@ -302,15 +302,15 @@ Epoch 5/5
 <p>Let me outline the logic behind LR finder before we dive into the code. The basic idea is to vary the learning rate and note down the loss. At a certain point when the learning rate is too high the loss will start increasing again.</p>
 <p>Therefore the tasks that we have to do in order are: 1. Get the minimum and maximum learning rate we are willing to look at. 2. Initialise buffers to hold the learning rate and losses. 3. Before we begin this process, get the current model weights so we can restore it later. 4. Get a batch, and get the loss for that batch, and increase the learning rate. 5. Repeat the above step until maximum learning rate is reached. 6. Reset old weights to model. 7. Plot the model.</p>
 <p>The above 7 steps can be seen in the <code>LRFind</code> class below. <code>on_train_begin</code>, <code>on_train_batch_end</code>, <code>on_train_end</code> are simply callback functions provided by the keras API. Hopefully, they are self explanatory.</p>
-<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:1349,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1613383139426,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LRFind(tf.keras.callbacks.Callback): </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, min_lr, max_lr, n_rounds): </span>
+<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:1349,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1613383139426,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LRFind(tf.keras.callbacks.Callback):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, min_lr, max_lr, n_rounds):</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.min_lr <span class="op">=</span> min_lr</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.max_lr <span class="op">=</span> max_lr</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.step_up <span class="op">=</span> (max_lr <span class="op">/</span> min_lr) <span class="op">**</span> (<span class="dv">1</span> <span class="op">/</span> n_rounds)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.lrs <span class="op">=</span> []</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.losses <span class="op">=</span> []</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_train_begin(<span class="va">self</span>, logs<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.weights <span class="op">=</span> <span class="va">self</span>.model.get_weights()</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model.optimizer.lr <span class="op">=</span> <span class="va">self</span>.min_lr</span>
@@ -321,7 +321,7 @@ Epoch 5/5
 <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model.optimizer.lr <span class="op">=</span> <span class="va">self</span>.model.optimizer.lr <span class="op">*</span> <span class="va">self</span>.step_up</span>
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.model.optimizer.lr <span class="op">&gt;</span> <span class="va">self</span>.max_lr:</span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_train_end(<span class="va">self</span>, logs<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model.set_weights(<span class="va">self</span>.weights)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -335,25 +335,19 @@ Epoch 5/5
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">"sparse_categorical_crossentropy"</span>, optimizer<span class="op">=</span><span class="st">"adam"</span>, metrics<span class="op">=</span>[<span class="st">"accuracy"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Before we go ahead and run learning rate finder, a few things we should define. - First, we need to use <code>tf.data.Dataset.from_tensor_slices</code> incase there aren’t enough batches per epoch for learning rate to go from <code>min_lr</code> to <code>max_lr</code>. - We use <code>EPOCHS=1</code> but, this is a repeating dataset forever as seen in line 6 below. It is <code>lr_finder_steps</code> that force this repetition to stop at 400 batches. - Instead of <code>model.fit(x_train, y_train,...)</code>, we use <code>model.fit(train_dataset)</code>. - When plotting we use the log scale since we increase learning rate multiplicatively.</p>
-<div id="cell-13" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:3386,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1613384831335,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-outputid="2887be70-7c98-4a59-eaa6-ab8bafa04625" data-execution_count="22">
+<div id="cell-13" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;executionInfo&quot;,&quot;value&quot;:{&quot;elapsed&quot;:3386,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1613384831335,&quot;user&quot;:{&quot;displayName&quot;:&quot;Sachin Abeywardana&quot;,&quot;photoUrl&quot;:&quot;https://lh3.googleusercontent.com/a-/AOh14GiNRLlpAolGeTkvIaXft0Lq63atAhxdJZbGhq8MLQ=s64&quot;,&quot;userId&quot;:&quot;16787685245458597769&quot;},&quot;user_tz&quot;:-660}}" data-outputid="2887be70-7c98-4a59-eaa6-ab8bafa04625">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>EPOCHS <span class="op">=</span> <span class="dv">1</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>BATCH_SIZE <span class="op">=</span> <span class="dv">64</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>lr_finder_steps <span class="op">=</span> <span class="dv">400</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>lr_find <span class="op">=</span> LRFind(<span class="fl">1e-6</span>, <span class="fl">1e1</span>, lr_finder_steps)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices((x_train, y_train))<span class="op">\</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                    .repeat()<span class="op">\</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                    .shuffle(<span class="dv">2048</span>)<span class="op">\</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                    .batch(BATCH_SIZE)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>model.fit(</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    train_dataset,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    steps_per_epoch<span class="op">=</span>lr_finder_steps,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span>EPOCHS,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>[lr_find]</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>plt.plot(lr_find.lrs, lr_find.losses)</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> (</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    tf.data.Dataset.from_tensor_slices((x_train, y_train)).repeat().shuffle(<span class="dv">2048</span>).batch(BATCH_SIZE)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>model.fit(train_dataset, steps_per_epoch<span class="op">=</span>lr_finder_steps, epochs<span class="op">=</span>EPOCHS, callbacks<span class="op">=</span>[lr_find])</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.plot(lr_find.lrs, lr_find.losses)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>400/400 [==============================] - 2s 4ms/step - loss: 1.7651 - accuracy: 0.4492</code></pre>
 </div>
