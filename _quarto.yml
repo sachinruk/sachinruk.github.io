@@ -11,11 +11,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: blog.qmd
       - href: programming_tips.qmd
         text: Programming Tips
-      - href: ML_consulting.qmd
-        text: ML Consulting
       - href: DL_Course.qmd
         text: DL Course
   page-footer: 
