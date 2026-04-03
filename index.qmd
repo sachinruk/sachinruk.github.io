@@ -8,7 +8,9 @@ listing:
     sort: "date desc"
     type: default
   - id: all-posts
-    contents: blog
+    contents:
+      - blog
+      - programming_tips
     sort: "date desc"
     type: default
     categories: true

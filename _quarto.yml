@@ -11,8 +11,6 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: programming_tips.qmd
-        text: Programming Tips
       - href: DL_Course.qmd
         text: DL Course
   page-footer: 
@@ -36,7 +34,6 @@ format:
     css: styles.css
     toc: true
     include-after-body: _includes/linkedin-float.html
-
 
 
 
