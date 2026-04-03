@@ -154,11 +154,11 @@ window.Quarto = {
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="DINO Self Supervised Vision Transformers – deepschool.ai">
 <meta property="og:description" content="Implementing DINO self-supervised learning for Vision Transformers in PyTorch to extract image embeddings without labeled data or negative samples">
-<meta property="og:image" content="https://deepschool.ai/images/dino.jpg">
+<meta property="og:image" content="../images/dino.jpg">
 <meta property="og:site_name" content="deepschool.ai">
 <meta name="twitter:title" content="DINO Self Supervised Vision Transformers – deepschool.ai">
 <meta name="twitter:description" content="Implementing DINO self-supervised learning for Vision Transformers in PyTorch to extract image embeddings without labeled data or negative samples">
-<meta name="twitter:image" content="https://deepschool.ai/images/dino.jpg">
+<meta name="twitter:image" content="../images/dino.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -184,10 +184,6 @@ window.Quarto = {
   <li class="nav-item">
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../programming_tips.html"> 
-<span class="menu-text">Programming Tips</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../DL_Course.html"> 
@@ -819,7 +815,7 @@ function submitNewsletter(event, position) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/deepschool\.ai");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

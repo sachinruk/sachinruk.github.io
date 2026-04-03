@@ -120,15 +120,11 @@ window.Quarto = {
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="From DDPM to DDIM: A Mathematcal Deep Dive – deepschool.ai">
 <meta property="og:description" content="A mathematical deep dive in excruciating detail into the DDIM model">
-<meta property="og:image" content="https://deepschool.ai/images/DDIM.png">
+<meta property="og:image" content="../images/DDIM.png">
 <meta property="og:site_name" content="deepschool.ai">
-<meta property="og:image:height" content="945">
-<meta property="og:image:width" content="1890">
 <meta name="twitter:title" content="From DDPM to DDIM: A Mathematcal Deep Dive – deepschool.ai">
 <meta name="twitter:description" content="A mathematical deep dive in excruciating detail into the DDIM model">
-<meta name="twitter:image" content="https://deepschool.ai/images/DDIM.png">
-<meta name="twitter:image-height" content="945">
-<meta name="twitter:image-width" content="1890">
+<meta name="twitter:image" content="../images/DDIM.png">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -154,10 +150,6 @@ window.Quarto = {
   <li class="nav-item">
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../programming_tips.html"> 
-<span class="menu-text">Programming Tips</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../DL_Course.html"> 
@@ -629,7 +621,7 @@ function submitNewsletter(event, position) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/deepschool\.ai");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

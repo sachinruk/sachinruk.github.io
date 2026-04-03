@@ -124,11 +124,11 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Collate function tutorial – deepschool.ai">
 <meta property="og:description" content="A practical guide to writing custom PyTorch collate functions for DataLoader to handle variable-length sequences and complex batching">
-<meta property="og:image" content="https://deepschool.ai/images/collate_fn.webp">
+<meta property="og:image" content="../images/collate_fn.webp">
 <meta property="og:site_name" content="deepschool.ai">
 <meta name="twitter:title" content="Collate function tutorial – deepschool.ai">
 <meta name="twitter:description" content="A practical guide to writing custom PyTorch collate functions for DataLoader to handle variable-length sequences and complex batching">
-<meta name="twitter:image" content="https://deepschool.ai/images/collate_fn.webp">
+<meta name="twitter:image" content="../images/collate_fn.webp">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -154,10 +154,6 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
   <li class="nav-item">
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../programming_tips.html"> 
-<span class="menu-text">Programming Tips</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../DL_Course.html"> 
@@ -475,7 +471,7 @@ function submitNewsletter(event, position) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/deepschool\.ai");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
