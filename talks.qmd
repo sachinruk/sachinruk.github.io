@@ -1,0 +1,58 @@
+---
+title: "Talks"
+toc: false
+---
+
+These talks were pulled from the public YouTube search results for [`Sachin Abeywardana`](https://www.youtube.com/results?search_query=sachin+abeywardana) and filtered down to videos published by `MLOps.community` and `DataScienceSydney`. I excluded the short `MLOps.community` clip so this page only includes full talks.
+
+## MLOps.community
+
+### Adventures in Building CLIP and Other (Largeish) LMs
+
+October 10, 2023 · `MLOps.community` · 1h 06m 38s · [Watch on YouTube](https://www.youtube.com/watch?v=RHn1VlXJ7CU)
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe style="position: absolute; inset: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/RHn1VlXJ7CU" title="Adventures in Building CLIP &amp; Other (Largeish) LMs // Sachin Abeywardana // MLOps Podcast #180" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+## DataScienceSydney
+
+### ProFeTorch
+
+March 1, 2020 · `DataScienceSydney` · 33m 29s · [Watch on YouTube](https://www.youtube.com/watch?v=SHmvCOyKYf4)
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe style="position: absolute; inset: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/SHmvCOyKYf4" title="SACHIN ABEYWARDANA: &quot;ProFeTorch&quot;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+### Probabilistic Programming and Deep Bayesian Networks
+
+November 4, 2018 · `DataScienceSydney` · 32m 17s · [Watch on YouTube](https://www.youtube.com/watch?v=wngizelcVtQ)
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe style="position: absolute; inset: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/wngizelcVtQ" title="DSS 20-10-18 SACHIN ABEYWARDANA: &quot;PROBABILISTIC PROGRAMMING AND DEEP BAYESIAN NETWORKS&quot;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+### Generative Adversarial Networks
+
+March 21, 2018 · `DataScienceSydney` · 37m 44s · [Watch on YouTube](https://www.youtube.com/watch?v=9XerjeD5DC0)
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe style="position: absolute; inset: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/9XerjeD5DC0" title="DSS 02.18. Sachin Abeywardana &quot;Generative Adversarial Networks&quot;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+### Trump Tweets: Fun with Deep Learning
+
+November 12, 2017 · `DataScienceSydney` · 40m 09s · [Watch on YouTube](https://www.youtube.com/watch?v=m5oH-IYIm9M)
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe style="position: absolute; inset: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/m5oH-IYIm9M" title="DSS meetup Sept17: SACHIN ABEYWARDANA: &quot;TRUMP TWEETS: FUN WITH DEEP LEARNING&quot;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+### Deep Learning: Easier to Learn than you Think
+
+September 11, 2016 · `DataScienceSydney` · 30m 08s · [Watch on YouTube](https://www.youtube.com/watch?v=cyU9LqozRs8)
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe style="position: absolute; inset: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/cyU9LqozRs8" title="Data Science Sydney: SACHIN ABEYWARDANA &quot;Deep Learning: Easier to Learn than you Think&quot;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>

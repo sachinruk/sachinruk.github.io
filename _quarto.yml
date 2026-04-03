@@ -11,6 +11,8 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: talks.qmd
+        text: Talks
       - href: DL_Course.qmd
         text: DL Course
   page-footer: 
@@ -34,7 +36,6 @@ format:
     css: styles.css
     toc: true
     include-after-body: _includes/linkedin-float.html
-
 
 
 
