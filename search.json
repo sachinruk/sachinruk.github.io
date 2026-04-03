@@ -1001,6 +1001,27 @@
     "text": "✉\n    Get notified of new posts\n    \n    \n    \n    \n    \n    Subscribe\n  \n  \n\n\n\n\n\nNo stats blog would be complete without a discussion of the Gaussian distribution. In the following video I discuss how to obtain the mean and variance of a Gaussian. You do need some knowledge of integration.\n\n\nOh, and this is a statisticians “hello world”."
   },
   {
+    "objectID": "talks.html",
+    "href": "talks.html",
+    "title": "Talks",
+    "section": "",
+    "text": "These talks were pulled from the public YouTube search results for Sachin Abeywardana and filtered down to videos published by MLOps.community and DataScienceSydney. I excluded the short MLOps.community clip so this page only includes full talks."
+  },
+  {
+    "objectID": "talks.html#mlops.community",
+    "href": "talks.html#mlops.community",
+    "title": "Talks",
+    "section": "MLOps.community",
+    "text": "MLOps.community\n\nAdventures in Building CLIP and Other (Largeish) LMs\nOctober 10, 2023 · MLOps.community · 1h 06m 38s · Watch on YouTube"
+  },
+  {
+    "objectID": "talks.html#datasciencesydney",
+    "href": "talks.html#datasciencesydney",
+    "title": "Talks",
+    "section": "DataScienceSydney",
+    "text": "DataScienceSydney\n\nProFeTorch\nMarch 1, 2020 · DataScienceSydney · 33m 29s · Watch on YouTube\n\n\n\n\n\nProbabilistic Programming and Deep Bayesian Networks\nNovember 4, 2018 · DataScienceSydney · 32m 17s · Watch on YouTube\n\n\n\n\n\nGenerative Adversarial Networks\nMarch 21, 2018 · DataScienceSydney · 37m 44s · Watch on YouTube\n\n\n\n\n\nTrump Tweets: Fun with Deep Learning\nNovember 12, 2017 · DataScienceSydney · 40m 09s · Watch on YouTube\n\n\n\n\n\nDeep Learning: Easier to Learn than you Think\nSeptember 11, 2016 · DataScienceSydney · 30m 08s · Watch on YouTube"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "DeepSchool.ai",
