@@ -120,11 +120,15 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Focal Loss for Multi-class Classification – deepschool.ai">
 <meta property="og:description" content="Extending focal loss to multi-class classification problems to handle class imbalance in deep learning models">
-<meta property="og:image" content="../images/focal_loss.png">
+<meta property="og:image" content="https://deepschool.ai/images/focal_loss.png">
 <meta property="og:site_name" content="deepschool.ai">
+<meta property="og:image:height" content="1088">
+<meta property="og:image:width" content="1148">
 <meta name="twitter:title" content="Focal Loss for Multi-class Classification – deepschool.ai">
 <meta name="twitter:description" content="Extending focal loss to multi-class classification problems to handle class imbalance in deep learning models">
-<meta name="twitter:image" content="../images/focal_loss.png">
+<meta name="twitter:image" content="https://deepschool.ai/images/focal_loss.png">
+<meta name="twitter:image-height" content="1088">
+<meta name="twitter:image-width" content="1148">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -390,7 +394,7 @@ function submitNewsletter(event, position) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/deepschool\.ai");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

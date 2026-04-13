@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-04-13">
+
+<title>Stop Prompting, Start Building: A Real Guide to Coding Agents – deepschool.ai</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../images/favicon_logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8f2d6c132e5b4348c35330d651bf4f33.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9994M738H0"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Stop Prompting, Start Building: A Real Guide to Coding Agents – deepschool.ai">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://deepschool.ai/images/intro-to-agents.png">
+<meta property="og:site_name" content="deepschool.ai">
+<meta property="og:image:height" content="768">
+<meta property="og:image:width" content="1376">
+<meta name="twitter:title" content="Stop Prompting, Start Building: A Real Guide to Coding Agents – deepschool.ai">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://deepschool.ai/images/intro-to-agents.png">
+<meta name="twitter:image-height" content="768">
+<meta name="twitter:image-width" content="1376">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">deepschool.ai</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../talks.html"> 
+<span class="menu-text">Talks</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../DL_Course.html"> 
+<span class="menu-text">DL Course</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-monorepo" id="toc-the-monorepo" class="nav-link" data-scroll-target="#the-monorepo">The Monorepo</a></li>
+  <li><a href="#sub-agents-skills-and-scripts" id="toc-sub-agents-skills-and-scripts" class="nav-link" data-scroll-target="#sub-agents-skills-and-scripts">Sub-Agents, Skills, and Scripts</a></li>
+  <li><a href="#mcps-are-great-but-not-always-the-answer" id="toc-mcps-are-great-but-not-always-the-answer" class="nav-link" data-scroll-target="#mcps-are-great-but-not-always-the-answer">MCPs Are Great, But Not Always the Answer</a></li>
+  <li><a href="#write-scripts-for-repeatable-work" id="toc-write-scripts-for-repeatable-work" class="nav-link" data-scroll-target="#write-scripts-for-repeatable-work">Write Scripts for Repeatable Work</a></li>
+  <li><a href="#build-your-own-rag" id="toc-build-your-own-rag" class="nav-link" data-scroll-target="#build-your-own-rag">Build Your Own RAG</a></li>
+  <li><a href="#symlink-everything-important" id="toc-symlink-everything-important" class="nav-link" data-scroll-target="#symlink-everything-important">Symlink Everything Important</a></li>
+  <li><a href="#browser-agents-are-underrated" id="toc-browser-agents-are-underrated" class="nav-link" data-scroll-target="#browser-agents-are-underrated">Browser Agents Are Underrated</a></li>
+  <li><a href="#let-the-agent-read-the-logs" id="toc-let-the-agent-read-the-logs" class="nav-link" data-scroll-target="#let-the-agent-read-the-logs">Let the Agent Read the Logs</a></li>
+  <li><a href="#looping" id="toc-looping" class="nav-link" data-scroll-target="#looping">Looping</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<div class="newsletter-subscribe newsletter-top" id="newsletter-top">
+  <form onsubmit="submitNewsletter(event, 'top')" class="newsletter-form-inline">
+    <span class="newsletter-icon">✉</span>
+    <span class="newsletter-cta">Get notified of new posts</span>
+    <input type="text" name="firstName" placeholder="First name" class="newsletter-input" required="">
+    <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required="">
+    <input type="email" name="email" placeholder="Email address" class="newsletter-input" required="">
+    <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
+    <input type="hidden" name="token" value="nb-s8k2m9x4q7w1">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+  <div class="newsletter-status" id="newsletter-status-top"></div>
+</div>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Stop Prompting, Start Building: A Real Guide to Coding Agents</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">AI</div>
+    <div class="quarto-category">Agents</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 13, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>There is a lot of discussion about agents that sounds either magical or completely useless. My experience has been much less dramatic. They are not replacing engineering judgment, but they are absolutely replacing a bunch of annoying glue work that used to eat up my day.</p>
+<p>The difference between “wow this is incredible” and “this thing is useless” often comes down to setup. A coding agent is only as effective as the environment you drop it into: your repo structure, your docs, your scripts, your prompts, and the tools you give it access to.</p>
+<p>So rather than trying to predict the future of software engineering, here is the much more practical version: these are the habits and patterns that have made agents genuinely useful for me.</p>
+<p><img src="../images/this_is_fine_terminals.png" alt="This is fine meme but the room is filled with 8 terminal windows showing errors" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="the-monorepo" class="level2">
+<h2 class="anchored" data-anchor-id="the-monorepo">The Monorepo</h2>
+<p>For some of us, especially a few ex-colleagues, the word <code>monorepo</code> may be a trigger word. I have come to believe that a monorepo is more than a coding standard; it is a way of life. Keep everything in one fucking place.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd29tcnN1ano5dTdrMWJlc2MyMzcxcG9mYzR2ZnIwa254ODk0MGx2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6uGhT1O4sxpi8/giphy.gif" class="img-fluid figure-img"></p>
+<figcaption>Looking everywhere</figcaption>
+</figure>
+</div>
+<p>This matters for humans, but it matters even more for agents. When code, scripts, docs, and config all live in one searchable place, an agent can actually navigate the system. It can search for symbols, inspect related files, trace dependencies, and answer questions without immediately getting lost.</p>
+<p>The practical benefit is simple: discovery gets cheaper. You spend less time telling the model where things are, and the model spends less time hallucinating because it can just go and look. If your tooling setup forces an agent to jump between five repos, three wikis, and some cursed local script in a home directory, you are making the problem much harder than it needs to be.</p>
+<p><img src="../images/pepe_silvia_repos.png" alt="Pepe Silvia conspiracy board meme but with repos, wikis, and config files connected by red string" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="sub-agents-skills-and-scripts" class="level2">
+<h2 class="anchored" data-anchor-id="sub-agents-skills-and-scripts">Sub-Agents, Skills, and Scripts</h2>
+<p>A skill is basically a reusable set of instructions that gets loaded when the model is doing a relevant task. A classic example is a PR workflow: format the code, run type checks, run tests, maybe generate a summary, then push.</p>
+<p>Sub-agents are similar in spirit, but more powerful in practice. A skill gets appended into the current conversation context. A sub-agent spins up with its own context, does its work, and returns an output without polluting the parent session.</p>
+<p>That separation is a big deal. I like to think of sub-agents as slightly functional-programming-coded helpers: give them an input, let them do a bounded task, get an output back. The parent session stays focused instead of accumulating every stray detail from every side quest.</p>
+<p>This is where agents start beating plain scripts. A script is deterministic, which is great, but it cannot usually inspect its own output and decide what to do next. An agent can. One of my most useful examples is a <code>pr-push</code> agent that runs tests and, if something fails, tries to understand the failure and fix the code before continuing. That kind of branching behavior is where the extra intelligence actually pays for itself.</p>
+<p><img src="../images/galaxy_brain_agents.png" alt="Galaxy brain meme: bash script -> skill -> sub-agent -> sub-agent that fixes its own test failures" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="mcps-are-great-but-not-always-the-answer" class="level2">
+<h2 class="anchored" data-anchor-id="mcps-are-great-but-not-always-the-answer">MCPs Are Great, But Not Always the Answer</h2>
+<p>MCPs are not the only way to extend an agent, and in some cases they are not even the best way.</p>
+<p>The best example for me is Atlassian. I absolutely hate how clunky and slow AF the Jira MCP feels. The Jira API, on the other hand, is pretty good. So instead of forcing the model through a painful tool path, I have the agent call the API directly when I need to create or update tickets.</p>
+<p>That does not mean MCPs are bad. Quite the opposite. Some of them are ridiculously useful. Glean has been excellent for searching internal docs. We also have a <code>data-MCP</code> setup that lets me query a database in plain English. As someone who is not exactly a SQL wizard, that has been a massive quality-of-life improvement.</p>
+<p>So my rough rule is this: use MCPs when they provide real leverage, not just because they exist. If a direct API call or a simple script is faster, clearer, and more reliable, do that instead.</p>
+<p><img src="../images/drake_mcp.png" alt="Drake meme: forcing everything through MCP vs using whatever interface actually works" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="write-scripts-for-repeatable-work" class="level2">
+<h2 class="anchored" data-anchor-id="write-scripts-for-repeatable-work">Write Scripts for Repeatable Work</h2>
+<p>Yes, I know I just spent a section praising agents.</p>
+<p>Still, if something is truly repeatable, write a script.</p>
+<p>Agents are great at figuring things out, adapting to messy context, and making judgment calls. They are not the ideal layer for a task that should behave exactly the same way every time. If you already know the steps, capture them in a shell script, Python script, Make target, or whatever else fits your setup.</p>
+<p>Then let the agent call the script.</p>
+<p>This gives you the best of both worlds: the repeatability and low cost of automation, plus the flexibility of an agent that knows when to invoke it. It also cuts token usage significantly because there is no reason to spend model context on work that can be done deterministically.</p>
+<p><img src="../images/why_make_me_think.png" alt="Agent stressed out when a 3-line script would have worked" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="build-your-own-rag" class="level2">
+<h2 class="anchored" data-anchor-id="build-your-own-rag">Build Your Own RAG</h2>
+<p>By this I mostly mean: document your useful conversations.</p>
+<p>I keep a personal <code>docs/</code> folder, and near the end of good sessions I often ask the model to take the useful parts and write them down. Sometimes it is a design decision. Sometimes it is a debugging lesson. Sometimes it is just a weird but important bit of tribal knowledge that I know I will forget in two weeks.</p>
+<p>That ends up functioning like a very personal form of retrieval-augmented generation. Instead of relying only on whatever the model knows or whatever the company wiki happens to contain, I am steadily building a memory bank of things that were actually useful to me.</p>
+<p>It is basically a second brain, except this one is searchable and less likely to disappear into a pile of unread notes.</p>
+<p><img src="../images/second_brain_docs.png" alt="My actual brain (smooth) vs my docs folder (galaxy brain)" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="symlink-everything-important" class="level2">
+<h2 class="anchored" data-anchor-id="symlink-everything-important">Symlink Everything Important</h2>
+<p>I learned this one the painful way.</p>
+<p>At one point I accidentally deleted my <code>~/.claude/</code> folder and took out my agents, memories, and conversation history with it. That was enough to convince me that anything important should live somewhere I actually back up and version properly.</p>
+<p>Since then, I have preferred storing prompts, agent definitions, summaries, and instruction files in a real docs or config repo, then symlinking them into the places different tools expect. If you use multiple agent frameworks, this gets even more valuable.</p>
+<p>At Canva we are lucky enough to have access to a ridiculous number of AI tools. You <em>can</em> maintain separate global instructions for all of them, but what has worked well for me is keeping one source of truth and symlinking it into places like <code>~/.claude/CLAUDE.md</code> and <code>~/.codex/AGENTS.md</code>.</p>
+<p>That way, when I update an instruction, I update it once.</p>
+<p><img src="../images/one_ring_symlink.png" alt="One config to rule them all - global-instructions.md symlinked everywhere" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="browser-agents-are-underrated" class="level2">
+<h2 class="anchored" data-anchor-id="browser-agents-are-underrated">Browser Agents Are Underrated</h2>
+<p>Letting an LLM drive a browser is one of the fastest ways to make it feel like a real assistant instead of just a fancy autocomplete.</p>
+<p>I use browser automation to do small but annoying tasks that involve clicking through web UIs, reading pages, and pulling information back into a useful format. One example is reading Zoom meeting summaries and turning them into a personalized to-do list. It is not glamorous, but it is exactly the kind of work I do not want to spend human energy on.</p>
+<p>Browser agents are especially good when the data you need technically exists, but only behind a sequence of terrible menus and tabs. If a workflow requires navigating a website like a mildly patient intern, an agent can often do it just fine.</p>
+<p>I use <a href="https://playwright.dev/docs/getting-started-mcp">Playwright MCP</a> for browser automation.</p>
+<p><img src="../images/browser_click_for_me.png" alt="Developer relaxing while robot arms click through browser tabs" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="let-the-agent-read-the-logs" class="level2">
+<h2 class="anchored" data-anchor-id="let-the-agent-read-the-logs">Let the Agent Read the Logs</h2>
+<p><img src="../images/squinting_at_logs.png" alt="Reading production logs manually - squinting at screen with magnifying glass" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+<p>Letting an agent read logs is another huge unlock. Yes, I can debug by manually digging through error output. No, I do not think that means I should.</p>
+<p>After using internal tooling that pulls relevant slices of logs and feeding them to an agent, I am increasingly convinced that large-scale log splunking was never really a human task. It is tedious, repetitive, and usually full of patterns that a model can spot much faster than I can.</p>
+<p>This becomes even more valuable when you are debugging code that someone else wrote. Instead of spending half an hour reconstructing context from stack traces, you can have the agent summarize what happened, identify the likely failure path, and point you to the right files to inspect.</p>
+<p>It does not remove the need for judgment. It just gets you to the interesting part sooner.</p>
+<p><img src="../images/charlie_day_logs.png" alt="The agent after 30 seconds with your logs - robot at conspiracy board connecting deploys to errors" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="looping" class="level2">
+<h2 class="anchored" data-anchor-id="looping">Looping</h2>
+<p>Some people call this a Ralph loop. Either way, it is one of the most effective patterns I have found.</p>
+<p>The basic version is dead simple: tell the agent to run the tests, look at the failures, fix the code, and repeat until everything passes. That alone saves a surprising amount of time, because the agent does not get annoyed, does not lose context halfway through, and does not wander off to check Slack between iterations.</p>
+<p>But loops go beyond fixing broken tests. One of the more interesting uses is lightweight research. Andrej Karpathy’s <a href="https://github.com/karpathy/autoresearch">AutoResearch</a> takes this to its logical extreme: give an agent a training setup, a metric, and a five-minute time budget, then let it loop through experiments autonomously overnight. You wake up to a log of a hundred experiments and hopefully a better model. I have used a much simpler version of this — not training LLMs overnight, but iterating on config values where the feedback signal is clear and the cost of a bad attempt is low.</p>
+<p>The key ingredient is a reward signal. Without some way for the agent to evaluate whether its last attempt was better or worse, a loop is just an expensive way to go in circles. Tests, metrics, error output — anything that gives the model a gradient to follow turns a dumb retry into actual progress.</p>
+<p><img src="../images/loop_agent_meme.png" alt="Robot calmly sitting at desk surrounded by a conveyor belt of test results going from red to green - the agent at 3am on iteration 47" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The main risk in the age of AI is not that we become less capable overnight. It is that we become sloppy about where judgment belongs.</p>
+<p>The patterns above have worked for me because they push agents toward the tasks they are actually good at: searching, summarizing, navigating, branching on messy outputs, and reducing friction. They are much less impressive when used as a replacement for good repo structure, good scripts, or clear thinking.</p>
+<p>If I had to reduce this whole post to one sentence, it would be this: agents work best when they are embedded into a well-organized system, not when they are expected to magically compensate for a chaotic one.</p>
+<p><img src="../images/wise_old_man_agents.png" alt="Gandalf-like wizard on mountaintop saying agents work best in a well-organized system" style="max-height: 400px; display: block; margin: 0 auto;"></p>
+</section>
+<section id="appendix" class="level2">
+<h2 class="anchored" data-anchor-id="appendix">Appendix</h2>
+<p>Here is a snippet from my PR-to-Jira linker agent. Full disclosure: I do not know the Jira API well enough to have written this from scratch. I got Claude to do the first pass, and then I kept iterating on it until it became useful.</p>
+<p>The prompt is mostly doing four things:</p>
+<ol type="1">
+<li>Analyze the PR description and extract the actual intent of the change.</li>
+<li>Search the current sprint for related Jira tickets.</li>
+<li>Match only when the similarity is high enough to be trustworthy.</li>
+<li>Create a new ticket when nothing relevant exists.</li>
+</ol>
+<p>One of the useful pieces is the search step:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-u</span> <span class="st">"</span><span class="va">${ATLASSIAN_EMAIL}</span><span class="st">:</span><span class="va">${ATLASSIAN_API_TOKEN}</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://canva.atlassian.net/rest/api/3/search/jql"</span> <span class="at">-G</span> <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-urlencode</span> <span class="st">"jql=project = </span><span class="va">${TEAM_NAME}</span><span class="st"> AND assignee = currentUser() AND sprint in openSprints()"</span> <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-urlencode</span> <span class="st">"fields=key,summary,status,priority,description,created,updated,issuetype"</span> <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--data-urlencode</span> <span class="st">"maxResults=50"</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'.'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The rest of the prompt is just instruction scaffolding around that: how to compare tickets semantically, when to trust a match, and how to create a new ticket with sane defaults when no match exists.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<a href="https://www.linkedin.com/in/sachinabeywardana/" target="_blank" rel="noopener" class="linkedin-float" aria-label="LinkedIn Profile">
+  <i class="bi bi-linkedin"></i>
+</a>
+<div class="newsletter-subscribe newsletter-bottom" id="newsletter-bottom">
+  <h3 class="newsletter-heading">Enjoyed this post?</h3>
+  <p class="newsletter-description">Subscribe to get notified when I publish new posts about deep learning, ML engineering, and more.</p>
+  <form onsubmit="submitNewsletter(event, 'bottom')" class="newsletter-form-stacked">
+    <div class="newsletter-inputs">
+      <input type="text" name="firstName" placeholder="First name" class="newsletter-input" required="">
+      <input type="text" name="lastName" placeholder="Last name" class="newsletter-input" required="">
+      <input type="email" name="email" placeholder="Email address" class="newsletter-input" required="">
+      <input type="text" name="website" class="newsletter-honeypot" tabindex="-1" autocomplete="off">
+      <input type="hidden" name="token" value="nb-s8k2m9x4q7w1">
+    </div>
+    <button type="submit" class="newsletter-btn newsletter-btn-large">Subscribe</button>
+  </form>
+  <div class="newsletter-status" id="newsletter-status-bottom"></div>
+  <p class="newsletter-fine-print">No spam. Unsubscribe anytime.</p>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr107JdH9YC4h10TudqmmEFALfUZRGO9t1rDdJnFwqHTfuz6UW0mQjt50ubtYACsMtgw/exec';
+const FORM_TOKEN = 'nb-s8k2m9x4q7w1';
+
+function submitNewsletter(event, position) {
+  event.preventDefault();
+  const form = event.target;
+  const statusTop = document.getElementById('newsletter-status-top');
+  const statusBottom = document.getElementById('newsletter-status-bottom');
+
+  const showStatus = function(message, className) {
+    [statusTop, statusBottom].forEach(function(el) {
+      if (el) {
+        el.textContent = message;
+        el.className = 'newsletter-status ' + className;
+      }
+    });
+  };
+
+  const firstName = form.firstName.value.trim();
+  const lastName = form.lastName.value.trim();
+  const email = form.email.value.trim();
+  const website = form.website.value;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showStatus('Please enter a valid email address.', 'newsletter-error');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('firstName', firstName);
+  formData.append('lastName', lastName);
+  formData.append('email', email);
+  formData.append('website', website);
+  formData.append('token', FORM_TOKEN);
+
+  showStatus('Subscribing...', '');
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData
+  }).then(function() {
+    showStatus('Thanks for subscribing!', 'newsletter-success');
+    document.querySelectorAll('.newsletter-subscribe form').forEach(function(f) {
+      f.reset();
+    });
+  }).catch(function() {
+    showStatus('Something went wrong. Please try again.', 'newsletter-error');
+  });
+}
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/deepschool\.ai");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2026, Sachinthaka Abeywardana</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sachinruk">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/sachinabeywardana/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.youtube.com/@deepschoolai">
+      <i class="bi bi-youtube" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
