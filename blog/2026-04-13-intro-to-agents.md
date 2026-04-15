@@ -47,9 +47,9 @@ This is where agents start beating plain scripts. A script is deterministic, whi
 
 <img src="/images/galaxy_brain_agents.png" alt="Galaxy brain meme: bash script -> skill -> sub-agent -> sub-agent that fixes its own test failures" style="max-height: 400px; display: block; margin: 0 auto;">
 
-## MCPs Are Great, But Not Always the Answer
+## MC Motherfucking P
 
-MCPs are not the only way to extend an agent, and in some cases they are not even the best way.
+Ok, slow down. MCPs are not the only way to extend an agent, and in some cases they are not even the best way.
 
 The best example for me is Atlassian. I absolutely hate how clunky and slow AF the Jira MCP feels. The Jira API, on the other hand, is pretty good. So instead of forcing the model through a painful tool path, I have the agent call the API directly when I need to create or update tickets.
 
