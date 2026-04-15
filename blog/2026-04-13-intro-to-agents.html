@@ -187,7 +187,7 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#the-monorepo" id="toc-the-monorepo" class="nav-link" data-scroll-target="#the-monorepo">The Monorepo</a></li>
   <li><a href="#sub-agents-skills-and-scripts" id="toc-sub-agents-skills-and-scripts" class="nav-link" data-scroll-target="#sub-agents-skills-and-scripts">Sub-Agents, Skills, and Scripts</a></li>
-  <li><a href="#mcps-are-great-but-not-always-the-answer" id="toc-mcps-are-great-but-not-always-the-answer" class="nav-link" data-scroll-target="#mcps-are-great-but-not-always-the-answer">MCPs Are Great, But Not Always the Answer</a></li>
+  <li><a href="#mc-motherfucking-p" id="toc-mc-motherfucking-p" class="nav-link" data-scroll-target="#mc-motherfucking-p">MC Motherfucking P</a></li>
   <li><a href="#write-scripts-for-repeatable-work" id="toc-write-scripts-for-repeatable-work" class="nav-link" data-scroll-target="#write-scripts-for-repeatable-work">Write Scripts for Repeatable Work</a></li>
   <li><a href="#build-your-own-rag" id="toc-build-your-own-rag" class="nav-link" data-scroll-target="#build-your-own-rag">Build Your Own RAG</a></li>
   <li><a href="#symlink-everything-important" id="toc-symlink-everything-important" class="nav-link" data-scroll-target="#symlink-everything-important">Symlink Everything Important</a></li>
@@ -272,9 +272,9 @@ gtag('config', 'G-9994M738H0', { 'anonymize_ip': true});
 <p>This is where agents start beating plain scripts. A script is deterministic, which is great, but it cannot usually inspect its own output and decide what to do next. An agent can. One of my most useful examples is a <code>pr-push</code> agent that runs tests and, if something fails, tries to understand the failure and fix the code before continuing. That kind of branching behavior is where the extra intelligence actually pays for itself.</p>
 <p><img src="../images/galaxy_brain_agents.png" alt="Galaxy brain meme: bash script -> skill -> sub-agent -> sub-agent that fixes its own test failures" style="max-height: 400px; display: block; margin: 0 auto;"></p>
 </section>
-<section id="mcps-are-great-but-not-always-the-answer" class="level2">
-<h2 class="anchored" data-anchor-id="mcps-are-great-but-not-always-the-answer">MCPs Are Great, But Not Always the Answer</h2>
-<p>MCPs are not the only way to extend an agent, and in some cases they are not even the best way.</p>
+<section id="mc-motherfucking-p" class="level2">
+<h2 class="anchored" data-anchor-id="mc-motherfucking-p">MC Motherfucking P</h2>
+<p>Ok, slow down. MCPs are not the only way to extend an agent, and in some cases they are not even the best way.</p>
 <p>The best example for me is Atlassian. I absolutely hate how clunky and slow AF the Jira MCP feels. The Jira API, on the other hand, is pretty good. So instead of forcing the model through a painful tool path, I have the agent call the API directly when I need to create or update tickets.</p>
 <p>That does not mean MCPs are bad. Quite the opposite. Some of them are ridiculously useful. Glean has been excellent for searching internal docs. We also have a <code>data-MCP</code> setup that lets me query a database in plain English. As someone who is not exactly a SQL wizard, that has been a massive quality-of-life improvement.</p>
 <p>So my rough rule is this: use MCPs when they provide real leverage, not just because they exist. If a direct API call or a simple script is faster, clearer, and more reliable, do that instead.</p>
